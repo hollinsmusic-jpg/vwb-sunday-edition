@@ -1,0 +1,31 @@
+{
+  "name": "vwb",
+  "version": "1.0.0",
+  "description": "VWB Virtual Worship Band Sunday Edition",
+  "main": "main.js",
+  "author": "Hollins Musical Productions International",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "build:mac": "electron-builder --mac",
+    "build:win": "electron-builder --win"
+  },
+  "devDependencies": {
+    "electron": "^29.0.0",
+    "electron-builder": "^24.9.0"
+  },
+  "build": {
+    "appId": "com.hmpi.vwb",
+    "productName": "VWB",
+    "files": ["main.js", "preload.js", "index.html"],
+    "directories": {"output": "dist"},
+    "mac": {
+      "category": "public.app-category.music",
+      "target": [{"target": "dmg", "arch": ["x64", "arm64"]}]
+    },
+    "win": {
+      "target": "nsis"
+    }
+  }
+}
