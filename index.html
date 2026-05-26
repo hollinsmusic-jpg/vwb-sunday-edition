@@ -1,0 +1,2933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VWB – Virtual Worship Band</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" onerror="">
+<style>
+:root {
+  --bg-primary:#0a0e14; --bg-secondary:#111820; --bg-tertiary:#1a2230; --bg-card:#151d28;
+  --accent:#40E0D0; --accent-dim:rgba(64,224,208,0.15); --accent-glow:rgba(64,224,208,0.4);
+  --text-primary:#e8ecf0; --text-secondary:#8899aa; --text-dim:#556677;
+  --red:#ff4466; --orange:#ff8844; --green:#44dd88; --gold:#f0c040; --purple:#aa66ff;
+  --border:rgba(64,224,208,0.1); --border-hover:rgba(64,224,208,0.3);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Outfit',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:var(--bg-primary);color:var(--text-primary);min-height:100vh;overflow-x:hidden;}
+
+/* SPLASH */
+#splash{position:fixed;inset:0;z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 40%,#0f1c2a,#070b10);cursor:pointer;transition:opacity .6s;}
+#splash.hidden{opacity:0;pointer-events:none;}
+#splash h1{font-size:7rem;font-weight:700;color:var(--accent);text-shadow:0 0 60px var(--accent-glow);letter-spacing:.15em;animation:breathe 3s ease-in-out infinite;}
+#splash h2{font-size:1.5rem;font-weight:300;letter-spacing:.4em;color:var(--text-secondary);text-transform:uppercase;}
+#splash .ver{font-size:.85rem;color:var(--text-dim);margin-top:.5rem;}
+#splash .tag{font-style:italic;color:var(--text-secondary);margin-top:2rem;font-size:1.1rem;opacity:.8;}
+#splash .hint{margin-top:3rem;font-size:.9rem;color:var(--text-dim);animation:pulse 2s ease-in-out infinite;}
+#splash footer{position:absolute;bottom:1.5rem;font-size:.75rem;color:var(--text-dim);}
+@keyframes breathe{0%,100%{text-shadow:0 0 60px var(--accent-glow)}50%{text-shadow:0 0 100px var(--accent-glow)}}
+@keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
+@keyframes flashGlow{
+  0%,100%{border-color:var(--accent);box-shadow:0 0 8px rgba(64,224,208,.1);}
+  50%{border-color:#5ff5e5;box-shadow:0 0 25px rgba(64,224,208,.4);}
+}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1.5rem;background:var(--bg-secondary);border-bottom:1px solid var(--border);}
+.topbar-brand{display:flex;align-items:center;gap:.75rem;}
+.topbar-brand h1{font-size:1.3rem;font-weight:600;color:var(--accent);letter-spacing:.1em;}
+.topbar-brand span{font-size:.8rem;color:var(--text-dim);}
+.master-vol{display:flex;align-items:center;gap:.5rem;}
+.master-vol label{font-size:.75rem;color:var(--text-dim);}
+.master-vol input[type="range"]{width:80px;-webkit-appearance:none;height:4px;border-radius:2px;background:var(--bg-tertiary);}
+.master-vol input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:var(--accent);cursor:pointer;}
+
+/* TABS */
+.nav-tabs{display:flex;background:var(--bg-secondary);border-bottom:1px solid var(--border);padding:0 1.5rem;}
+.nav-tab{padding:.6rem 1.5rem;font-size:.85rem;font-weight:500;color:var(--text-dim);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;transition:all .2s;}
+.nav-tab:hover{color:var(--text-secondary);}
+.nav-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.view{display:none;padding:1.5rem;}
+.view.active{display:block;}
+
+/* FORMS */
+select,input[type="number"],input[type="text"]{background:var(--bg-tertiary);border:1px solid var(--border);color:var(--text-primary);padding:.5rem .75rem;border-radius:6px;font-family:'Outfit',sans-serif;font-size:.9rem;outline:none;}
+select:focus,input:focus{border-color:var(--accent);}
+option{background:var(--bg-tertiary);}
+.form-row{display:flex;gap:1rem;margin-bottom:.75rem;align-items:center;}
+.form-group{display:flex;flex-direction:column;gap:.3rem;flex:1;}
+.form-group label{font-size:.75rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.05em;}
+.btn{padding:.6rem 1.5rem;border-radius:8px;font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:500;cursor:pointer;border:none;transition:all .2s;}
+.btn-primary{background:var(--accent);color:var(--bg-primary);}
+.btn-primary:hover{box-shadow:0 0 20px var(--accent-glow);}
+.btn-secondary{background:var(--bg-tertiary);color:var(--text-primary);border:1px solid var(--border);}
+.btn-secondary:hover{border-color:var(--border-hover);}
+.btn-small{padding:.4rem .8rem;font-size:.8rem;}
+
+/* SETUP */
+.setup-container{max-width:1100px;}
+.setup-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+.setup-card h3{font-size:.85rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:1rem;}
+
+/* STEMS */
+.stems-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem;}
+.stem-slot{background:var(--bg-tertiary);border:1px dashed var(--border);border-radius:10px;padding:1rem;text-align:center;position:relative;min-height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem;transition:all .2s;}
+.stem-slot.loaded{border-style:solid;border-color:var(--accent);background:rgba(64,224,208,.05);}
+.stem-slot .s-icon{font-size:1.4rem;}
+.stem-slot .s-label{font-size:.85rem;font-weight:600;}
+.stem-slot .s-file{font-size:.7rem;color:var(--text-dim);max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.stem-slot .s-status{font-size:.7rem;color:var(--text-dim);font-style:italic;}
+.stem-slot .s-status.ok{color:var(--green);font-style:normal;}
+.stem-slot input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.stem-slot .s-rm{position:absolute;top:6px;right:8px;background:none;border:none;color:var(--red);cursor:pointer;font-size:.9rem;opacity:.5;display:none;}
+.stem-slot.loaded .s-rm{display:block;}
+
+/* SECTION EDITOR ROWS */
+.sec-hdr{display:grid;grid-template-columns:36px 140px 1fr 70px 70px 32px;gap:.5rem;padding:0 .75rem .4rem;font-size:.7rem;color:var(--text-dim);text-transform:uppercase;}
+.sec-row{display:grid;grid-template-columns:36px 140px 1fr 70px 70px 32px;gap:.5rem;align-items:center;background:var(--bg-tertiary);border:2px solid var(--border);border-radius:8px;padding:.5rem .75rem;margin-bottom:.4rem;transition:all .3s;}
+.sec-row.now-playing{border-color:var(--accent);background:rgba(64,224,208,.08);animation:flashGlow 1.5s ease-in-out infinite;}
+.sec-row .sec-n{font-family:'Space Mono',monospace;font-size:.85rem;color:var(--accent);font-weight:700;text-align:center;}
+.sec-row select,.sec-row input{font-size:.8rem;padding:.35rem .5rem;}
+.m-input{width:60px!important;font-family:'Space Mono',monospace!important;text-align:center;}
+.btn-add{display:flex;align-items:center;gap:.5rem;background:var(--accent-dim);border:1px dashed var(--accent);color:var(--accent);padding:.5rem 1rem;border-radius:8px;cursor:pointer;font-family:'Outfit',sans-serif;font-size:.85rem;margin-top:.5rem;}
+.btn-add:hover{background:rgba(64,224,208,.25);}
+.btn-rm{background:none;border:none;color:var(--red);cursor:pointer;font-size:1.1rem;opacity:.6;}
+.btn-rm:hover{opacity:1;}
+
+/* MINI TRANSPORT (setup page) */
+.mini-transport{display:flex;align-items:center;gap:1rem;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:10px;padding:.75rem 1rem;margin-top:1rem;}
+.mini-transport .mt-btn{width:40px;height:40px;border-radius:50%;border:2px solid var(--accent);background:var(--accent-dim);color:var(--accent);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
+.mini-transport .mt-btn:hover,.mini-transport .mt-btn.on{background:var(--accent);color:var(--bg-primary);box-shadow:0 0 15px var(--accent-glow);}
+.mini-transport .mt-btn.stp{border-color:var(--red);background:rgba(255,68,102,.1);color:var(--red);font-size:.9rem;}
+.mini-transport .mt-btn.stp:hover{background:var(--red);color:#fff;}
+.mini-transport .mt-meas{font-family:'Space Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--accent);min-width:80px;}
+.mini-transport .mt-time{font-family:'Space Mono',monospace;font-size:.85rem;color:var(--text-dim);min-width:60px;}
+.mini-transport .mt-beat{display:flex;gap:3px;align-items:center;}
+.mt-bd{width:8px;height:8px;border-radius:50%;background:var(--bg-primary);border:1px solid var(--border);transition:all .1s;}
+.mt-bd.act{background:var(--accent);border-color:var(--accent);}
+.mt-bd.db{background:var(--gold);border-color:var(--gold);}
+
+/* ROUTING */
+.rt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:.5rem;}
+.rt-row{display:flex;align-items:center;gap:.75rem;background:var(--bg-tertiary);border-radius:8px;padding:.6rem .75rem;}
+.rt-row .rt-nm{font-size:.85rem;font-weight:500;width:65px;}
+.rt-row select{flex:1;font-size:.8rem;}
+.rt-toggle{display:flex;gap:.5rem;margin-bottom:1rem;}
+.rt-btn{padding:.4rem 1rem;border-radius:6px;font-size:.8rem;border:1px solid var(--border);background:none;color:var(--text-dim);cursor:pointer;font-family:'Outfit',sans-serif;}
+.rt-btn.on{background:var(--accent-dim);border-color:var(--accent);color:var(--accent);}
+
+/* PERFORM LAYOUT */
+.perf-layout{display:grid;grid-template-columns:1fr 280px;grid-template-rows:auto auto 1fr auto;gap:1rem;height:calc(100vh - 120px);}
+.perf-hdr{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.5rem;}
+.perf-hdr .song-info h2{font-size:1.5rem;font-weight:600;}
+.perf-hdr .song-meta{display:flex;gap:1.5rem;margin-top:.25rem;font-size:.85rem;color:var(--text-secondary);}
+.perf-transport{display:flex;align-items:center;gap:1rem;}
+.m-disp{text-align:center;}
+.m-disp .m-num{font-family:'Space Mono',monospace;font-size:2rem;color:var(--accent);font-weight:700;}
+.m-disp .m-lbl{font-size:.65rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.1em;}
+.t-btn{width:56px;height:56px;border-radius:50%;border:2px solid var(--accent);background:var(--accent-dim);color:var(--accent);font-size:1.5rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.t-btn:hover,.t-btn.on{background:var(--accent);color:var(--bg-primary);box-shadow:0 0 25px var(--accent-glow);}
+.t-btn.stp{border-color:var(--red);background:rgba(255,68,102,.1);color:var(--red);}
+.t-btn.stp:hover{background:var(--red);color:#fff;}
+.beat-ind{display:flex;gap:.4rem;align-items:center;}
+.b-dot{width:10px;height:10px;border-radius:50%;background:var(--bg-tertiary);border:1px solid var(--border);transition:all .1s;}
+.b-dot.act{background:var(--accent);border-color:var(--accent);box-shadow:0 0 8px var(--accent-glow);}
+.b-dot.db{background:var(--gold);border-color:var(--gold);box-shadow:0 0 8px rgba(240,192,64,.5);}
+
+/* TIMELINE */
+.perf-tl{grid-column:1;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1rem;}
+.tl-bar{position:relative;width:100%;height:40px;background:var(--bg-tertiary);border-radius:6px;overflow:hidden;cursor:pointer;margin-bottom:.5rem;}
+.tl-prog{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,rgba(64,224,208,.3),rgba(64,224,208,.1));border-right:2px solid var(--accent);transition:width .1s linear;}
+.tl-secs{position:absolute;inset:0;display:flex;}
+.tl-sec{height:100%;border-right:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:.65rem;color:var(--text-secondary);overflow:hidden;transition:background .2s;}
+.tl-sec.on{background:rgba(64,224,208,.15);color:var(--accent);font-weight:600;}
+.tl-info{display:flex;justify-content:space-between;font-family:'Space Mono',monospace;font-size:.75rem;color:var(--text-dim);}
+
+/* PERFORM SECTIONS */
+.perf-secs{grid-column:1;display:flex;flex-direction:column;gap:.4rem;overflow-y:auto;}
+.p-sec{display:flex;align-items:center;gap:1rem;background:var(--bg-card);border:2px solid var(--border);border-radius:10px;padding:.8rem 1.25rem;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;}
+.p-sec::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--text-dim);transition:all .25s;}
+.p-sec:hover{border-color:var(--border-hover);}
+.p-sec.act{border-color:var(--accent);background:rgba(64,224,208,.07);animation:flashGlow 1.5s ease-in-out infinite;}
+.p-sec.act::before{background:var(--accent);box-shadow:0 0 8px var(--accent-glow);}
+.p-sec.q{border-color:var(--gold);}
+.p-sec.q::before{background:var(--gold);}
+.s-hk{font-family:'Space Mono',monospace;font-size:1.1rem;font-weight:700;color:var(--bg-primary);background:var(--text-dim);width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .25s;}
+.p-sec.act .s-hk{background:var(--accent);box-shadow:0 0 10px var(--accent-glow);}
+.p-sec.q .s-hk{background:var(--gold);animation:pulse 1s infinite;}
+.s-inf{flex:1;}
+.s-inf h4{font-size:.95rem;font-weight:500;}
+.s-meas{font-size:.75rem;color:var(--text-secondary);font-family:'Space Mono',monospace;}
+.s-qlbl{font-size:.7rem;color:var(--gold);font-weight:600;text-transform:uppercase;display:none;}
+.p-sec.q .s-qlbl{display:block;}
+
+/* MIXER */
+.perf-mix{grid-column:2;grid-row:2/5;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1rem;display:flex;flex-direction:column;gap:.5rem;overflow-y:auto;}
+.mix-title{font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:.5rem;}
+.mix-ch{display:flex;align-items:center;gap:.5rem;padding:.5rem;background:var(--bg-tertiary);border-radius:8px;margin-bottom:.3rem;}
+.mix-ch .cb{width:26px;height:26px;border-radius:5px;border:1px solid var(--border);background:none;color:var(--text-dim);font-size:.6rem;font-weight:700;cursor:pointer;font-family:'Space Mono',monospace;}
+.mix-ch .cb.mt{background:var(--red);color:#fff;border-color:var(--red);}
+.mix-ch .cb.sl{background:var(--gold);color:var(--bg-primary);border-color:var(--gold);}
+.mix-ch .cn{font-size:.78rem;font-weight:500;width:50px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mix-ch .cs{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:var(--bg-primary);outline:none;}
+.mix-ch .cs::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--accent);cursor:pointer;}
+.mix-ch .cl{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--text-dim);width:28px;text-align:right;}
+.mix-ch .co{font-size:.55rem;color:var(--text-dim);font-family:'Space Mono',monospace;width:30px;text-align:center;}
+
+/* HOTKEYS */
+.perf-hk{grid-column:1;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:.75rem 1.25rem;display:flex;align-items:center;gap:2rem;flex-wrap:wrap;}
+.hk-i{display:flex;align-items:center;gap:.4rem;font-size:.75rem;color:var(--text-dim);}
+.hk-k{font-family:'Space Mono',monospace;background:var(--bg-tertiary);border:1px solid var(--border);padding:.15rem .4rem;border-radius:4px;font-size:.7rem;color:var(--text-secondary);}
+
+/* SETLIST */
+.sl-container{max-width:800px;}
+.sl-item{display:flex;align-items:center;gap:1rem;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;margin-bottom:.5rem;cursor:pointer;transition:all .2s;}
+.sl-item:hover{border-color:var(--border-hover);}
+.sl-num{font-family:'Space Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--accent);width:30px;}
+.sl-info h4{font-size:1rem;}
+.sl-info p{font-size:.8rem;color:var(--text-secondary);}
+.sl-acts{margin-left:auto;display:flex;gap:.5rem;}
+
+/* BACKGROUND LOOP PLAYER */
+.loop-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+.loop-card h3{font-size:.85rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--purple);margin-bottom:1rem;}
+.loop-slot{display:flex;align-items:center;gap:1rem;background:var(--bg-tertiary);border:1px dashed var(--border);border-radius:10px;padding:.75rem 1rem;position:relative;transition:all .2s;}
+.loop-slot.loaded{border-style:solid;border-color:var(--purple);background:rgba(170,102,255,.05);}
+.loop-slot .loop-file-info{flex:1;}
+.loop-slot .loop-fn{font-size:.85rem;font-weight:500;color:var(--text-primary);}
+.loop-slot .loop-dur{font-size:.7rem;color:var(--text-dim);font-family:'Space Mono',monospace;}
+.loop-slot .loop-placeholder{font-size:.85rem;color:var(--text-dim);font-style:italic;}
+.loop-slot input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.loop-controls{display:flex;align-items:center;gap:.75rem;margin-top:.75rem;}
+.loop-play-btn{width:36px;height:36px;border-radius:50%;border:2px solid var(--purple);background:rgba(170,102,255,.15);color:var(--purple);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
+.loop-play-btn:hover,.loop-play-btn.on{background:var(--purple);color:var(--bg-primary);box-shadow:0 0 15px rgba(170,102,255,.4);}
+.loop-toggle{display:flex;align-items:center;gap:.4rem;cursor:pointer;user-select:none;}
+.loop-toggle input[type="checkbox"]{display:none;}
+.loop-toggle .loop-sw{width:36px;height:20px;border-radius:10px;background:var(--bg-primary);border:1px solid var(--border);position:relative;transition:all .2s;}
+.loop-toggle .loop-sw::after{content:'';position:absolute;left:2px;top:2px;width:14px;height:14px;border-radius:50%;background:var(--text-dim);transition:all .2s;}
+.loop-toggle input:checked+.loop-sw{background:var(--purple);border-color:var(--purple);}
+.loop-toggle input:checked+.loop-sw::after{left:18px;background:#fff;}
+.loop-toggle span{font-size:.8rem;color:var(--text-dim);}
+.loop-vol{display:flex;align-items:center;gap:.4rem;flex:1;}
+.loop-vol label{font-size:.7rem;color:var(--text-dim);}
+.loop-vol input[type="range"]{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:var(--bg-primary);}
+.loop-vol input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:var(--purple);cursor:pointer;}
+.loop-vol .lv-pct{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--text-dim);width:28px;text-align:right;}
+.loop-rm-btn{background:none;border:none;color:var(--red);cursor:pointer;font-size:.9rem;opacity:.6;}
+.loop-rm-btn:hover{opacity:1;}
+
+/* Compact loop bar for perform view */
+.loop-bar{display:flex;align-items:center;gap:.6rem;background:var(--bg-tertiary);border:1px solid rgba(170,102,255,.2);border-radius:8px;padding:.5rem .75rem;margin-top:.5rem;}
+.loop-bar.active{border-color:var(--purple);background:rgba(170,102,255,.08);}
+.loop-bar .lb-icon{font-size:.9rem;}
+.loop-bar .lb-name{font-size:.78rem;color:var(--text-primary);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.loop-bar .lb-status{font-size:.65rem;color:var(--text-dim);font-family:'Space Mono',monospace;}
+.loop-bar .lb-status.playing{color:var(--purple);}
+
+/* MIDI OUT PLAYER */
+.midi-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+.midi-card h3{font-size:.85rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--orange);margin-bottom:1rem;}
+.midi-slot{display:flex;align-items:center;gap:1rem;background:var(--bg-tertiary);border:1px dashed var(--border);border-radius:10px;padding:.75rem 1rem;position:relative;transition:all .2s;}
+.midi-slot.loaded{border-style:solid;border-color:var(--orange);background:rgba(255,136,68,.05);}
+.midi-slot .midi-file-info{flex:1;}
+.midi-slot .midi-fn{font-size:.85rem;font-weight:500;color:var(--text-primary);}
+.midi-slot .midi-detail{font-size:.7rem;color:var(--text-dim);font-family:'Space Mono',monospace;}
+.midi-slot .midi-placeholder{font-size:.85rem;color:var(--text-dim);font-style:italic;}
+.midi-slot input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.midi-slot .midi-rm{background:none;border:none;color:var(--red);cursor:pointer;font-size:.9rem;opacity:.6;display:none;}
+.midi-slot.loaded .midi-rm{display:block;}
+.midi-controls{display:flex;flex-wrap:wrap;align-items:center;gap:.75rem;margin-top:.75rem;}
+.midi-play-btn{width:36px;height:36px;border-radius:50%;border:2px solid var(--orange);background:rgba(255,136,68,.15);color:var(--orange);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
+.midi-play-btn:hover,.midi-play-btn.on{background:var(--orange);color:var(--bg-primary);box-shadow:0 0 15px rgba(255,136,68,.4);}
+.midi-port-select{background:var(--bg-primary);border:1px solid var(--border);color:var(--text-primary);padding:.35rem .5rem;border-radius:6px;font-family:'Outfit',sans-serif;font-size:.8rem;}
+.midi-ch-select{background:var(--bg-primary);border:1px solid var(--border);color:var(--text-primary);padding:.35rem .5rem;border-radius:6px;font-family:'Outfit',sans-serif;font-size:.8rem;width:55px;}
+.midi-status{font-size:.75rem;color:var(--text-dim);margin-top:.5rem;}
+.midi-status.connected{color:var(--green);}
+.midi-status.error{color:var(--red);}
+.midi-label{font-size:.7rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.05em;}
+.midi-loop-toggle{display:flex;align-items:center;gap:.4rem;cursor:pointer;user-select:none;}
+.midi-loop-toggle input[type="checkbox"]{display:none;}
+.midi-loop-toggle .ml-sw{width:36px;height:20px;border-radius:10px;background:var(--bg-primary);border:1px solid var(--border);position:relative;transition:all .2s;}
+.midi-loop-toggle .ml-sw::after{content:'';position:absolute;left:2px;top:2px;width:14px;height:14px;border-radius:50%;background:var(--text-dim);transition:all .2s;}
+.midi-loop-toggle input:checked+.ml-sw{background:var(--orange);border-color:var(--orange);}
+.midi-loop-toggle input:checked+.ml-sw::after{left:18px;background:#fff;}
+.midi-loop-toggle span{font-size:.8rem;color:var(--text-dim);}
+
+/* Compact MIDI bar for perform */
+.midi-bar{display:flex;align-items:center;gap:.6rem;background:var(--bg-tertiary);border:1px solid rgba(255,136,68,.2);border-radius:8px;padding:.5rem .75rem;margin-top:.5rem;}
+.midi-bar.active{border-color:var(--orange);background:rgba(255,136,68,.08);}
+.midi-bar .mb-name{font-size:.78rem;color:var(--text-primary);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.midi-bar .mb-status{font-size:.65rem;color:var(--text-dim);font-family:'Space Mono',monospace;}
+.midi-bar .mb-status.playing{color:var(--orange);}
+
+/* SECTION LOOP TOGGLE */
+.sec-loop-btn{padding:.3rem .7rem;border-radius:6px;font-size:.75rem;font-weight:600;border:2px solid var(--border);background:none;color:var(--text-dim);cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s;display:flex;align-items:center;gap:.3rem;white-space:nowrap;}
+.sec-loop-btn:hover{border-color:var(--gold);color:var(--gold);}
+.sec-loop-btn.on{border-color:var(--gold);background:rgba(240,192,64,.15);color:var(--gold);}
+.sec-loop-indicator{font-size:.65rem;color:var(--gold);font-weight:600;text-transform:uppercase;letter-spacing:.05em;display:none;animation:pulse 1.5s ease-in-out infinite;}
+.sec-loop-indicator.on{display:inline;}
+
+/* STEM RELOAD PANEL */
+.reload-panel{background:var(--bg-tertiary);border:1px solid var(--border);border-radius:10px;padding:1rem;margin-top:.75rem;}
+.reload-panel h4{font-size:.8rem;font-weight:600;color:var(--accent);margin-bottom:.75rem;text-transform:uppercase;letter-spacing:.05em;}
+.reload-row{display:flex;align-items:center;gap:.75rem;padding:.4rem 0;border-bottom:1px solid var(--border);}
+.reload-row:last-child{border-bottom:none;}
+.reload-row .rl-name{font-size:.85rem;font-weight:500;width:60px;}
+.reload-row .rl-file{font-size:.75rem;color:var(--text-dim);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.reload-row .rl-status{font-size:.7rem;width:60px;text-align:center;}
+.reload-row .rl-status.loaded{color:var(--green);}
+.reload-row .rl-status.needed{color:var(--orange);}
+.reload-row input[type="file"]{width:0;height:0;overflow:hidden;position:absolute;}
+.reload-row .rl-btn{padding:.25rem .6rem;border-radius:5px;font-size:.7rem;border:1px solid var(--border);background:none;color:var(--text-secondary);cursor:pointer;font-family:'Outfit',sans-serif;}
+.reload-row .rl-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+/* MIDI REMOTE CONTROL */
+.mrc-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+.mrc-card h3{font-size:.85rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--green);margin-bottom:1rem;}
+.mrc-port-row{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;}
+.mrc-port-row select{flex:1;}
+.mrc-map-grid{display:grid;grid-template-columns:1fr 1fr;gap:.4rem;}
+.mrc-map-row{display:flex;align-items:center;gap:.5rem;background:var(--bg-tertiary);border:2px solid var(--border);border-radius:8px;padding:.5rem .75rem;cursor:pointer;transition:all .2s;user-select:none;}
+.mrc-map-row:hover{border-color:var(--border-hover);}
+.mrc-map-row.learning{border-color:var(--green);background:rgba(68,221,136,.1);animation:pulse 1s ease-in-out infinite;}
+.mrc-map-row .mrc-fn{font-size:.8rem;font-weight:500;flex:1;}
+.mrc-map-row .mrc-val{font-family:'Space Mono',monospace;font-size:.75rem;color:var(--green);min-width:70px;text-align:center;background:var(--bg-primary);border-radius:4px;padding:.2rem .4rem;}
+.mrc-map-row .mrc-val.empty{color:var(--text-dim);}
+.mrc-map-row .mrc-clr{background:none;border:none;color:var(--red);cursor:pointer;font-size:.8rem;opacity:.4;padding:0 .2rem;}
+.mrc-map-row .mrc-clr:hover{opacity:1;}
+.mrc-hint{font-size:.75rem;color:var(--text-dim);margin-top:.75rem;font-style:italic;}
+.mrc-activity{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--text-dim);margin-right:.5rem;transition:all .1s;}
+.mrc-activity.on{background:var(--green);box-shadow:0 0 8px rgba(68,221,136,.5);}
+
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+
+/* ── SERVICE FLOW ── */
+.svc-container{max-width:900px;}
+.svc-toolbar{display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;flex-wrap:wrap;}
+.svc-toolbar h2{font-size:1.3rem;flex:1;}
+.svc-live-bar{display:none;position:sticky;top:0;z-index:100;background:var(--red);color:#fff;border-radius:10px;padding:.75rem 1.25rem;margin-bottom:1rem;display:none;align-items:center;gap:1rem;flex-wrap:wrap;}
+.svc-live-bar.on{display:flex;}
+.svc-live-bar .lb-dot{width:10px;height:10px;border-radius:50%;background:#fff;animation:pulse 1s ease-in-out infinite;flex-shrink:0;}
+.svc-live-bar .lb-cur{font-weight:600;font-size:.95rem;flex:1;}
+.svc-live-bar .lb-next{font-size:.8rem;opacity:.8;}
+.svc-live-nav{display:flex;gap:.5rem;}
+.svc-live-nav button{padding:.4rem 1rem;border-radius:6px;border:2px solid rgba(255,255,255,.5);background:rgba(255,255,255,.15);color:#fff;font-family:'Outfit',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;}
+.svc-live-nav button:hover{background:rgba(255,255,255,.3);}
+.svc-cue-list{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1rem;}
+.svc-cue{display:flex;align-items:center;gap:.75rem;background:var(--bg-card);border:2px solid var(--border);border-radius:10px;padding:.75rem 1rem;cursor:default;transition:all .25s;position:relative;}
+.svc-cue.cue-done{opacity:.45;}
+.svc-cue.cue-active{border-color:var(--red);background:rgba(255,68,102,.07);box-shadow:0 0 0 3px rgba(255,68,102,.15);}
+.svc-cue.cue-next{border-color:var(--gold);background:rgba(240,192,64,.06);}
+.svc-cue .cue-drag{cursor:grab;color:var(--text-dim);font-size:1.1rem;padding:0 .25rem;user-select:none;}
+.svc-cue .cue-num{font-family:'Space Mono',monospace;font-size:.85rem;font-weight:700;color:var(--text-dim);width:22px;text-align:center;flex-shrink:0;}
+.svc-cue.cue-active .cue-num{color:var(--red);}
+.svc-cue.cue-next .cue-num{color:var(--gold);}
+.svc-cue .cue-icon{font-size:1.3rem;flex-shrink:0;}
+.svc-cue .cue-body{flex:1;min-width:0;}
+.svc-cue .cue-title{font-size:.95rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.svc-cue .cue-meta{font-size:.75rem;color:var(--text-secondary);}
+.svc-cue .cue-badge{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:.15rem .5rem;border-radius:4px;flex-shrink:0;}
+.svc-cue.cue-active .cue-badge{background:var(--red);color:#fff;}
+.svc-cue.cue-next .cue-badge{background:var(--gold);color:var(--bg-primary);}
+.svc-cue .cue-acts{display:flex;gap:.35rem;flex-shrink:0;}
+.svc-cue .cue-acts button{padding:.25rem .5rem;border-radius:5px;border:1px solid var(--border);background:none;color:var(--text-dim);cursor:pointer;font-size:.8rem;font-family:'Outfit',sans-serif;}
+.svc-cue .cue-acts button:hover{border-color:var(--border-hover);color:var(--text-primary);}
+.svc-add-row{display:flex;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;}
+.svc-add-row .add-btn{display:flex;align-items:center;gap:.4rem;padding:.5rem 1rem;border-radius:8px;border:1px dashed var(--border);background:none;color:var(--text-dim);cursor:pointer;font-family:'Outfit',sans-serif;font-size:.85rem;transition:all .2s;}
+.svc-add-row .add-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);}
+.svc-empty{color:var(--text-dim);font-size:.9rem;padding:2rem;text-align:center;background:var(--bg-card);border:1px dashed var(--border);border-radius:10px;}
+.svc-go-live{background:var(--red)!important;color:#fff!important;border:none!important;font-weight:600;}
+.svc-go-live:hover{box-shadow:0 0 20px rgba(255,68,102,.4)!important;}
+.svc-end-live{background:var(--bg-tertiary)!important;border-color:var(--red)!important;color:var(--red)!important;}
+</style>
+</head>
+<body>
+
+<div id="splash" onclick="initApp()">
+  <h1>VWB</h1><h2>Virtual Worship Band</h2>
+  <p class="ver">v1.0 — Sunday Edition</p>
+  <p class="tag">"Real Musicians. Real Worship. In Real Time."</p>
+  <p class="hint">Click anywhere to begin</p>
+  <footer>&copy; 2025 Hollins Musical Productions International</footer>
+</div>
+
+<div id="app" style="display:none;">
+  <div class="topbar">
+    <div class="topbar-brand"><h1>VWB</h1><span>Virtual Worship Band</span></div>
+    <div class="master-vol"><label>Master</label><input type="range" min="0" max="100" value="80" oninput="setMasterVol(this.value)"></div>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="goView('setup')">Song Setup</button>
+    <button class="nav-tab" onclick="goView('perform')">Perform</button>
+    <button class="nav-tab" onclick="goView('setlist')">Setlist</button>
+    <button class="nav-tab" onclick="goView('service')" id="svcNavTab">🗓 Service</button>
+  </div>
+
+  <!-- ==================== SETUP ==================== -->
+  <div class="view active" id="view-setup"><div class="setup-container">
+    <div class="setup-card"><h3>Song Info</h3>
+      <div class="form-row">
+        <div class="form-group" style="flex:3"><label>Song Title</label><input type="text" id="songTitle" placeholder="e.g. Total Praise"></div>
+        <div class="form-group"><label>Tempo (BPM)</label><input type="number" id="songTempo" value="72" min="40" max="200"></div>
+        <div class="form-group"><label>Time Sig</label><select id="songTimeSig"><option selected>4/4</option><option>3/4</option><option>6/8</option><option>12/8</option></select></div>
+      </div>
+      <p style="font-size:.75rem;color:var(--text-dim);margin-top:.25rem" id="measureInfo"></p>
+    </div>
+    <div class="setup-card"><h3>Load Instrument Stems</h3>
+      <p style="font-size:.8rem;color:var(--text-dim);margin-bottom:1rem">Click to load WAV or MP3 files for each dedicated channel. All stems should be the same length.</p>
+      <div class="stems-grid" id="stemsGrid"></div>
+    </div>
+    <div class="setup-card" style="border-color:rgba(240,192,64,.2)"><h3 style="color:#f0c040">&#127926; Aux Sub-Mixer (Ch 7-8)</h3>
+      <p style="font-size:.8rem;color:var(--text-dim);margin-bottom:.75rem">Load multiple audio files here — drums, strings, synth pads, background vocals, etc. All tracks are summed together and sent to a single stereo output (Ch 7-8 in multi-out mode). Each track gets its own volume control.</p>
+      <div id="auxTracksList"></div>
+      <div style="display:flex;align-items:center;gap:.75rem;margin-top:.75rem">
+        <button class="btn-add" style="border-color:#f0c040;color:#f0c040;background:rgba(240,192,64,.1)" onclick="pickAndAddAuxTracks()">+ Add Aux Track</button>
+        <div style="display:flex;align-items:center;gap:.5rem">
+          <span style="font-size:.75rem;color:var(--text-dim)">Master Vol</span>
+          <input type="range" min="0" max="100" value="80" style="-webkit-appearance:none;width:80px;height:4px;border-radius:2px;background:var(--bg-tertiary)" oninput="setAuxMasterVolFn(this.value);document.getElementById('auxMasterPct').textContent=this.value+'%'" id="auxMasterSlider">
+          <span style="font-family:'Space Mono',monospace;font-size:.7rem;color:var(--text-dim)" id="auxMasterPct">80%</span>
+        </div>
+      </div>
+    </div>
+    <div class="setup-card"><h3>Song Sections (by Measure)</h3>
+      <p style="font-size:.8rem;color:var(--text-dim);margin-bottom:.75rem">Define sections by measure number. Use the player below to listen and find your bar points. The active section flashes while playing.</p>
+      <div class="sec-hdr"><span>#</span><span>Type</span><span>Label</span><span>Start Bar</span><span>End Bar</span><span></span></div>
+      <div id="secList"></div>
+      <button class="btn-add" onclick="addSec()">+ Add Section</button>
+      <div class="mini-transport">
+        <button class="mt-btn" id="mtPlay" onclick="togglePlay()">&#9654;</button>
+        <button class="mt-btn stp" onclick="doStop()">&#9632;</button>
+        <div class="mt-meas" id="mtMeas">Bar 1</div>
+        <div class="mt-beat" id="mtBeat"></div>
+        <div class="mt-time" id="mtTime">0:00</div>
+        <span style="font-size:.7rem;color:var(--text-dim);margin-left:auto">Spacebar = Play / Pause</span>
+      </div>
+    </div>
+    <div class="setup-card"><h3>Audio Output Routing</h3>
+      <p style="font-size:.8rem;color:var(--text-dim);margin-bottom:.75rem">Stereo = all to one output. Multi-Output = fixed 8-channel layout: Piano (1-2 stereo), Bass (3), Guitar (4), Organ (5), Loop (6), Aux (7-8 stereo).</p>
+      <div class="rt-toggle">
+        <button class="rt-btn on" id="rtStereo" onclick="setRoute('stereo')">Stereo Mix</button>
+        <button class="rt-btn" id="rtMulti" onclick="setRoute('multi')">Multi-Output</button>
+      </div>
+      <div id="rtPanel"></div>
+    </div>
+    <div class="loop-card"><h3>🔁 Background Loop Player</h3>
+      <p style="font-size:.8rem;color:var(--text-dim);margin-bottom:.75rem">Load a soft piano, organ, or pad loop that plays independently of the stems. Great for ambient background music during prayer, altar call, or transitions.</p>
+      <div class="loop-slot" id="loopSlot" onclick="pickAndLoadLoop()">
+        <div class="loop-file-info">
+          <div class="loop-placeholder" id="loopPlaceholder">Click to load a WAV or MP3 loop</div>
+          <div class="loop-fn" id="loopFn" style="display:none"></div>
+          <div class="loop-dur" id="loopDur" style="display:none"></div>
+        </div>
+        <button class="loop-rm-btn" id="loopRmBtn" onclick="event.stopPropagation();removeLoop()" style="display:none">&times;</button>
+      </div>
+      <div class="loop-controls" id="loopControls" style="display:none">
+        <button class="loop-play-btn" id="loopPlayBtn" onclick="toggleLoop()">&#9654;</button>
+        <label class="loop-toggle"><input type="checkbox" id="loopCheck" checked onchange="setLoopEnabled(this.checked)"><div class="loop-sw"></div><span>Loop</span></label>
+        <div class="loop-vol">
+          <label>Vol</label>
+          <input type="range" min="0" max="100" value="60" class="loop-vol-slider" oninput="setLoopVol(this.value)">
+          <span class="lv-pct" id="loopPct">60%</span>
+        </div>
+      </div>
+    </div>
+    <div class="midi-card"><h3>🎹 MIDI File Output</h3>
+      <p style="font-size:.8rem;color:var(--text-dim);margin-bottom:.75rem">Load a MIDI file and send it to an external keyboard or sound module via USB MIDI. The keyboard plays the notes from the file.</p>
+      <div class="midi-slot" id="midiSlot" onclick="pickAndLoadMidi()">
+        <div class="midi-file-info">
+          <div class="midi-placeholder" id="midiPlaceholder">Click to load a .mid MIDI file</div>
+          <div class="midi-fn" id="midiFn" style="display:none"></div>
+          <div class="midi-detail" id="midiDetail" style="display:none"></div>
+        </div>
+        <button class="midi-rm" id="midiRmBtn" onclick="event.stopPropagation();removeMidi()">&times;</button>
+      </div>
+      <div id="midiControlsWrap" style="display:none">
+        <div class="midi-controls">
+          <button class="midi-play-btn" id="midiPlayBtn" onclick="toggleMidiPlay()">&#9654;</button>
+          <div style="display:flex;flex-direction:column;gap:.2rem">
+            <span class="midi-label">MIDI Output</span>
+            <select class="midi-port-select" id="midiPortSelect" onchange="selectMidiPort(this.value)">
+              <option value="">-- Select MIDI Output --</option>
+            </select>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:.2rem">
+            <span class="midi-label">Channel</span>
+            <select class="midi-ch-select" id="midiChSelect">
+              <option value="0">1</option><option value="1">2</option><option value="2">3</option><option value="3">4</option>
+              <option value="4">5</option><option value="5">6</option><option value="6">7</option><option value="7">8</option>
+              <option value="8">9</option><option value="9">10</option><option value="10">11</option><option value="11">12</option>
+              <option value="12">13</option><option value="13">14</option><option value="14">15</option><option value="15">16</option>
+            </select>
+          </div>
+          <label class="midi-loop-toggle"><input type="checkbox" id="midiLoopCheck" onchange="midiLoopEnabled=this.checked"><div class="ml-sw"></div><span>Loop</span></label>
+          <button class="btn btn-secondary btn-small" onclick="refreshMidiPorts()">Refresh Ports</button>
+        </div>
+        <div class="midi-status" id="midiStatus">No MIDI output selected</div>
+      </div>
+    </div>
+    <div class="mrc-card">
+      <div onclick="toggleMrcPanel()" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;">
+        <h3 style="margin-bottom:0;">🎛️ MIDI Remote Control</h3>
+        <span id="mrcToggleIcon" style="font-size:.85rem;color:var(--text-dim);display:flex;align-items:center;gap:.4rem;">
+          <span style="font-size:.75rem;color:var(--text-dim);">Click to expand</span> ▼
+        </span>
+      </div>
+      <div id="mrcPanelBody" style="display:none;margin-top:1rem;">
+        <p style="font-size:.8rem;color:var(--text-dim);margin-bottom:.75rem">Use your iPhone, iPad, or any MIDI controller to wirelessly control the app via Bluetooth MIDI. Click a function, then press a key on your controller to assign it.</p>
+        <div class="mrc-port-row">
+          <span class="mrc-activity" id="mrcActivity"></span>
+          <label style="font-size:.8rem;color:var(--text-dim)">MIDI Input:</label>
+          <select class="midi-port-select" id="mrcInputSelect" onchange="selectMrcInput(this.value)">
+            <option value="">-- Select MIDI Input --</option>
+          </select>
+          <button class="btn btn-secondary btn-small" onclick="refreshMrcInputs()">Refresh</button>
+        </div>
+        <div class="mrc-map-grid" id="mrcMapGrid"></div>
+        <div style="margin-top:.75rem;display:flex;gap:.5rem;flex-wrap:wrap;">
+          <button class="btn btn-secondary btn-small" onclick="saveMrcMappings()">Save Mappings</button>
+          <button class="btn btn-secondary btn-small" onclick="loadMrcMappings()">Load Saved</button>
+          <button class="btn btn-secondary btn-small" style="color:var(--red)" onclick="clearAllMappings()">Clear All</button>
+        </div>
+        <p class="mrc-hint" id="mrcHint">Click any function above, then press a key/button on your MIDI controller to assign it.</p>
+      </div>
+    </div>
+    <div class="setup-card" style="display:flex;justify-content:flex-end;gap:.75rem">
+      <button class="btn btn-secondary" onclick="saveSong()">Save Song</button>
+      <button class="btn btn-primary" onclick="goPerform()">&#9654; Go to Perform</button>
+    </div>
+  </div></div>
+
+  <!-- ==================== PERFORM ==================== -->
+  <div class="view" id="view-perform"><div class="perf-layout">
+    <div class="perf-hdr">
+      <div class="song-info"><h2 id="pTitle">—</h2><div class="song-meta"><span id="pTempo">72 BPM</span><span id="pTS">4/4</span><span id="pStems">0 stems</span><span id="pRoute">Stereo</span></div></div>
+      <div class="perf-transport">
+        <div class="m-disp"><div class="m-num" id="curMeas">1</div><div class="m-lbl">Measure</div></div>
+        <div class="beat-ind" id="beatInd"></div>
+        <button class="t-btn" id="playBtn" onclick="togglePlay()">&#9654;</button>
+        <button class="t-btn stp" onclick="doStop()">&#9632;</button>
+        <button class="sec-loop-btn" id="secLoopBtn" onclick="toggleSecLoop()" title="Loop current section">&#128257; Sec Loop</button>
+        <button class="sec-loop-btn" id="xfadeBtn" onclick="triggerManualCrossfade()" title="Crossfade to next song in service flow" style="border-color:var(--purple);color:var(--purple);">↔ Crossfade →</button>
+      </div>
+    </div>
+    <div class="perf-tl">
+      <div class="tl-bar" id="tlBar" onclick="seekTL(event)"><div class="tl-prog" id="tlProg"></div><div class="tl-secs" id="tlSecs"></div></div>
+      <div class="tl-info"><span id="tlBar1">Bar 1</span><span id="tlTime">0:00</span><span id="tlTotal">0:00</span></div>
+    </div>
+    <div class="perf-secs" id="pSecs"></div>
+    <div class="perf-mix"><div class="mix-title">Mixer</div><div id="mixCh"></div>
+      <div class="loop-bar" id="perfLoopBar" style="display:none">
+        <button class="loop-play-btn" style="width:28px;height:28px;font-size:.8rem" id="perfLoopBtn" onclick="toggleLoop()">&#9654;</button>
+        <span class="lb-icon">🔁</span>
+        <span class="lb-name" id="perfLoopName">—</span>
+        <span class="lb-status" id="perfLoopStatus">Stopped</span>
+        <div style="display:flex;align-items:center;gap:.3rem">
+          <input type="range" min="0" max="100" value="60" class="loop-vol-slider" style="width:50px;-webkit-appearance:none;height:3px;border-radius:2px;background:var(--bg-primary);" oninput="setLoopVol(this.value)">
+        </div>
+      </div>
+      <div class="midi-bar" id="perfMidiBar" style="display:none">
+        <button class="midi-play-btn" style="width:28px;height:28px;font-size:.8rem" id="perfMidiBtn" onclick="toggleMidiPlay()">&#9654;</button>
+        <span style="font-size:.9rem">🎹</span>
+        <span class="mb-name" id="perfMidiName">—</span>
+        <span class="mb-status" id="perfMidiStatus">Stopped</span>
+      </div>
+    </div>
+    <div class="perf-hk">
+      <div class="hk-i"><span class="hk-k">Space</span> Play/Pause</div>
+      <div class="hk-i"><span class="hk-k">1-9</span> Queue Section</div>
+      <div class="hk-i"><span class="hk-k">Esc</span> Stop</div>
+      <div class="hk-i"><span class="hk-k">N</span> Next</div>
+      <div class="hk-i"><span class="hk-k">B</span> Prev</div>
+      <div class="hk-i"><span class="hk-k">L</span> Loop On/Off</div>
+      <div class="hk-i"><span class="hk-k">R</span> Section Loop</div>
+      <div class="hk-i"><span class="hk-k">M</span> MIDI On/Off</div>
+    </div>
+  </div></div>
+
+  <!-- ==================== SETLIST ==================== -->
+  <div class="view" id="view-setlist"><div class="sl-container">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem"><h2 style="font-size:1.3rem">Setlist</h2><button class="btn btn-secondary" onclick="goView('setup');newSong();">+ New Song</button></div>
+    <div id="slItems"></div><div id="reloadWrap"></div><p id="slEmpty" style="color:var(--text-dim);font-size:.9rem;margin-top:1rem">No songs yet.</p>
+  </div></div>
+
+  <!-- ==================== SERVICE FLOW ==================== -->
+  <div class="view" id="view-service"><div class="svc-container">
+
+    <!-- Live bar (shown only in live mode) -->
+    <div class="svc-live-bar" id="svcLiveBar">
+      <div class="lb-dot"></div>
+      <div style="display:flex;flex-direction:column;flex:1;min-width:0;">
+        <span class="lb-cur" id="svcLiveCur">—</span>
+        <span class="lb-next" id="svcLiveNext"></span>
+      </div>
+      <div class="svc-live-nav">
+        <button onclick="svcPrev()">⏮ Prev</button>
+        <button onclick="svcNext()">Next ⏭</button>
+      </div>
+      <button class="btn btn-secondary svc-end-live btn-small" onclick="svcEndLive()">End Service</button>
+    </div>
+
+    <!-- Crossfade Settings -->
+    <div class="setup-card" style="margin-bottom:1rem;">
+      <h3>↔ Song Crossfade</h3>
+      <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;">
+        <div class="form-group" style="flex:0 0 auto;">
+          <label>Mode</label>
+          <select id="xfadeMode" onchange="crossfadeMode=this.value;saveCrossfadeSettings();" style="min-width:130px;">
+            <option value="manual">Manual</option>
+            <option value="auto">Automatic</option>
+          </select>
+        </div>
+        <div class="form-group" style="flex:0 0 auto;">
+          <label>Fade Duration</label>
+          <div style="display:flex;align-items:center;gap:.5rem;">
+            <input type="range" min="1" max="8" step="0.5" value="3" id="xfadeDur"
+              oninput="crossfadeDuration=parseFloat(this.value);saveCrossfadeSettings();document.getElementById('xfadeDurLabel').textContent=this.value+'s';"
+              style="width:100px;">
+            <span id="xfadeDurLabel" style="font-family:'Space Mono',monospace;font-size:.85rem;color:var(--accent);min-width:28px;">3s</span>
+          </div>
+        </div>
+        <div style="font-size:.8rem;color:var(--text-dim);max-width:320px;line-height:1.5;">
+          <strong style="color:var(--text-secondary);">Auto:</strong> songs fade out/in automatically when advancing cues.<br>
+          <strong style="color:var(--text-secondary);">Manual:</strong> use the <em>Crossfade →</em> button on the Perform page to trigger a fade.
+        </div>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="svc-toolbar">
+      <h2>Order of Service</h2>
+      <button class="btn btn-secondary btn-small" onclick="svcClear()" title="Clear all cues">🗑 Clear</button>
+      <button class="btn btn-primary svc-go-live" id="svcGoLiveBtn" onclick="svcGoLive()">🔴 Go Live — Start Service</button>
+    </div>
+
+    <!-- Cue list -->
+    <div class="svc-cue-list" id="svcCueList"></div>
+
+    <!-- Add cue buttons -->
+    <div class="svc-add-row">
+      <button class="add-btn" onclick="svcAddSong()">🎵 + Song</button>
+      <button class="add-btn" onclick="svcAddLoop()">🔁 + Background Pad</button>
+      <button class="add-btn" onclick="svcAddMoment()">📋 + Moment / Note</button>
+    </div>
+
+    <p style="font-size:.75rem;color:var(--text-dim);margin-top:1rem">
+      Tip: Build your full service order here, then hit <strong style="color:var(--red)">Go Live</strong> when service starts. 
+      Use <strong>Next / Prev</strong> buttons (or your MIDI controller) to move through cues.
+    </p>
+  </div></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+//  VWB v3 — Fixed section sync, setup playback, flash
+//  © 2025 Hollins Musical Productions International
+// ═══════════════════════════════════════════════════
+
+const AC = new (window.AudioContext || window.webkitAudioContext)();
+const mGain = AC.createGain();
+mGain.gain.value = 0.8;
+mGain.connect(AC.destination);
+
+// STATE
+let playing = false;
+let startAt = 0;   // AC.currentTime when playback began
+let pauseAt = 0;   // offset into song when paused
+let curSec = -1;    // currently active section index (-1 = none)
+let qSec = -1;     // queued section to jump on next downbeat
+let afId = null;
+let rMode = 'stereo';
+
+// CROSSFADE
+let crossfadeMode = 'manual';   // 'auto' or 'manual'
+let crossfadeDuration = 3;      // seconds
+let crossfading = false;
+let maxCh = 2;
+try { maxCh = AC.destination.maxChannelCount || 2; } catch(e) {}
+
+// STEMS — 5 dedicated channels (Piano stereo, Bass mono, Guitar mono, Organ mono, Loop mono)
+const SK = ['piano','bass','guitar','organ','loop'];
+const SL = { piano:'\u{1F3B9} Piano', bass:'\u{1F3B8} Bass', guitar:'\u{1F3B8} Guitar', organ:'\u{1F3B5} Organ', loop:'\u{1F501} Loop' };
+const SC = { piano:'#40E0D0', bass:'#ff8844', guitar:'#44dd88', organ:'#aa66ff', loop:'#66ccff' };
+const S = {};
+SK.forEach(k => {
+  const g = AC.createGain(); g.gain.value = 0.8; g.connect(mGain);
+  S[k] = { buf:null, src:null, gn:g, muted:false, solo:false, vol:80, fn:'', out:0, storedPath:'' };
+});
+
+// AUX SUB-MIXER — multiple tracks summed to stereo Ch 7-8
+// Each aux track: { buf, src, gn (individual gain), vol, fn, muted }
+const auxMasterGain = AC.createGain();
+auxMasterGain.gain.value = 0.8;
+auxMasterGain.connect(mGain);
+let auxTracks = [];  // array of { buf, src, gn, vol, fn, muted }
+let auxMasterVol = 80;
+let auxMasterMuted = false;
+let auxSolo = false;
+
+// Fixed 8-channel routing map (used in multi-out mode)
+// Piano = Ch 1-2 (stereo), Bass = Ch 3 (mono), Guitar = Ch 4 (mono),
+// Organ = Ch 5 (mono), Loop = Ch 6 (mono), Aux = Ch 7-8 (stereo)
+const ROUTE_MAP = {
+  piano: { ch: [0, 1], stereo: true },   // Ch 1-2
+  bass:  { ch: [2], stereo: false },      // Ch 3
+  guitar:{ ch: [3], stereo: false },      // Ch 4
+  organ: { ch: [4], stereo: false },      // Ch 5
+  loop:  { ch: [5], stereo: false },      // Ch 6
+  aux:   { ch: [6, 7], stereo: true }     // Ch 7-8
+};
+
+function addAuxTrackFromPath(filePath, fileName) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const result = await window.vwb.readFileBuffer(filePath);
+      if (!result.success) { alert('Could not read: ' + fileName); reject(result.error); return; }
+      const buf = await AC.decodeAudioData(result.buffer);
+      const gn = AC.createGain();
+      gn.gain.value = 0.8;
+      gn.connect(auxMasterGain);
+      const track = { buf, src:null, gn, vol:80, fn:fileName, muted:false, storedPath:filePath };
+      auxTracks.push(track);
+      renderAuxPanel(); renderMixer(); updMInfo();
+      resolve(track);
+    } catch(e) { alert('Could not load ' + fileName); reject(e); }
+  });
+}
+
+async function pickAndAddAuxTracks() {
+  const result = await window.vwb.pickFile({ multi: true });
+  if (result.canceled || !result.filePaths.length) return;
+  for (const filePath of result.filePaths) {
+    const fileName = filePath.split('/').pop();
+    const stored = await window.vwb.copyToStems(filePath);
+    if (stored.success) {
+      await addAuxTrackFromPath(stored.storedPath, fileName);
+    }
+  }
+}
+
+// Legacy compatibility
+async function addAuxTrack(filePath, fileName) {
+  return addAuxTrackFromPath(filePath, fileName);
+}
+
+function removeAuxTrack(idx) {
+  if (idx < 0 || idx >= auxTracks.length) return;
+  const t = auxTracks[idx];
+  if (t.src) { try{t.src.stop();}catch(e){} try{t.src.disconnect();}catch(e){} }
+  try { t.gn.disconnect(); } catch(e) {}
+  auxTracks.splice(idx, 1);
+  renderAuxPanel(); renderMixer(); updMInfo();
+}
+
+function setAuxTrackVol(idx, v) {
+  if (idx < 0 || idx >= auxTracks.length) return;
+  auxTracks[idx].vol = parseInt(v);
+  applyAuxGains();
+}
+
+function toggleAuxTrackMute(idx) {
+  if (idx < 0 || idx >= auxTracks.length) return;
+  auxTracks[idx].muted = !auxTracks[idx].muted;
+  applyAuxGains();
+  renderMixer();
+}
+
+function setAuxMasterVolFn(v) {
+  auxMasterVol = parseInt(v);
+  applyAuxGains();
+}
+
+function applyAuxGains() {
+  const anySolo = SK.some(k => S[k].solo) || auxSolo;
+  // Master aux mute/solo
+  let masterOn = true;
+  if (auxMasterMuted) masterOn = false;
+  if (anySolo && !auxSolo) masterOn = false;
+  auxMasterGain.gain.value = masterOn ? auxMasterVol / 100 : 0;
+  // Individual track gains
+  auxTracks.forEach(t => {
+    t.gn.gain.value = t.muted ? 0 : t.vol / 100;
+  });
+}
+
+function toggleAuxMute() {
+  auxMasterMuted = !auxMasterMuted;
+  applyAuxGains();
+  renderMixer();
+}
+
+function toggleAuxSolo() {
+  auxSolo = !auxSolo;
+  applySoloMute();
+  renderMixer();
+}
+
+let song = { title:'', tempo:72, ts:'4/4', secs:[] };
+let setlist = [];
+
+// ═══════ TIMING MATH ═══════
+function bpb() { const t = song.ts; return t==='3/4'?3 : t==='6/8'?6 : t==='12/8'?12 : 4; }
+function secPerBeat() { return 60 / (song.tempo || 72); }
+function secPerBar() { return secPerBeat() * bpb(); }
+function bar2time(bar) { return (bar - 1) * secPerBar(); }     // bar 1 = time 0
+function time2bar(t) { return Math.floor(t / secPerBar()) + 1; }
+function beatInBar(t) { const spb = secPerBar(); return Math.floor(((t % spb) + 0.0005) / secPerBeat()) % bpb(); }
+function totalBars() { const d = getDur(); return d > 0 ? Math.ceil(d / secPerBar()) : 0; }
+function getDur() { let mx = 0; SK.forEach(k => { if (S[k].buf) mx = Math.max(mx, S[k].buf.duration); }); auxTracks.forEach(t => { if (t.buf) mx = Math.max(mx, t.buf.duration); }); return mx; }
+function stemCount() { return SK.filter(k => S[k].buf).length + auxTracks.filter(t => t.buf).length; }
+function fmt(s) { const m = Math.floor(s/60), sc = Math.floor(s%60); return m + ':' + (sc<10?'0':'') + sc; }
+
+function updMInfo() {
+  const d = getDur(), bars = totalBars(), spb = secPerBar();
+  document.getElementById('measureInfo').textContent =
+    d > 0 ? 'Song: ' + fmt(d) + ' | ' + bars + ' measures | 1 bar = ' + spb.toFixed(2) + 's'
+           : 'At ' + song.tempo + ' BPM in ' + song.ts + ', 1 bar = ' + spb.toFixed(2) + 's';
+}
+
+// ═══════ AUDIO LOADING (Desktop — file system persistence) ═══════
+// Load stem from a file path (stored on disk)
+async function loadStemFromPath(k, filePath, fileName) {
+  try {
+    const result = await window.vwb.readFileBuffer(filePath);
+    if (!result.success) { console.error('Could not read stem:', result.error); return false; }
+    S[k].buf = await AC.decodeAudioData(result.buffer);
+    S[k].fn = fileName || filePath.split('/').pop();
+    S[k].storedPath = filePath;
+    renderStems(); updMInfo();
+    return true;
+  } catch(e) { console.error('Could not decode stem:', e); return false; }
+}
+
+// Pick and load a stem via native OS dialog
+async function pickAndLoadStem(k) {
+  const result = await window.vwb.pickFile({ multi: false });
+  if (result.canceled || !result.filePaths.length) return;
+  const filePath = result.filePaths[0];
+  const fileName = filePath.split('/').pop();
+  const stored = await window.vwb.copyToStems(filePath);
+  if (stored.success) {
+    await loadStemFromPath(k, stored.storedPath, fileName);
+  }
+}
+
+// Legacy loadStem for compatibility (used by reload panel)
+async function loadStem(k, filePath, fileName) {
+  return loadStemFromPath(k, filePath, fileName);
+}
+
+function rmStem(k) {
+  S[k].buf = null; S[k].fn = ''; S[k].storedPath = '';
+  if (S[k].src) { try{S[k].src.stop();}catch(e){} S[k].src = null; }
+  renderStems(); updMInfo();
+}
+
+// ═══════ PLAYBACK ENGINE (FIXED) ═══════
+function togglePlay() {
+  if (AC.state === 'suspended') AC.resume();
+  playing ? doPause() : doPlay();
+}
+
+function doPlay() {
+  if (!stemCount()) { alert('No stems loaded. Load audio files in Song Setup first.'); return; }
+  killSources(); // ensure clean slate
+  SK.forEach(k => {
+    if (!S[k].buf) return;
+    const src = AC.createBufferSource();
+    src.buffer = S[k].buf;
+    src.connect(S[k].gn);
+    src.start(0, pauseAt);
+    S[k].src = src;
+  });
+  auxTracks.forEach(t => {
+    if (!t.buf) return;
+    const src = AC.createBufferSource();
+    src.buffer = t.buf;
+    src.connect(t.gn);
+    src.start(0, pauseAt);
+    t.src = src;
+  });
+  startAt = AC.currentTime - pauseAt;
+  playing = true;
+  updTransUI();
+  applySoloMute();
+  runLoop();
+}
+
+function doPause() {
+  if (!playing) return;
+  cancelPendingJump();
+  pauseAt = AC.currentTime - startAt;
+  killSources();
+  playing = false;
+  updTransUI();
+  cancelAnim();
+}
+
+function doStop() {
+  cancelPendingJump();
+  killSources();
+  playing = false;
+  pauseAt = 0;
+  qSec = -1;
+  curSec = -1;
+  secLoopJumping = false;
+  updTransUI();
+  updDisplays(0);
+  cancelAnim();
+}
+
+function killSources() {
+  SK.forEach(k => {
+    if (S[k].src) {
+      try { S[k].src.stop(); } catch(e) {}
+      try { S[k].src.disconnect(); } catch(e) {}
+      S[k].src = null;
+    }
+  });
+  auxTracks.forEach(t => {
+    if (t.src) {
+      try { t.src.stop(); } catch(e) {}
+      try { t.src.disconnect(); } catch(e) {}
+      t.src = null;
+    }
+  });
+}
+
+function cancelAnim() { if (afId) { cancelAnimationFrame(afId); afId = null; } }
+function getCurTime() { return playing ? AC.currentTime - startAt : pauseAt; }
+
+// FIXED: Seamless jump — doesn't lose playback
+function jumpTo(targetTime) {
+  targetTime = Math.max(0, Math.min(targetTime, getDur()));
+  if (playing) {
+    // Stop current sources
+    killSources();
+    // Immediately restart from new position
+    pauseAt = targetTime;
+    SK.forEach(k => {
+      if (!S[k].buf) return;
+      const src = AC.createBufferSource();
+      src.buffer = S[k].buf;
+      src.connect(S[k].gn);
+      src.start(0, targetTime);
+      S[k].src = src;
+    });
+    auxTracks.forEach(t => {
+      if (!t.buf) return;
+      const src = AC.createBufferSource();
+      src.buffer = t.buf;
+      src.connect(t.gn);
+      src.start(0, targetTime);
+      t.src = src;
+    });
+    startAt = AC.currentTime - targetTime;
+    applySoloMute();
+  } else {
+    pauseAt = targetTime;
+    updDisplays(targetTime);
+  }
+}
+
+// ═══════ SAMPLE-ACCURATE SECTION JUMPING ═══════
+let pendingJumpTimer = null;   // timeout ID for scheduled jump
+let pendingJumpACTime = 0;     // the AudioContext time of the scheduled downbeat
+let pendingNewSources = [];    // pre-created sources waiting to start
+let pendingNewAuxSources = []; // pre-created aux sources waiting to start
+
+function findSectionAtTime(t) {
+  const bar = time2bar(t);
+  for (let i = song.secs.length - 1; i >= 0; i--) {
+    if (bar >= song.secs[i].sb) return i;
+  }
+  return -1;
+}
+
+function queueSection(idx) {
+  if (idx < 0 || idx >= song.secs.length) return;
+
+  // Cancel any previously pending jump
+  cancelPendingJump();
+
+  if (!playing) {
+    // Jump immediately when stopped
+    curSec = idx;
+    jumpTo(bar2time(song.secs[idx].sb));
+    refreshAllSectionUI();
+    return;
+  }
+
+  // ── SAMPLE-ACCURATE SCHEDULING ──
+  // Calculate current song position
+  const now = AC.currentTime;
+  const songPos = now - startAt;
+
+  // Find the next downbeat in song-time
+  const spb = secPerBar();
+  const currentBarPos = songPos % spb;
+  let timeUntilDownbeat = spb - currentBarPos;
+
+  // If we're very close to a downbeat (within 30ms), use the NEXT one
+  // to give us enough scheduling headroom
+  if (timeUntilDownbeat < 0.03) {
+    timeUntilDownbeat += spb;
+  }
+
+  // The exact AudioContext time when the downbeat hits
+  const downbeatACTime = now + timeUntilDownbeat;
+
+  // The target song offset to jump to
+  const targetOffset = bar2time(song.secs[idx].sb);
+
+  // Schedule old sources to stop exactly on the downbeat
+  SK.forEach(k => {
+    if (S[k].src) {
+      try { S[k].src.stop(downbeatACTime); } catch(e) {}
+    }
+  });
+  auxTracks.forEach(t => {
+    if (t.src) {
+      try { t.src.stop(downbeatACTime); } catch(e) {}
+    }
+  });
+
+  // Pre-create new sources and schedule them to start on the downbeat
+  const newSources = {};
+  SK.forEach(k => {
+    if (!S[k].buf) return;
+    const src = AC.createBufferSource();
+    src.buffer = S[k].buf;
+    src.connect(S[k].gn);
+    src.start(downbeatACTime, targetOffset);
+    newSources[k] = src;
+  });
+  const newAuxSources = [];
+  auxTracks.forEach((t, i) => {
+    if (!t.buf) return;
+    const src = AC.createBufferSource();
+    src.buffer = t.buf;
+    src.connect(t.gn);
+    src.start(downbeatACTime, targetOffset);
+    newAuxSources[i] = src;
+  });
+
+  pendingNewSources = newSources;
+  pendingNewAuxSources = newAuxSources;
+  pendingJumpACTime = downbeatACTime;
+
+  // Mark as queued for UI
+  qSec = idx;
+  refreshAllSectionUI();
+
+  // Set a timer to update state right when the jump happens
+  const msUntilJump = timeUntilDownbeat * 1000;
+  pendingJumpTimer = setTimeout(() => {
+    // Swap stem sources
+    SK.forEach(k => {
+      // Old source already stopped via scheduled stop
+      if (S[k].src) {
+        try { S[k].src.disconnect(); } catch(e) {}
+      }
+      if (newSources[k]) {
+        S[k].src = newSources[k];
+      }
+    });
+    // Swap aux sources
+    auxTracks.forEach((t, i) => {
+      if (t.src) {
+        try { t.src.disconnect(); } catch(e) {}
+      }
+      if (newAuxSources[i]) {
+        t.src = newAuxSources[i];
+      }
+    });
+
+    // Update timing state
+    startAt = downbeatACTime - targetOffset;
+    curSec = idx;
+    qSec = -1;
+    pendingJumpTimer = null;
+    pendingNewSources = [];
+    pendingNewAuxSources = [];
+    applySoloMute();
+    refreshAllSectionUI();
+  }, Math.max(0, msUntilJump - 5)); // fire 5ms early so UI catches up
+}
+
+function cancelPendingJump() {
+  if (pendingJumpTimer) {
+    clearTimeout(pendingJumpTimer);
+    pendingJumpTimer = null;
+  }
+  // If there are pre-scheduled sources that haven't started yet, cancel them
+  if (pendingNewSources && typeof pendingNewSources === 'object') {
+    Object.values(pendingNewSources).forEach(src => {
+      try { src.stop(0); } catch(e) {}
+      try { src.disconnect(); } catch(e) {}
+    });
+    pendingNewSources = [];
+  }
+  if (pendingNewAuxSources && pendingNewAuxSources.length) {
+    pendingNewAuxSources.forEach(src => {
+      if (src) { try { src.stop(0); } catch(e) {} try { src.disconnect(); } catch(e) {} }
+    });
+    pendingNewAuxSources = [];
+  }
+  qSec = -1;
+}
+
+// checkQueue is no longer needed for timing — the scheduling is pre-calculated
+// But we keep it as a no-op so the animation loop doesn't break
+function checkQueue(t) {
+  // Scheduling is handled by queueSection() directly
+  // This function is intentionally empty now
+}
+
+function autoDetectSection(t) {
+  // Don't auto-detect while a jump is scheduled — let the jump handle it
+  if (qSec >= 0 || pendingJumpTimer) return;
+  const newSec = findSectionAtTime(t);
+  if (newSec !== curSec) {
+    curSec = newSec;
+    refreshAllSectionUI();
+  }
+}
+
+// ═══════ UI REFRESH (both pages at once) ═══════
+function refreshAllSectionUI() {
+  renderPerfSections();
+  highlightSetupSections();
+}
+
+// Only toggles CSS classes — doesn't rebuild inputs (so user doesn't lose focus)
+function highlightSetupSections() {
+  const rows = document.querySelectorAll('#secList .sec-row');
+  rows.forEach((row, i) => {
+    row.classList.toggle('now-playing', playing && i === curSec);
+  });
+}
+
+function updDisplays(t) {
+  const bar = time2bar(t);
+  const beat = beatInBar(t);
+  const d = getDur();
+  const pct = d > 0 ? (t / d) * 100 : 0;
+  const bp = bpb();
+
+  // Perform view
+  const el = (id) => document.getElementById(id);
+  if (el('curMeas')) el('curMeas').textContent = bar;
+  if (el('tlBar1')) el('tlBar1').textContent = 'Bar ' + bar;
+  if (el('tlTime')) el('tlTime').textContent = fmt(t);
+  if (el('tlProg')) el('tlProg').style.width = pct + '%';
+
+  // Perform beat dots
+  document.querySelectorAll('#beatInd .b-dot').forEach((dot, i) => {
+    dot.classList.remove('act', 'db');
+    dot.style.display = i < bp ? '' : 'none';
+    if (i === beat) dot.classList.add(i === 0 ? 'db' : 'act');
+  });
+
+  // Timeline section blocks
+  document.querySelectorAll('.tl-sec').forEach((e, i) => e.classList.toggle('on', i === curSec));
+
+  // Setup mini-transport
+  if (el('mtMeas')) el('mtMeas').textContent = 'Bar ' + bar;
+  if (el('mtTime')) el('mtTime').textContent = fmt(t);
+  document.querySelectorAll('#mtBeat .mt-bd').forEach((dot, i) => {
+    dot.classList.remove('act', 'db');
+    dot.style.display = i < bp ? '' : 'none';
+    if (i === beat) dot.classList.add(i === 0 ? 'db' : 'act');
+  });
+
+  // Highlight setup sections too
+  highlightSetupSections();
+}
+
+function updTransUI() {
+  const setBtn = (id, isPlaying) => {
+    const b = document.getElementById(id);
+    if (!b) return;
+    b.classList.toggle('on', isPlaying);
+    b.innerHTML = isPlaying ? '\u23F8' : '\u25B6';
+  };
+  setBtn('playBtn', playing);
+  setBtn('mtPlay', playing);
+}
+
+// ═══════ ANIMATION LOOP ═══════
+function runLoop() {
+  function tick() {
+    if (!playing) return;
+    const t = getCurTime();
+    if (t >= getDur()) { doStop(); return; }
+    checkQueue(t);
+    if (qSec < 0) autoDetectSection(t);
+    checkSectionLoop(t);
+    updDisplays(t);
+    afId = requestAnimationFrame(tick);
+  }
+  cancelAnim();
+  afId = requestAnimationFrame(tick);
+}
+
+// ═══════ SOLO / MUTE ═══════
+function toggleMute(k) { S[k].muted = !S[k].muted; applySoloMute(); renderMixer(); }
+function toggleSolo(k) { S[k].solo = !S[k].solo; applySoloMute(); renderMixer(); }
+function applySoloMute() {
+  const anySolo = SK.some(k => S[k].solo) || auxSolo;
+  SK.forEach(k => {
+    let on = true;
+    if (S[k].muted) on = false;
+    if (anySolo && !S[k].solo) on = false;
+    S[k].gn.gain.value = on ? S[k].vol / 100 : 0;
+  });
+  applyAuxGains();
+}
+function setVol(k, v) { S[k].vol = parseInt(v); applySoloMute(); }
+function setMasterVol(v) { mGain.gain.value = v / 100; }
+function seekTL(e) {
+  const r = document.getElementById('tlBar').getBoundingClientRect();
+  jumpTo(((e.clientX - r.left) / r.width) * getDur());
+}
+
+// ═══════ ROUTING ═══════
+function setRoute(m) {
+  rMode = m;
+  document.getElementById('rtStereo').classList.toggle('on', m === 'stereo');
+  document.getElementById('rtMulti').classList.toggle('on', m === 'multi');
+  rebuildRoute();
+  renderRouting();
+}
+function rebuildRoute() {
+  // Disconnect all stems and aux master
+  SK.forEach(k => { try { S[k].gn.disconnect(); } catch(e) {} });
+  try { auxMasterGain.disconnect(); } catch(e) {}
+
+  if (rMode === 'stereo') {
+    SK.forEach(k => S[k].gn.connect(mGain));
+    auxMasterGain.connect(mGain);
+    return;
+  }
+
+  // Multi-out: fixed 8-channel layout
+  if (maxCh < 8) { alert('Need at least 8 output channels. Connect your audio interface and refresh.'); setRoute('stereo'); return; }
+  try {
+    AC.destination.channelCount = 8;
+    AC.destination.channelCountMode = 'explicit';
+    AC.destination.channelInterpretation = 'discrete';
+  } catch(e) {}
+
+  const merger = AC.createChannelMerger(8);
+  merger.connect(AC.destination);
+
+  // Piano → Ch 1-2 (stereo)
+  const pianoSplit = AC.createChannelSplitter(2);
+  S.piano.gn.connect(pianoSplit);
+  pianoSplit.connect(merger, 0, 0);  // L → Ch 1
+  pianoSplit.connect(merger, 1, 1);  // R → Ch 2
+
+  // Bass → Ch 3 (mono: send to single channel)
+  const bassMono = AC.createGain();
+  S.bass.gn.connect(bassMono);
+  bassMono.connect(merger, 0, 2);
+
+  // Guitar → Ch 4 (mono)
+  const guitarMono = AC.createGain();
+  S.guitar.gn.connect(guitarMono);
+  guitarMono.connect(merger, 0, 3);
+
+  // Organ → Ch 5 (mono)
+  const organMono = AC.createGain();
+  S.organ.gn.connect(organMono);
+  organMono.connect(merger, 0, 4);
+
+  // Loop → Ch 6 (mono)
+  const loopMono = AC.createGain();
+  S.loop.gn.connect(loopMono);
+  loopMono.connect(merger, 0, 5);
+
+  // Aux sub-mixer → Ch 7-8 (stereo)
+  const auxSplit = AC.createChannelSplitter(2);
+  auxMasterGain.connect(auxSplit);
+  auxSplit.connect(merger, 0, 6);  // L → Ch 7
+  auxSplit.connect(merger, 1, 7);  // R → Ch 8
+}
+function renderRouting() {
+  const el = document.getElementById('rtPanel');
+  if (rMode === 'stereo') {
+    el.innerHTML = '<p style="font-size:.8rem;color:var(--text-dim)">All instruments and aux tracks to stereo output (Ch 1-2).</p>';
+    return;
+  }
+  let h = '<p style="font-size:.8rem;color:var(--green);margin-bottom:.75rem">Fixed 8-channel routing active</p>';
+  h += '<div class="rt-grid">';
+  const routeInfo = [
+    { name:'Piano', color:SC.piano, ch:'Ch 1-2', mode:'Stereo' },
+    { name:'Bass', color:SC.bass, ch:'Ch 3', mode:'Mono' },
+    { name:'Guitar', color:SC.guitar, ch:'Ch 4', mode:'Mono' },
+    { name:'Organ', color:SC.organ, ch:'Ch 5', mode:'Mono' },
+    { name:'Loop', color:SC.loop, ch:'Ch 6', mode:'Mono' },
+    { name:'Aux Mix', color:'#f0c040', ch:'Ch 7-8', mode:'Stereo' }
+  ];
+  routeInfo.forEach(r => {
+    h += '<div class="rt-row"><span class="rt-nm" style="color:'+r.color+'">'+r.name+'</span><span style="font-size:.75rem;color:var(--text-dim)">\u2192</span><span style="font-size:.85rem;color:var(--text-secondary);padding:.35rem .5rem">'+r.ch+' ('+r.mode+')</span></div>';
+  });
+  el.innerHTML = h + '</div>';
+}
+
+// ═══════ RENDER FUNCTIONS ═══════
+function goView(v) {
+  document.querySelectorAll('.view').forEach(e => e.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('view-' + v).classList.add('active');
+  const names = { setup:'Song Setup', perform:'Perform', setlist:'Setlist' };
+  document.querySelectorAll('.nav-tab').forEach(t => { if (t.textContent === names[v]) t.classList.add('active'); });
+  if (v === 'perform') refreshPerfView();
+  if (v === 'setlist') renderSetlist();
+  if (v === 'setup') initMiniBeats();
+  if (v === 'service') { renderSvcCues(); const tab = document.getElementById('svcNavTab'); if (tab) tab.classList.add('active'); }
+}
+
+function renderStems() {
+  const g = document.getElementById('stemsGrid'); g.innerHTML = '';
+  SK.forEach(k => {
+    const ld = !!S[k].buf;
+    g.innerHTML += '<div class="stem-slot ' + (ld?'loaded':'') + '" onclick="if(!event.target.classList.contains(\'s-rm\'))pickAndLoadStem(\'' + k + '\')"><button class="s-rm" onclick="event.stopPropagation();rmStem(\'' + k + '\')">\u00d7</button><div class="s-icon">' + SL[k].split(' ')[0] + '</div><div class="s-label">' + SL[k].split(' ')[1] + '</div>' + (ld ? '<div class="s-file">' + S[k].fn + '</div><div class="s-status ok">\u2713 Loaded</div>' : '<div class="s-status">Click to load</div>') + '</div>';
+  });
+}
+
+function renderAuxPanel() {
+  const c = document.getElementById('auxTracksList');
+  if (!c) return;
+  c.innerHTML = '';
+  if (auxTracks.length === 0) {
+    c.innerHTML = '<p style="font-size:.8rem;color:var(--text-dim);font-style:italic;padding:.5rem 0">No aux tracks loaded yet. Click \"+ Add Aux Track\" to add drums, strings, pads, etc.</p>';
+    return;
+  }
+  auxTracks.forEach((t, i) => {
+    c.innerHTML += '<div class="stem-slot loaded" style="border-color:#f0c040;background:rgba(240,192,64,.05);flex-direction:row;justify-content:flex-start;gap:.75rem;min-height:50px;padding:.6rem 1rem">' +
+      '<span style="font-size:1.1rem">\u{1F3B6}</span>' +
+      '<span style="font-size:.85rem;font-weight:500;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="' + t.fn + '">' + t.fn + '</span>' +
+      '<div style="display:flex;align-items:center;gap:.4rem"><span style="font-size:.65rem;color:var(--text-dim)">Vol</span><input type="range" min="0" max="100" value="' + t.vol + '" style="-webkit-appearance:none;width:60px;height:3px;border-radius:2px;background:var(--bg-primary)" oninput="setAuxTrackVol(' + i + ',this.value)"></div>' +
+      '<span style="font-size:.7rem;color:var(--text-dim);font-family:\'Space Mono\',monospace">' + fmt(t.buf.duration) + '</span>' +
+      '<button class="s-rm" style="position:static;display:block" onclick="event.stopPropagation();removeAuxTrack(' + i + ')">\u00d7</button>' +
+      '</div>';
+  });
+}
+
+// pickAndAddAuxTracks() handles file input via native dialog (defined above)
+
+function renderSections() {
+  const l = document.getElementById('secList'); l.innerHTML = '';
+  song.secs.forEach((s, i) => {
+    const isNow = playing && i === curSec;
+    l.innerHTML += '<div class="sec-row' + (isNow ? ' now-playing' : '') + '" data-idx="' + i + '"><span class="sec-n">' + (i+1) + '</span><select onchange="song.secs[' + i + '].type=this.value">' + ['Intro','Verse','Pre-Chorus','Chorus','Bridge','Vamp','Altar Call','Outro','Interlude','Tag'].map(t => '<option' + (s.type===t?' selected':'') + '>' + t + '</option>').join('') + '</select><input type="text" value="' + (s.label||'') + '" placeholder="Optional label" onchange="song.secs[' + i + '].label=this.value"><input type="number" class="m-input" value="' + s.sb + '" min="1" onchange="song.secs[' + i + '].sb=parseInt(this.value)"><input type="number" class="m-input" value="' + s.eb + '" min="1" onchange="song.secs[' + i + '].eb=parseInt(this.value)"><button class="btn-rm" onclick="song.secs.splice(' + i + ',1);renderSections();">\u00d7</button></div>';
+  });
+}
+
+function addSec() {
+  const last = song.secs.length > 0 ? song.secs[song.secs.length-1].eb : 0;
+  song.secs.push({ type:'Verse', label:'', sb:last+1, eb:last+8 });
+  renderSections();
+}
+
+function initMiniBeats() {
+  const c = document.getElementById('mtBeat'); c.innerHTML = '';
+  for (let i = 0; i < bpb(); i++) c.innerHTML += '<div class="mt-bd"></div>';
+}
+
+function refreshPerfView() {
+  document.getElementById('pTitle').textContent = song.title || 'Untitled';
+  document.getElementById('pTempo').textContent = (song.tempo||72) + ' BPM';
+  document.getElementById('pTS').textContent = song.ts || '4/4';
+  document.getElementById('pStems').textContent = stemCount() + ' tracks' + (auxTracks.length > 0 ? ' (' + auxTracks.length + ' aux)' : '');
+  document.getElementById('pRoute').textContent = rMode === 'multi' ? '8-Ch Multi-Out' : 'Stereo';
+  document.getElementById('tlTotal').textContent = fmt(getDur());
+  const bi = document.getElementById('beatInd'); bi.innerHTML = '';
+  for (let i = 0; i < bpb(); i++) bi.innerHTML += '<div class="b-dot"></div>';
+  renderPerfSections();
+  renderTimeline();
+  renderMixer();
+  updatePerfLoopUI();
+  updateLoopBtns();
+  updatePerfMidiUI();
+  updateMidiBtns();
+  const slb = document.getElementById('secLoopBtn');
+  if (slb) slb.classList.toggle('on', secLoopOn);
+}
+
+function renderTimeline() {
+  const c = document.getElementById('tlSecs'); c.innerHTML = '';
+  const d = getDur(); if (d <= 0 || !song.secs.length) return;
+  song.secs.forEach((s, i) => {
+    const st = bar2time(s.sb), et = bar2time(s.eb + 1);
+    const wp = ((et - st) / d) * 100;
+    c.innerHTML += '<div class="tl-sec' + (i===curSec?' on':'') + '" style="width:' + Math.min(wp,100) + '%;position:relative" onclick="event.stopPropagation();queueSection(' + i + ')">' + s.type + '</div>';
+  });
+}
+
+function renderPerfSections() {
+  const c = document.getElementById('pSecs'); c.innerHTML = '';
+  song.secs.forEach((s, i) => {
+    const a = i === curSec, q = i === qSec;
+    const loopInd = (a && secLoopOn) ? '<span class="sec-loop-indicator on">\u{1F501} LOOPING</span>' : '';
+    c.innerHTML += '<div class="p-sec' + (a?' act':'') + (q?' q':'') + '" onclick="queueSection(' + i + ')"><span class="s-hk">' + (i+1) + '</span><div class="s-inf"><h4>' + s.type + (s.label?' \u2014 '+s.label:'') + '</h4><div class="s-meas">Bars ' + s.sb + ' \u2013 ' + s.eb + ' ' + loopInd + '</div></div><div class="s-qlbl">NEXT \u25b6</div></div>';
+  });
+}
+
+function renderMixer() {
+  const c = document.getElementById('mixCh'); c.innerHTML = '';
+  // Main stems
+  SK.forEach(k => {
+    if (!S[k].buf) return;
+    const chLabel = rMode === 'multi' ? (ROUTE_MAP[k].stereo ? (ROUTE_MAP[k].ch[0]+1)+'-'+(ROUTE_MAP[k].ch[1]+1) : ''+(ROUTE_MAP[k].ch[0]+1)) : '1-2';
+    c.innerHTML += '<div class="mix-ch"><button class="cb' + (S[k].muted?' mt':'') + '" onclick="toggleMute(\'' + k + '\')">M</button><button class="cb' + (S[k].solo?' sl':'') + '" onclick="toggleSolo(\'' + k + '\')">S</button><span class="cn" style="color:' + SC[k] + '">' + SL[k].split(' ')[1] + '</span><input type="range" class="cs" min="0" max="100" value="' + S[k].vol + '" oninput="setVol(\'' + k + '\',this.value);this.parentElement.querySelector(\'.cl\').textContent=this.value+\'%\'"><span class="cl">' + S[k].vol + '%</span><span class="co">' + chLabel + '</span></div>';
+  });
+  // Aux sub-mixer section
+  if (auxTracks.length > 0) {
+    const auxChLabel = rMode === 'multi' ? '7-8' : '1-2';
+    // Aux master strip
+    c.innerHTML += '<div style="margin-top:.5rem;padding-top:.5rem;border-top:1px solid var(--border)"><div class="mix-title" style="color:#f0c040;margin-bottom:.3rem;font-size:.7rem">\u{1F3B6} Aux Sub-Mixer</div></div>';
+    c.innerHTML += '<div class="mix-ch" style="border:1px solid rgba(240,192,64,.2);border-radius:8px"><button class="cb' + (auxMasterMuted?' mt':'') + '" onclick="toggleAuxMute()">M</button><button class="cb' + (auxSolo?' sl':'') + '" onclick="toggleAuxSolo()">S</button><span class="cn" style="color:#f0c040;font-weight:600">AUX</span><input type="range" class="cs" min="0" max="100" value="' + auxMasterVol + '" oninput="setAuxMasterVolFn(this.value);this.parentElement.querySelector(\'.cl\').textContent=this.value+\'%\'"><span class="cl">' + auxMasterVol + '%</span><span class="co">' + auxChLabel + '</span></div>';
+    // Individual aux tracks
+    auxTracks.forEach((t, i) => {
+      const shortName = t.fn.length > 12 ? t.fn.substring(0,12)+'…' : t.fn;
+      c.innerHTML += '<div class="mix-ch" style="padding-left:1.5rem;opacity:.85"><button class="cb' + (t.muted?' mt':'') + '" onclick="toggleAuxTrackMute(' + i + ')">M</button><span class="cn" style="color:#f0c040;font-size:.7rem" title="' + t.fn + '">' + shortName + '</span><input type="range" class="cs" min="0" max="100" value="' + t.vol + '" oninput="setAuxTrackVol(' + i + ',this.value);this.parentElement.querySelector(\'.cl\').textContent=this.value+\'%\'"><span class="cl">' + t.vol + '%</span></div>';
+    });
+  }
+}
+
+// ═══════ SONG DATA ═══════
+async function saveSong() {
+  syncSongFromInputs();
+  const d = JSON.parse(JSON.stringify(song));
+  d.sfn = {}; d.spaths = {};
+  SK.forEach(k => {
+    if (S[k].fn) d.sfn[k] = S[k].fn;
+    if (S[k].storedPath) d.spaths[k] = S[k].storedPath;
+  });
+  d.auxfn = auxTracks.map(t => t.fn);
+  d.auxpaths = auxTracks.map(t => t.storedPath || '');
+  if (loopFileName) { d.loopfn = loopFileName; d.looppath = loopStoredPath || ''; }
+  if (midiFileName) { d.midifn = midiFileName; d.midipath = midiStoredPath || ''; }
+
+  const idx = setlist.findIndex(s => s.title === d.title);
+  if (idx >= 0) setlist[idx] = d; else setlist.push(d);
+  await window.vwb.saveSetlist(setlist);
+  showNotification('Saved: ' + d.title);
+}
+
+function showNotification(msg) {
+  const n = document.createElement('div');
+  n.style.cssText = 'position:fixed;top:1rem;right:1rem;background:var(--accent);color:var(--bg-primary);padding:.6rem 1.5rem;border-radius:8px;font-weight:500;font-size:.9rem;z-index:9999;animation:pulse 2s ease-in-out;pointer-events:none;';
+  n.textContent = msg;
+  document.body.appendChild(n);
+  setTimeout(() => n.remove(), 2500);
+}
+function syncSongFromInputs() {
+  song.title = document.getElementById('songTitle').value;
+  song.tempo = parseInt(document.getElementById('songTempo').value) || 72;
+  song.ts = document.getElementById('songTimeSig').value;
+}
+async function loadSongData(d) {
+  doStop();
+  // Clear existing stems and aux
+  SK.forEach(k => rmStem(k));
+  auxTracks.forEach(t => {
+    if (t.src) { try{t.src.stop();}catch(e){} }
+    try { t.gn.disconnect(); } catch(e) {}
+  });
+  auxTracks = [];
+  removeLoop();
+  if (midiEvents.length) removeMidi();
+
+  song = JSON.parse(JSON.stringify(d));
+  document.getElementById('songTitle').value = d.title;
+  document.getElementById('songTempo').value = d.tempo;
+  document.getElementById('songTimeSig').value = d.ts;
+  renderSections(); updMInfo(); renderStems(); renderAuxPanel();
+
+  // Auto-load stems from stored paths
+  const spaths = d.spaths || {};
+  const sfn = d.sfn || {};
+  let loadCount = 0;
+  for (const k of SK) {
+    if (spaths[k]) {
+      const readTest = await window.vwb.readFileBuffer(spaths[k]);
+      if (readTest.success) {
+        const ok = await loadStemFromPath(k, spaths[k], sfn[k]);
+        if (ok) loadCount++;
+      }
+    }
+  }
+
+  // Auto-load aux tracks from stored paths
+  const auxpaths = d.auxpaths || [];
+  const auxfn = d.auxfn || [];
+  for (let i = 0; i < auxpaths.length; i++) {
+    if (auxpaths[i]) {
+      const readTest = await window.vwb.readFileBuffer(auxpaths[i]);
+      if (readTest.success) {
+        await addAuxTrackFromPath(auxpaths[i], auxfn[i] || '');
+        loadCount++;
+      }
+    }
+  }
+
+  // Auto-load loop from stored path
+  if (d.looppath) {
+    const readTest = await window.vwb.readFileBuffer(d.looppath);
+    if (readTest.success) {
+      await loadLoopFromPath(d.looppath, d.loopfn || '');
+      loadCount++;
+    }
+  }
+
+  // Auto-load MIDI from stored path
+  if (d.midipath) {
+    const result = await window.vwb.readFileBuffer(d.midipath);
+    if (result.success) {
+      await loadMidiFromBuffer(result.buffer, d.midifn || '', d.midipath);
+      loadCount++;
+    }
+  }
+
+  showNotification('Loaded: ' + d.title + ' (' + loadCount + ' files)');
+  renderStems(); renderAuxPanel(); renderReloadPanel();
+}
+function goPerform() { syncSongFromInputs(); curSec = -1; qSec = -1; secLoopOn = false; goView('perform'); }
+function newSong() {
+  doStop();
+  song = { title:'', tempo:100, ts:'4/4', secs:[] };
+  document.getElementById('songTitle').value = '';
+  document.getElementById('songTempo').value = 100;
+  document.getElementById('songTimeSig').value = '4/4';
+  SK.forEach(k => rmStem(k));
+  // Clear aux tracks
+  auxTracks.forEach(t => {
+    if (t.src) { try{t.src.stop();}catch(e){} }
+    try { t.gn.disconnect(); } catch(e) {}
+  });
+  auxTracks = [];
+  renderAuxPanel();
+  renderSections(); updMInfo();
+}
+
+// ═══════ STEM RELOAD PANEL ═══════
+function renderReloadPanel() {
+  const wrap = document.getElementById('reloadWrap');
+  if (!wrap) return;
+  // Check if any stems are expected from the saved song
+  const sfn = song.sfn || {};
+  const auxfn = song.auxfn || [];
+  const neededStems = SK.filter(k => sfn[k] && !S[k].buf);
+  const neededAux = auxfn.filter(fn => !auxTracks.some(t => t.fn === fn));
+  const totalNeeded = neededStems.length + neededAux.length;
+
+  if (!Object.keys(sfn).length && !auxfn.length) {
+    wrap.innerHTML = '';
+    return;
+  }
+
+  let h = '<div class="reload-panel"><h4>Stem Files — ' + (song.title || 'Song') + '</h4>';
+  h += '<p style="font-size:.8rem;color:var(--text-dim);margin-bottom:.75rem">';
+  if (totalNeeded === 0) {
+    h += '<span style="color:var(--green)">All stems loaded and ready!</span>';
+  } else {
+    h += totalNeeded + ' file' + (totalNeeded>1?'s':'') + ' need reloading. Click "Browse" to load each file.';
+  }
+  h += '</p>';
+
+  SK.forEach(k => {
+    if (!sfn[k]) return;
+    const isLoaded = !!S[k].buf;
+    const icon = SL[k].split(' ')[0];
+    h += '<div class="reload-row">';
+    h += '<span class="rl-name" style="color:' + SC[k] + '">' + icon + ' ' + SL[k].split(' ')[1] + '</span>';
+    h += '<span class="rl-file">' + sfn[k] + '</span>';
+    if (isLoaded) {
+      h += '<span class="rl-status loaded">✓ Ready</span>';
+    } else {
+      h += '<span class="rl-status needed">Needed</span>';
+      h += '<button class="rl-btn" onclick="pickAndReloadStem(\'' + k + '\')">Browse</button>';
+    }
+    h += '</div>';
+  });
+
+  // Aux tracks
+  auxfn.forEach((fn, i) => {
+    const isLoaded = auxTracks.some(t => t.fn === fn);
+    h += '<div class="reload-row">';
+    h += '<span class="rl-name" style="color:#f0c040">\u{1F3B6} Aux</span>';
+    h += '<span class="rl-file">' + fn + '</span>';
+    if (isLoaded) {
+      h += '<span class="rl-status loaded">✓ Ready</span>';
+    } else {
+      h += '<span class="rl-status needed">Needed</span>';
+      h += '<button class="rl-btn" onclick="pickAndReloadAuxTrack()">Browse</button>';
+    }
+    h += '</div>';
+  });
+
+  h += '<div style="margin-top:.75rem;display:flex;gap:.5rem">';
+  if (totalNeeded > 0) {
+    h += '<button class="btn btn-secondary btn-small" onclick="bulkReloadStems()">Load All at Once</button>';
+  }
+  h += '<button class="btn btn-primary btn-small" onclick="goPerform()" ' + (totalNeeded>0?'style="opacity:.5" title="Load stems first"':'') + '>▶ Perform</button>';
+  h += '</div></div>';
+  wrap.innerHTML = h;
+}
+
+async function pickAndReloadAuxTrack() {
+  const result = await window.vwb.pickFile({ multi: false });
+  if (result.canceled || !result.filePaths.length) return;
+  const filePath = result.filePaths[0];
+  const fileName = filePath.split('/').pop();
+  const stored = await window.vwb.copyToStems(filePath);
+  if (stored.success) await addAuxTrackFromPath(stored.storedPath, fileName);
+  renderReloadPanel();
+}
+
+async function pickAndReloadStem(k) {
+  const result = await window.vwb.pickFile({ multi: false });
+  if (result.canceled || !result.filePaths.length) return;
+  const filePath = result.filePaths[0];
+  const fileName = filePath.split('/').pop();
+  const stored = await window.vwb.copyToStems(filePath);
+  if (stored.success) await loadStemFromPath(k, stored.storedPath, fileName);
+  renderReloadPanel();
+}
+
+async function reloadStem(k, filePath, fileName) {
+  await loadStemFromPath(k, filePath, fileName);
+  renderReloadPanel();
+}
+
+async function bulkReloadStems() {
+  const result = await window.vwb.pickFile({ multi: true });
+  if (result.canceled || !result.filePaths.length) return;
+  const filePaths = result.filePaths;
+  const sfn = song.sfn || {};
+  const auxfn = song.auxfn || [];
+
+  // Match files to expected stem filenames by name
+  for (const k of SK) {
+    if (!sfn[k] || S[k].buf) continue;
+    const match = filePaths.find(fp => fp.split('/').pop() === sfn[k]);
+    if (match) {
+      const stored = await window.vwb.copyToStems(match);
+      if (stored.success) await loadStemFromPath(k, stored.storedPath, sfn[k]);
+    }
+  }
+  // Match aux filenames
+  for (const fn of auxfn) {
+    if (auxTracks.some(t => t.fn === fn)) continue;
+    const match = filePaths.find(fp => fp.split('/').pop() === fn);
+    if (match) {
+      const stored = await window.vwb.copyToStems(match);
+      if (stored.success) await addAuxTrackFromPath(stored.storedPath, fn);
+    }
+  }
+  renderReloadPanel();
+}
+
+function renderSetlist() {
+  const c = document.getElementById('slItems'), e = document.getElementById('slEmpty');
+  c.innerHTML = '';
+  if (!setlist.length) { e.style.display = 'block'; return; }
+  e.style.display = 'none';
+  setlist.forEach((s, i) => {
+    const stemCt = s.sfn ? Object.keys(s.sfn).length : 0;
+    const auxCt = s.auxfn ? s.auxfn.length : 0;
+    const stemInfo = stemCt + ' stems' + (auxCt > 0 ? ' + ' + auxCt + ' aux' : '');
+    c.innerHTML += '<div class="sl-item"><span class="sl-num">' + (i+1) + '</span><div class="sl-info"><h4>' + (s.title||'Untitled') + '</h4><p>' + s.tempo + ' BPM | ' + s.ts + ' | ' + s.secs.length + ' sections | ' + stemInfo + '</p></div><div class="sl-acts"><button class="btn btn-secondary btn-small" onclick="loadSongAndSetup(' + i + ')">Load</button><button class="btn btn-secondary btn-small" onclick="loadSongData(setlist[' + i + ']);goView(\'setup\');">Edit</button><button class="btn btn-secondary btn-small" style="color:var(--red)" onclick="setlist.splice(' + i + ',1);window.vwb.saveSetlist(setlist);renderSetlist();">\u00d7</button></div></div>';
+  });
+}
+
+async function loadSongAndSetup(idx) {
+  await loadSongData(setlist[idx]);
+  // Save which song was last loaded
+  await window.vwb.saveSettings({ lastSongIdx: idx });
+  goView('setlist');
+  renderReloadPanel();
+}
+
+// ═══════ CROSSFADE ENGINE ═══════
+function saveCrossfadeSettings() {
+  try {
+    localStorage.setItem('vwb_crossfadeMode', crossfadeMode);
+    localStorage.setItem('vwb_crossfadeDur', crossfadeDuration);
+  } catch(e) {}
+}
+
+function loadCrossfadeSettings() {
+  try {
+    const m = localStorage.getItem('vwb_crossfadeMode');
+    const d = localStorage.getItem('vwb_crossfadeDur');
+    if (m) crossfadeMode = m;
+    if (d) crossfadeDuration = parseFloat(d) || 3;
+  } catch(e) {}
+  renderCrossfadeUI();
+}
+
+function renderCrossfadeUI() {
+  const modeEl = document.getElementById('xfadeMode');
+  const durEl = document.getElementById('xfadeDur');
+  const durLabel = document.getElementById('xfadeDurLabel');
+  if (modeEl) modeEl.value = crossfadeMode;
+  if (durEl) { durEl.value = crossfadeDuration; }
+  if (durLabel) durLabel.textContent = crossfadeDuration + 's';
+}
+
+// Fade out all current stems over `dur` seconds, then call callback
+function fadeOutStems(dur, callback) {
+  if (!playing) { callback(); return; }
+  const now = AC.currentTime;
+  SK.forEach(k => {
+    if (S[k].src && S[k].gn) {
+      S[k].gn.gain.cancelScheduledValues(now);
+      S[k].gn.gain.setValueAtTime(S[k].gn.gain.value, now);
+      S[k].gn.gain.linearRampToValueAtTime(0, now + dur);
+    }
+  });
+  auxTracks.forEach(t => {
+    if (t.src && t.gn) {
+      t.gn.gain.cancelScheduledValues(now);
+      t.gn.gain.setValueAtTime(t.gn.gain.value, now);
+      t.gn.gain.linearRampToValueAtTime(0, now + dur);
+    }
+  });
+  setTimeout(() => {
+    doStop();
+    // Restore gain values
+    SK.forEach(k => { S[k].gn.gain.value = S[k].vol / 100; });
+    auxTracks.forEach(t => { t.gn.gain.value = t.vol / 100; });
+    callback();
+  }, dur * 1000);
+}
+
+// Fade in all current stems over `dur` seconds after play starts
+function fadeInStems(dur) {
+  const now = AC.currentTime;
+  SK.forEach(k => {
+    if (S[k].src && S[k].gn) {
+      const targetVol = S[k].muted ? 0 : (S[k].vol / 100);
+      S[k].gn.gain.cancelScheduledValues(now);
+      S[k].gn.gain.setValueAtTime(0, now);
+      S[k].gn.gain.linearRampToValueAtTime(targetVol, now + dur);
+    }
+  });
+  auxTracks.forEach(t => {
+    if (t.src && t.gn) {
+      const targetVol = t.muted ? 0 : (t.vol / 100);
+      t.gn.gain.cancelScheduledValues(now);
+      t.gn.gain.setValueAtTime(0, now);
+      t.gn.gain.linearRampToValueAtTime(targetVol, now + dur);
+    }
+  });
+}
+
+// Main crossfade-to-song function used by service flow
+async function crossfadeToSong(songData) {
+  if (crossfading) return;
+  crossfading = true;
+  const dur = crossfadeDuration;
+  showNotification('↔ Crossfading...');
+
+  const doLoad = async () => {
+    await loadSongData(songData);
+    setTimeout(() => {
+      if (stemCount()) {
+        doPlay();
+        fadeInStems(dur);
+      }
+      crossfading = false;
+      showNotification('▶ Now: ' + (songData.title || 'Song'));
+    }, 300);
+  };
+
+  if (playing) {
+    fadeOutStems(dur, doLoad);
+  } else {
+    doLoad();
+  }
+}
+
+// Manual crossfade — triggered from Perform view button
+// Advances to the next song cue in the service flow
+async function triggerManualCrossfade() {
+  if (crossfading) return;
+  // Find next song cue after current
+  const nextIdx = svcCues.findIndex((c, i) => i > svcCurIdx && c.type === 'song');
+  if (nextIdx === -1) {
+    showNotification('⚠️ No next song in service flow');
+    return;
+  }
+  const s = setlist[svcCues[nextIdx].songIdx];
+  if (!s) { showNotification('⚠️ Song not found in setlist'); return; }
+  svcCurIdx = nextIdx;
+  renderSvcCues();
+  await crossfadeToSong(s);
+}
+
+// ═══════ SECTION LOOP ═══════
+let secLoopOn = false;
+let secLoopJumping = false; // debounce flag to prevent re-trigger
+
+function toggleSecLoop() {
+  secLoopOn = !secLoopOn;
+  const btn = document.getElementById('secLoopBtn');
+  if (btn) btn.classList.toggle('on', secLoopOn);
+  // Update section cards to show loop indicator
+  renderPerfSections();
+}
+
+function checkSectionLoop(t) {
+  if (!secLoopOn || secLoopJumping) return;
+  if (curSec < 0 || curSec >= song.secs.length) return;
+
+  const sec = song.secs[curSec];
+  const secEndTime = bar2time(sec.eb + 1);
+
+  if (t >= secEndTime - 0.05) {
+    secLoopJumping = true;
+    const targetTime = bar2time(sec.sb);
+    jumpTo(targetTime);
+    // Hold the debounce flag long enough to clear the trigger window
+    setTimeout(() => { secLoopJumping = false; }, 200);
+  }
+}
+
+// ═══════ BACKGROUND LOOP PLAYER ═══════
+const loopGain = AC.createGain();
+loopGain.gain.value = 0.6;
+loopGain.connect(mGain);
+
+let loopBuf = null;
+let loopSrc = null;
+let loopPlaying = false;
+let loopEnabled = true;  // loop toggle
+let loopFileName = '';
+
+let loopStoredPath = '';
+
+async function loadLoopFromPath(filePath, fileName) {
+  try {
+    const result = await window.vwb.readFileBuffer(filePath);
+    if (!result.success) { alert('Could not read loop file'); return; }
+    loopBuf = await AC.decodeAudioData(result.buffer);
+    loopFileName = fileName || filePath.split('/').pop();
+    loopStoredPath = filePath;
+    document.getElementById('loopSlot').classList.add('loaded');
+    document.getElementById('loopPlaceholder').style.display = 'none';
+    document.getElementById('loopFn').textContent = loopFileName;
+    document.getElementById('loopFn').style.display = '';
+    document.getElementById('loopDur').textContent = fmt(loopBuf.duration) + ' duration';
+    document.getElementById('loopDur').style.display = '';
+    document.getElementById('loopRmBtn').style.display = '';
+    document.getElementById('loopControls').style.display = 'flex';
+    updatePerfLoopUI();
+  } catch(e) {
+    alert('Could not load loop file: ' + (fileName || filePath));
+  }
+}
+
+async function pickAndLoadLoop() {
+  if (loopBuf) return; // already loaded, don't replace on click
+  const result = await window.vwb.pickFile({ multi: false, title: 'Select Loop / Pad Audio File' });
+  if (result.canceled || !result.filePaths.length) return;
+  const filePath = result.filePaths[0];
+  const fileName = filePath.split('/').pop();
+  const stored = await window.vwb.copyToStems(filePath);
+  if (stored.success) {
+    await loadLoopFromPath(stored.storedPath, fileName);
+  }
+}
+
+function removeLoop() {
+  stopLoop();
+  loopBuf = null;
+  loopFileName = '';
+  loopStoredPath = '';
+  document.getElementById('loopSlot').classList.remove('loaded');
+  document.getElementById('loopPlaceholder').style.display = '';
+  document.getElementById('loopFn').style.display = 'none';
+  document.getElementById('loopDur').style.display = 'none';
+  document.getElementById('loopRmBtn').style.display = 'none';
+  document.getElementById('loopControls').style.display = 'none';
+  updatePerfLoopUI();
+}
+
+function toggleLoop() {
+  if (AC.state === 'suspended') AC.resume();
+  loopPlaying ? stopLoop() : startLoop();
+}
+
+function startLoop() {
+  if (!loopBuf) return;
+  stopLoop(); // clean up any existing
+  loopSrc = AC.createBufferSource();
+  loopSrc.buffer = loopBuf;
+  loopSrc.loop = loopEnabled;
+  loopSrc.connect(loopGain);
+  loopSrc.start(0);
+  loopSrc.onended = () => {
+    if (loopPlaying && !loopEnabled) {
+      // Non-looping playback ended naturally
+      loopPlaying = false;
+      updateLoopBtns();
+      updatePerfLoopUI();
+    }
+  };
+  loopPlaying = true;
+  updateLoopBtns();
+  updatePerfLoopUI();
+}
+
+function stopLoop() {
+  if (loopSrc) {
+    try { loopSrc.stop(); } catch(e) {}
+    try { loopSrc.disconnect(); } catch(e) {}
+    loopSrc = null;
+  }
+  loopPlaying = false;
+  updateLoopBtns();
+  updatePerfLoopUI();
+}
+
+function setLoopEnabled(val) {
+  loopEnabled = val;
+  // If currently playing, update the source's loop property
+  if (loopSrc) {
+    loopSrc.loop = loopEnabled;
+  }
+}
+
+function setLoopVol(v) {
+  const val = parseInt(v);
+  loopGain.gain.value = val / 100;
+  try { localStorage.setItem('vwb_loopVol', val); } catch(e) {}
+  // Sync both sliders
+  document.querySelectorAll('.loop-vol-slider').forEach(el => {
+    el.value = val;
+  });
+  const pct = document.getElementById('loopPct');
+  if (pct) pct.textContent = val + '%';
+}
+
+function updateLoopBtns() {
+  const setupBtn = document.getElementById('loopPlayBtn');
+  const perfBtn = document.getElementById('perfLoopBtn');
+  if (setupBtn) {
+    setupBtn.classList.toggle('on', loopPlaying);
+    setupBtn.innerHTML = loopPlaying ? '\u23F8' : '\u25B6';
+  }
+  if (perfBtn) {
+    perfBtn.classList.toggle('on', loopPlaying);
+    perfBtn.innerHTML = loopPlaying ? '\u23F8' : '\u25B6';
+  }
+}
+
+function updatePerfLoopUI() {
+  const bar = document.getElementById('perfLoopBar');
+  if (!bar) return;
+  if (loopBuf) {
+    bar.style.display = 'flex';
+    bar.classList.toggle('active', loopPlaying);
+    document.getElementById('perfLoopName').textContent = loopFileName;
+    const status = document.getElementById('perfLoopStatus');
+    status.textContent = loopPlaying ? (loopEnabled ? 'Looping' : 'Playing') : 'Stopped';
+    status.classList.toggle('playing', loopPlaying);
+  } else {
+    bar.style.display = 'none';
+  }
+}
+
+// ═══════ MIDI FILE OUTPUT PLAYER ═══════
+let midiAccess = null;
+let midiOutPort = null;
+let midiEvents = [];       // parsed: [{time, type, note, vel, ch}, ...]
+let midiFileName = '';
+let midiPlaying = false;
+let midiLoopEnabled = false;
+let midiStartTime = 0;
+let midiTimers = [];
+let midiActiveNotes = [];  // track notes to send note-off on stop
+let midiDuration = 0;
+let midiLoopTimer = null;
+
+// ── MIDI FILE PARSER ──
+function parseMidiFile(arrayBuffer) {
+  const data = new Uint8Array(arrayBuffer);
+  let pos = 0;
+
+  function readUint16() { const v = (data[pos]<<8)|data[pos+1]; pos+=2; return v; }
+  function readUint32() { const v = (data[pos]<<24)|(data[pos+1]<<16)|(data[pos+2]<<8)|data[pos+3]; pos+=4; return v; }
+  function readVarLen() {
+    let val = 0;
+    while (true) {
+      const b = data[pos++];
+      val = (val << 7) | (b & 0x7F);
+      if (!(b & 0x80)) break;
+    }
+    return val;
+  }
+
+  // Read header
+  const hdrId = String.fromCharCode(data[0],data[1],data[2],data[3]);
+  if (hdrId !== 'MThd') throw new Error('Not a valid MIDI file');
+  pos = 4;
+  const hdrLen = readUint32();
+  const format = readUint16();
+  const numTracks = readUint16();
+  const timeDivision = readUint16();
+  pos = 8 + hdrLen;
+
+  // Collect all events with absolute tick times
+  let allEvents = [];
+
+  for (let t = 0; t < numTracks; t++) {
+    const trkId = String.fromCharCode(data[pos],data[pos+1],data[pos+2],data[pos+3]);
+    pos += 4;
+    const trkLen = readUint32();
+    const trkEnd = pos + trkLen;
+
+    let absTick = 0;
+    let runningStatus = 0;
+
+    while (pos < trkEnd) {
+      const delta = readVarLen();
+      absTick += delta;
+
+      let statusByte = data[pos];
+      if (statusByte & 0x80) {
+        pos++;
+        if (statusByte < 0xF0) runningStatus = statusByte;
+      } else {
+        statusByte = runningStatus;
+      }
+
+      const type = statusByte & 0xF0;
+      const ch = statusByte & 0x0F;
+
+      if (type === 0x90 || type === 0x80) {
+        // Note on/off
+        const note = data[pos++];
+        const vel = data[pos++];
+        allEvents.push({
+          tick: absTick,
+          type: (type === 0x90 && vel > 0) ? 'on' : 'off',
+          note, vel, ch
+        });
+      } else if (type === 0xA0) { pos += 2; }  // aftertouch
+      else if (type === 0xB0) { pos += 2; }     // control change
+      else if (type === 0xC0) { pos += 1; }     // program change
+      else if (type === 0xD0) { pos += 1; }     // channel pressure
+      else if (type === 0xE0) { pos += 2; }     // pitch bend
+      else if (statusByte === 0xFF) {
+        // Meta event
+        const metaType = data[pos++];
+        const metaLen = readVarLen();
+        if (metaType === 0x51 && metaLen === 3) {
+          // Tempo: microseconds per quarter note
+          const uspqn = (data[pos]<<16)|(data[pos+1]<<8)|data[pos+2];
+          allEvents.push({ tick: absTick, type: 'tempo', uspqn });
+        }
+        pos += metaLen;
+      } else if (statusByte === 0xF0 || statusByte === 0xF7) {
+        // SysEx
+        const sysLen = readVarLen();
+        pos += sysLen;
+      } else {
+        // Unknown, try to skip
+        pos++;
+      }
+    }
+    pos = trkEnd;
+  }
+
+  // Sort by tick
+  allEvents.sort((a,b) => a.tick - b.tick);
+
+  // Convert ticks to real time (seconds)
+  let currentTempo = 500000; // default 120 BPM
+  let currentTick = 0;
+  let currentTime = 0;
+  const ticksPerBeat = timeDivision;
+
+  const timedEvents = [];
+  for (const ev of allEvents) {
+    const deltaTicks = ev.tick - currentTick;
+    const deltaTime = (deltaTicks / ticksPerBeat) * (currentTempo / 1000000);
+    currentTime += deltaTime;
+    currentTick = ev.tick;
+
+    if (ev.type === 'tempo') {
+      currentTempo = ev.uspqn;
+    } else {
+      timedEvents.push({
+        time: currentTime,
+        type: ev.type,
+        note: ev.note,
+        vel: ev.vel,
+        ch: ev.ch
+      });
+    }
+  }
+
+  return {
+    events: timedEvents,
+    duration: currentTime,
+    noteCount: timedEvents.filter(e => e.type === 'on').length,
+    trackCount: numTracks
+  };
+}
+
+// ── WEB MIDI API ──
+async function initMidi() {
+  try {
+    midiAccess = await navigator.requestMIDIAccess({ sysex: false });
+    midiAccess.onstatechange = () => refreshMidiPorts();
+    refreshMidiPorts();
+    setMidiStatus('MIDI access granted. Select an output port.', 'connected');
+  } catch(e) {
+    console.warn('Web MIDI not available:', e);
+    setMidiStatus('MIDI not available in this browser. Use Chrome for MIDI support.', 'error');
+  }
+}
+
+function refreshMidiPorts() {
+  const sel = document.getElementById('midiPortSelect');
+  if (!sel || !midiAccess) return;
+  const currentVal = sel.value;
+  sel.innerHTML = '<option value="">-- Select MIDI Output --</option>';
+  const outputs = midiAccess.outputs;
+  outputs.forEach((port) => {
+    const opt = document.createElement('option');
+    opt.value = port.id;
+    opt.textContent = port.name || ('MIDI Output ' + port.id);
+    sel.appendChild(opt);
+  });
+  // Restore selection if still available
+  if (currentVal) sel.value = currentVal;
+  if (outputs.size === 0) {
+    setMidiStatus('No MIDI output devices found. Connect a USB-MIDI interface and click Refresh.', '');
+  }
+}
+
+function selectMidiPort(portId) {
+  if (!midiAccess) return;
+  if (!portId) { midiOutPort = null; setMidiStatus('No output selected', ''); return; }
+  midiOutPort = midiAccess.outputs.get(portId);
+  if (midiOutPort) {
+    setMidiStatus('Connected: ' + (midiOutPort.name || portId), 'connected');
+  } else {
+    setMidiStatus('Port not found', 'error');
+  }
+}
+
+function setMidiStatus(msg, cls) {
+  const el = document.getElementById('midiStatus');
+  if (el) { el.textContent = msg; el.className = 'midi-status' + (cls ? ' ' + cls : ''); }
+}
+
+// ── MIDI FILE LOADING ──
+let midiStoredPath = '';
+
+async function loadMidiFromBuffer(ab, fileName, storedPath) {
+  try {
+    const result = parseMidiFile(ab);
+    midiEvents = result.events;
+    midiDuration = result.duration;
+    midiFileName = fileName;
+    midiStoredPath = storedPath || '';
+
+    document.getElementById('midiSlot').classList.add('loaded');
+    document.getElementById('midiPlaceholder').style.display = 'none';
+    document.getElementById('midiFn').textContent = fileName;
+    document.getElementById('midiFn').style.display = '';
+    document.getElementById('midiDetail').textContent = result.noteCount + ' notes | ' + result.trackCount + ' tracks | ' + fmt(result.duration);
+    document.getElementById('midiDetail').style.display = '';
+    document.getElementById('midiControlsWrap').style.display = '';
+
+    if (!midiAccess) await initMidi();
+    updatePerfMidiUI();
+  } catch(e) {
+    console.error('MIDI parse error:', e);
+    alert('Could not load MIDI file: ' + fileName + '\n' + e.message);
+  }
+}
+
+async function pickAndLoadMidi() {
+  if (midiEvents.length) return; // already loaded
+  const result = await window.vwb.pickFile({ multi: false, title: 'Select MIDI File' });
+  if (result.canceled || !result.filePaths.length) return;
+  const filePath = result.filePaths[0];
+  const fileName = filePath.split('/').pop();
+  const stored = await window.vwb.copyToStems(filePath);
+  if (stored.success) {
+    midiStoredPath = stored.storedPath;
+  }
+  const fileData = await window.vwb.readFileBuffer(filePath);
+  if (fileData.success) {
+    await loadMidiFromBuffer(fileData.buffer, fileName, midiStoredPath || filePath);
+  }
+}
+
+function removeMidi() {
+  stopMidiPlay();
+  midiEvents = [];
+  midiFileName = '';
+  midiDuration = 0;
+  midiStoredPath = '';
+  document.getElementById('midiSlot').classList.remove('loaded');
+  document.getElementById('midiPlaceholder').style.display = '';
+  document.getElementById('midiFn').style.display = 'none';
+  document.getElementById('midiDetail').style.display = 'none';
+  document.getElementById('midiControlsWrap').style.display = 'none';
+  updatePerfMidiUI();
+}
+
+// ── MIDI PLAYBACK ──
+function toggleMidiPlay() {
+  midiPlaying ? stopMidiPlay() : startMidiPlay();
+}
+
+function startMidiPlay() {
+  if (!midiEvents.length) { alert('No MIDI file loaded.'); return; }
+  if (!midiOutPort) { alert('No MIDI output selected. Choose a MIDI output port first.'); return; }
+
+  stopMidiPlay(); // clean
+  midiPlaying = true;
+  midiStartTime = performance.now();
+
+  // Get the user-selected output channel
+  const outCh = parseInt(document.getElementById('midiChSelect').value) || 0;
+
+  // Schedule all events
+  midiEvents.forEach(ev => {
+    const delayMs = ev.time * 1000;
+    const timer = setTimeout(() => {
+      if (!midiPlaying || !midiOutPort) return;
+      if (ev.type === 'on') {
+        midiOutPort.send([0x90 | outCh, ev.note, ev.vel]);
+        midiActiveNotes.push(ev.note);
+      } else if (ev.type === 'off') {
+        midiOutPort.send([0x80 | outCh, ev.note, 0]);
+        midiActiveNotes = midiActiveNotes.filter(n => n !== ev.note);
+      }
+    }, delayMs);
+    midiTimers.push(timer);
+  });
+
+  // Schedule end / loop
+  const endTimer = setTimeout(() => {
+    if (!midiPlaying) return;
+    allNotesOff();
+    if (midiLoopEnabled) {
+      startMidiPlay(); // restart
+    } else {
+      midiPlaying = false;
+      updateMidiBtns();
+      updatePerfMidiUI();
+    }
+  }, midiDuration * 1000 + 50);
+  midiTimers.push(endTimer);
+
+  updateMidiBtns();
+  updatePerfMidiUI();
+}
+
+function stopMidiPlay() {
+  // Clear all timers
+  midiTimers.forEach(t => clearTimeout(t));
+  midiTimers = [];
+  if (midiLoopTimer) { clearTimeout(midiLoopTimer); midiLoopTimer = null; }
+
+  // Send note-off for any active notes
+  allNotesOff();
+  midiPlaying = false;
+  updateMidiBtns();
+  updatePerfMidiUI();
+}
+
+function allNotesOff() {
+  if (!midiOutPort) return;
+  const outCh = parseInt(document.getElementById('midiChSelect').value) || 0;
+  // Turn off any tracked active notes
+  midiActiveNotes.forEach(n => {
+    try { midiOutPort.send([0x80 | outCh, n, 0]); } catch(e) {}
+  });
+  midiActiveNotes = [];
+  // Also send all-notes-off CC for safety
+  try { midiOutPort.send([0xB0 | outCh, 123, 0]); } catch(e) {}
+}
+
+function updateMidiBtns() {
+  const setupBtn = document.getElementById('midiPlayBtn');
+  const perfBtn = document.getElementById('perfMidiBtn');
+  if (setupBtn) {
+    setupBtn.classList.toggle('on', midiPlaying);
+    setupBtn.innerHTML = midiPlaying ? '\u23F8' : '\u25B6';
+  }
+  if (perfBtn) {
+    perfBtn.classList.toggle('on', midiPlaying);
+    perfBtn.innerHTML = midiPlaying ? '\u23F8' : '\u25B6';
+  }
+}
+
+function updatePerfMidiUI() {
+  const bar = document.getElementById('perfMidiBar');
+  if (!bar) return;
+  if (midiEvents.length > 0) {
+    bar.style.display = 'flex';
+    bar.classList.toggle('active', midiPlaying);
+    document.getElementById('perfMidiName').textContent = midiFileName;
+    const status = document.getElementById('perfMidiStatus');
+    status.textContent = midiPlaying ? (midiLoopEnabled ? 'Playing (Loop)' : 'Playing') : 'Stopped';
+    status.classList.toggle('playing', midiPlaying);
+  } else {
+    bar.style.display = 'none';
+  }
+}
+
+// ═══════ MIDI REMOTE CONTROL (INPUT) ═══════
+let mrcPanelOpen = false;
+
+function toggleMrcPanel() {
+  mrcPanelOpen = !mrcPanelOpen;
+  const body = document.getElementById('mrcPanelBody');
+  const icon = document.getElementById('mrcToggleIcon');
+  if (body) body.style.display = mrcPanelOpen ? 'block' : 'none';
+  if (icon) icon.innerHTML = mrcPanelOpen
+    ? '<span style="font-size:.75rem;color:var(--text-dim);">Click to collapse</span> ▲'
+    : '<span style="font-size:.75rem;color:var(--text-dim);">Click to expand</span> ▼';
+}
+let mrcInput = null;         // selected MIDI input port
+let mrcLearning = null;      // which function is in learn mode (null = none)
+let mrcActivityTimeout = null;
+
+// All mappable functions
+const MRC_FUNCTIONS = [
+  { id:'play_pause', label:'Play / Pause', fn: togglePlay },
+  { id:'stop',       label:'Stop',          fn: doStop },
+  { id:'next_sec',   label:'Next Section',  fn: () => { if(curSec < song.secs.length-1) queueSection(curSec+1); }},
+  { id:'prev_sec',   label:'Prev Section',  fn: () => { if(curSec > 0) queueSection(curSec-1); }},
+  { id:'sec_loop',   label:'Section Loop Toggle', fn: toggleSecLoop },
+  { id:'bg_loop',    label:'Background Loop Toggle', fn: toggleLoop },
+  { id:'midi_play',  label:'MIDI File Toggle', fn: toggleMidiPlay },
+  { id:'sec1', label:'Go to Section 1', fn: () => { if(0 < song.secs.length) queueSection(0); }},
+  { id:'sec2', label:'Go to Section 2', fn: () => { if(1 < song.secs.length) queueSection(1); }},
+  { id:'sec3', label:'Go to Section 3', fn: () => { if(2 < song.secs.length) queueSection(2); }},
+  { id:'sec4', label:'Go to Section 4', fn: () => { if(3 < song.secs.length) queueSection(3); }},
+  { id:'sec5', label:'Go to Section 5', fn: () => { if(4 < song.secs.length) queueSection(4); }},
+  { id:'sec6', label:'Go to Section 6', fn: () => { if(5 < song.secs.length) queueSection(5); }},
+  { id:'sec7', label:'Go to Section 7', fn: () => { if(6 < song.secs.length) queueSection(6); }},
+  { id:'sec8', label:'Go to Section 8', fn: () => { if(7 < song.secs.length) queueSection(7); }},
+  { id:'sec9', label:'Go to Section 9', fn: () => { if(8 < song.secs.length) queueSection(8); }},
+];
+
+// Mappings: { functionId: { type:'note'|'cc', number:60, channel:0 } }
+let mrcMap = {};
+
+function refreshMrcInputs() {
+  if (!midiAccess) { initMidi().then(() => refreshMrcInputs()); return; }
+  const sel = document.getElementById('mrcInputSelect');
+  if (!sel) return;
+  const curVal = sel.value;
+  sel.innerHTML = '<option value="">-- Select MIDI Input --</option>';
+  midiAccess.inputs.forEach(port => {
+    const opt = document.createElement('option');
+    opt.value = port.id;
+    opt.textContent = port.name || ('MIDI Input ' + port.id);
+    sel.appendChild(opt);
+  });
+  if (curVal) sel.value = curVal;
+  if (midiAccess.inputs.size === 0) {
+    setMrcHint('No MIDI inputs found. Connect a Bluetooth MIDI device or USB controller and click Refresh.');
+  }
+}
+
+function selectMrcInput(portId) {
+  // Disconnect old
+  if (mrcInput) {
+    mrcInput.onmidimessage = null;
+    mrcInput = null;
+  }
+  if (!portId || !midiAccess) return;
+  mrcInput = midiAccess.inputs.get(portId);
+  if (mrcInput) {
+    mrcInput.onmidimessage = handleMrcMessage;
+    setMrcHint('Connected to: ' + (mrcInput.name || portId) + '. Click a function to start mapping.');
+  }
+}
+
+function handleMrcMessage(e) {
+  const data = e.data;
+  if (!data || data.length < 2) return;
+
+  const status = data[0] & 0xF0;
+  const channel = data[0] & 0x0F;
+  const num = data[1];
+  const vel = data.length > 2 ? data[2] : 0;
+
+  // Flash activity indicator
+  const act = document.getElementById('mrcActivity');
+  if (act) { act.classList.add('on'); clearTimeout(mrcActivityTimeout); mrcActivityTimeout = setTimeout(() => act.classList.remove('on'), 150); }
+
+  // LEARN MODE: capture this message
+  if (mrcLearning) {
+    let type = null;
+    if (status === 0x90 && vel > 0) type = 'note';
+    else if (status === 0xB0) type = 'cc';
+
+    if (type) {
+      mrcMap[mrcLearning] = { type, number: num, channel };
+      const label = type === 'note' ? 'Note ' + num + ' (Ch ' + (channel+1) + ')' : 'CC ' + num + ' (Ch ' + (channel+1) + ')';
+      setMrcHint('Assigned: ' + label + ' → ' + MRC_FUNCTIONS.find(f=>f.id===mrcLearning).label);
+      mrcLearning = null;
+      renderMrcGrid();
+      return;
+    }
+  }
+
+  // PERFORMANCE MODE: trigger mapped functions
+  // Only trigger on Note On (vel > 0) or CC value > 63
+  if (status === 0x90 && vel > 0) {
+    triggerMrcAction('note', num, channel);
+  } else if (status === 0xB0 && vel > 63) {
+    triggerMrcAction('cc', num, channel);
+  }
+}
+
+function triggerMrcAction(type, number, channel) {
+  for (const [fnId, mapping] of Object.entries(mrcMap)) {
+    if (mapping.type === type && mapping.number === number && mapping.channel === channel) {
+      const func = MRC_FUNCTIONS.find(f => f.id === fnId);
+      if (func) func.fn();
+      return;
+    }
+  }
+}
+
+function renderMrcGrid() {
+  const grid = document.getElementById('mrcMapGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  MRC_FUNCTIONS.forEach(f => {
+    const mapping = mrcMap[f.id];
+    const isLearning = mrcLearning === f.id;
+    let valText = '—';
+    let valClass = 'mrc-val empty';
+    if (mapping) {
+      valText = (mapping.type === 'note' ? 'N' : 'CC') + mapping.number + ' Ch' + (mapping.channel+1);
+      valClass = 'mrc-val';
+    }
+    if (isLearning) { valText = 'Press a key...'; valClass = 'mrc-val'; }
+
+    grid.innerHTML += '<div class="mrc-map-row' + (isLearning?' learning':'') + '" onclick="startLearn(\'' + f.id + '\')">' +
+      '<span class="mrc-fn">' + f.label + '</span>' +
+      '<span class="' + valClass + '">' + valText + '</span>' +
+      (mapping ? '<button class="mrc-clr" onclick="event.stopPropagation();clearMapping(\'' + f.id + '\')">\u00d7</button>' : '') +
+      '</div>';
+  });
+}
+
+function startLearn(fnId) {
+  if (mrcLearning === fnId) {
+    // Toggle off
+    mrcLearning = null;
+    setMrcHint('Learning cancelled.');
+  } else {
+    mrcLearning = fnId;
+    const label = MRC_FUNCTIONS.find(f=>f.id===fnId).label;
+    setMrcHint('Waiting for MIDI input... Press a key/button on your controller to assign it to "' + label + '"');
+  }
+  renderMrcGrid();
+}
+
+function clearMapping(fnId) {
+  delete mrcMap[fnId];
+  renderMrcGrid();
+}
+
+function clearAllMappings() {
+  if (confirm('Clear all MIDI mappings?')) {
+    mrcMap = {};
+    renderMrcGrid();
+    setMrcHint('All mappings cleared.');
+  }
+}
+
+async function saveMrcMappings() {
+  try {
+    await window.vwb.saveMrcMap(mrcMap);
+    setMrcHint('Mappings saved! They will persist between sessions.');
+  } catch(e) {
+    setMrcHint('Could not save mappings.');
+  }
+}
+
+async function loadMrcMappings() {
+  try {
+    const result = await window.vwb.loadMrcMap();
+    if (result.success && result.data) {
+      mrcMap = result.data;
+      renderMrcGrid();
+      setMrcHint('Loaded ' + Object.keys(mrcMap).length + ' saved mappings.');
+    } else {
+      setMrcHint('No saved mappings found.');
+    }
+  } catch(e) {
+    setMrcHint('Could not load mappings.');
+  }
+}
+
+function setMrcHint(msg) {
+  const el = document.getElementById('mrcHint');
+  if (el) el.textContent = msg;
+}
+
+
+// ═══════════════════════════════════════════════════
+//  SERVICE FLOW MODULE  (no template literals)
+// ═══════════════════════════════════════════════════
+
+// Cue types: 'song' | 'loop' | 'moment'
+// song:    { type:'song',   songIdx:0, title:'Total Praise' }
+// loop:    { type:'loop',   title:'Soft Piano Pad' }
+// moment:  { type:'moment', label:'Devotion/Prayer', note:'' }
+
+let svcCues = [];       // array of cue objects
+let svcCurIdx = -1;     // active cue index during live mode
+let svcLive = false;    // is service live?
+
+const MOMENT_PRESETS = [
+  'Devotion / Prayer',
+  'Praise & Worship',
+  'Tithes & Offering',
+  'Congregational Song',
+  'Scripture Reading',
+  "Pastor's Message",
+  'Altar Call',
+  'Benediction',
+  'Announcements',
+  'Special Music',
+  'Communion',
+  'Baptism',
+  'Custom…'
+];
+
+// ── ADD CUE HELPERS ──
+
+function svcAddSong() {
+  if (!setlist.length) {
+    alert('No songs in your Setlist yet. Add songs in Song Setup first, then come back here.');
+    return;
+  }
+  var opts = '';
+  setlist.forEach(function(s, i) {
+    opts += '<option value="' + i + '">' + (s.title || 'Untitled') + ' \u2014 ' + s.tempo + ' BPM, ' + s.secs.length + ' sections</option>';
+  });
+  var wrap = document.createElement('div');
+  wrap.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:2000;display:flex;align-items:center;justify-content:center;';
+  wrap.innerHTML = '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:1.5rem;min-width:340px;max-width:500px;width:90%;">' +
+    '<h3 style="font-size:1rem;font-weight:600;margin-bottom:1rem;color:var(--accent)">\uD83C\uDFB5 Add Song Cue</h3>' +
+    '<div style="margin-bottom:1rem"><label style="font-size:.75rem;color:var(--text-dim);display:block;margin-bottom:.35rem">SELECT SONG</label>' +
+    '<select id="svcSongPick" style="width:100%;font-size:.9rem;">' + opts + '</select></div>' +
+    '<div style="display:flex;justify-content:flex-end;gap:.5rem">' +
+    '<button class="btn btn-secondary btn-small" onclick="this.closest(\'.svc-modal\').remove()">Cancel</button>' +
+    '<button class="btn btn-primary btn-small" onclick="svcConfirmAddSong()">Add to Service</button>' +
+    '</div></div>';
+  wrap.className = 'svc-modal';
+  document.body.appendChild(wrap);
+  wrap.addEventListener('click', function(e) { if (e.target === wrap) wrap.remove(); });
+}
+
+function svcConfirmAddSong() {
+  const sel = document.getElementById('svcSongPick');
+  if (!sel) return;
+  const idx = parseInt(sel.value);
+  const s = setlist[idx];
+  svcCues.push({ type:'song', songIdx:idx, title:s.title || 'Untitled' });
+  document.querySelector('.svc-modal').remove();
+  saveSvcCues();
+  renderSvcCues();
+}
+
+function svcAddLoop() {
+  const label = prompt('Background pad name (e.g. "Soft Piano Pad", "Organ Pad"):', 'Soft Piano Pad');
+  if (!label) return;
+  svcCues.push({ type:'loop', title:label.trim() });
+  saveSvcCues();
+  renderSvcCues();
+}
+
+function svcAddMoment() {
+  var wrap = document.createElement('div');
+  wrap.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:2000;display:flex;align-items:center;justify-content:center;';
+  var presetOpts = MOMENT_PRESETS.map(function(p) { return '<option>' + p + '</option>'; }).join('');
+  wrap.innerHTML = '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:1.5rem;min-width:340px;max-width:500px;width:90%;">' +
+    '<h3 style="font-size:1rem;font-weight:600;margin-bottom:1rem;color:var(--accent)">\uD83D\uDCCB Add Service Moment</h3>' +
+    '<div style="margin-bottom:.75rem"><label style="font-size:.75rem;color:var(--text-dim);display:block;margin-bottom:.35rem">MOMENT TYPE</label>' +
+    '<select id="svcMomPreset" style="width:100%;font-size:.9rem;" onchange="svcMomPresetChange(this)">' + presetOpts + '</select></div>' +
+    '<div style="margin-bottom:1rem"><label style="font-size:.75rem;color:var(--text-dim);display:block;margin-bottom:.35rem">LABEL (edit if needed)</label>' +
+    '<input type="text" id="svcMomLabel" value="' + MOMENT_PRESETS[0] + '" style="width:100%;font-size:.9rem;"></div>' +
+    '<div style="margin-bottom:1rem"><label style="font-size:.75rem;color:var(--text-dim);display:block;margin-bottom:.35rem">NOTES (optional)</label>' +
+    '<input type="text" id="svcMomNote" placeholder="e.g. Pastor Smith leads, approx 5 min" style="width:100%;font-size:.9rem;"></div>' +
+    '<div style="display:flex;justify-content:flex-end;gap:.5rem">' +
+    '<button class="btn btn-secondary btn-small" onclick="this.closest(\'.svc-modal\').remove()">Cancel</button>' +
+    '<button class="btn btn-primary btn-small" onclick="svcConfirmAddMoment()">Add to Service</button>' +
+    '</div></div>';
+  wrap.className = 'svc-modal';
+  document.body.appendChild(wrap);
+  wrap.addEventListener('click', function(e) { if (e.target === wrap) wrap.remove(); });
+}
+
+function svcMomPresetChange(sel) {
+  const lbl = document.getElementById('svcMomLabel');
+  if (!lbl) return;
+  if (sel.value === 'Custom…') {
+    lbl.value = '';
+    lbl.focus();
+  } else {
+    lbl.value = sel.value;
+  }
+}
+
+function svcConfirmAddMoment() {
+  const label = document.getElementById('svcMomLabel').value.trim() || 'Moment';
+  const note  = document.getElementById('svcMomNote').value.trim();
+  svcCues.push({ type:'moment', label, note });
+  document.querySelector('.svc-modal').remove();
+  saveSvcCues();
+  renderSvcCues();
+}
+
+// ── RENDER ──
+
+function svcCueIcon(cue) {
+  if (cue.type === 'song')   return '🎵';
+  if (cue.type === 'loop')   return '🔁';
+  if (cue.type === 'moment') return '📋';
+  return '▪';
+}
+
+function svcCueMeta(cue) {
+  if (cue.type === 'song') {
+    const s = setlist[cue.songIdx];
+    if (s) return s.tempo + ' BPM · ' + s.secs.length + ' sections';
+    return 'Song no longer in setlist';
+  }
+  if (cue.type === 'loop') return 'Background audio pad';
+  if (cue.type === 'moment') return cue.note || 'Service moment';
+  return '';
+}
+
+function renderSvcCues() {
+  const c = document.getElementById('svcCueList');
+  if (!c) return;
+
+  if (!svcCues.length) {
+    c.innerHTML = '<div class="svc-empty">No cues yet.<br>Add songs, background pads, and service moments below to build your order of service.</div>';
+    return;
+  }
+
+  c.innerHTML = '';
+  svcCues.forEach((cue, i) => {
+    const isActive = svcLive && i === svcCurIdx;
+    const isNext   = svcLive && i === svcCurIdx + 1;
+    const isDone   = svcLive && i < svcCurIdx;
+
+    let cls = 'svc-cue';
+    if (isActive) cls += ' cue-active';
+    else if (isNext) cls += ' cue-next';
+    else if (isDone) cls += ' cue-done';
+
+    let badge = '';
+    if (isActive) badge = '<span class="cue-badge">▶ NOW</span>';
+    else if (isNext) badge = '<span class="cue-badge">NEXT</span>';
+
+    const acts = svcLive ? '' :
+      '<div class="cue-acts">' +
+        '<button onclick="svcMoveCue(' + i + ',-1)" title="Move up"' + (i===0?' disabled':'') + '>\u2191</button>' +
+        '<button onclick="svcMoveCue(' + i + ',1)" title="Move down"' + (i===svcCues.length-1?' disabled':'') + '>\u2193</button>' +
+        '<button onclick="svcRemoveCue(' + i + ')" style="color:var(--red)" title="Remove">\u2715</button>' +
+      '</div>';
+
+    c.innerHTML +=
+      '<div class="' + cls + '" id="svc-cue-' + i + '">' +
+        '<span class="cue-num">' + (i+1) + '</span>' +
+        '<span class="cue-icon">' + svcCueIcon(cue) + '</span>' +
+        '<div class="cue-body">' +
+          '<div class="cue-title">' + (cue.title || cue.label || '\u2014') + '</div>' +
+          '<div class="cue-meta">' + svcCueMeta(cue) + '</div>' +
+        '</div>' +
+        badge +
+        acts +
+      '</div>';
+  });
+
+  // Scroll active cue into view
+  if (svcLive && svcCurIdx >= 0) {
+    const el = document.getElementById('svc-cue-' + svcCurIdx);
+    if (el) el.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  }
+
+  updateSvcLiveBar();
+}
+
+function updateSvcLiveBar() {
+  const bar = document.getElementById('svcLiveBar');
+  const btn = document.getElementById('svcGoLiveBtn');
+  if (!bar || !btn) return;
+
+  bar.classList.toggle('on', svcLive);
+
+  if (svcLive) {
+    btn.textContent = '🔴 Live';
+    btn.disabled = true;
+    btn.style.opacity = '.5';
+
+    const cur = svcCues[svcCurIdx];
+    const nxt = svcCues[svcCurIdx + 1];
+    document.getElementById('svcLiveCur').textContent =
+      cur ? (svcCueIcon(cur) + ' ' + (cur.title || cur.label)) : 'Service Started';
+    document.getElementById('svcLiveNext').textContent =
+      nxt ? ('Up next: ' + svcCueIcon(nxt) + ' ' + (nxt.title || nxt.label)) : 'Last cue';
+  } else {
+    btn.textContent = '🔴 Go Live — Start Service';
+    btn.disabled = false;
+    btn.style.opacity = '';
+  }
+}
+
+// ── LIVE MODE CONTROLS ──
+
+function svcGoLive() {
+  if (!svcCues.length) {
+    alert('Add at least one cue to the service before going live.');
+    return;
+  }
+  svcLive = true;
+  svcCurIdx = 0;
+  renderSvcCues();
+  svcActivateCue(0);
+  showNotification('🔴 Service is LIVE');
+}
+
+function svcEndLive() {
+  if (!confirm('End the live service? This will stop all audio and reset the service order.')) return;
+  svcLive = false;
+  svcCurIdx = -1;
+  doStop();
+  stopLoop();
+  renderSvcCues();
+  showNotification('Service ended');
+}
+
+function svcNext() {
+  if (!svcLive) return;
+  if (svcCurIdx < svcCues.length - 1) {
+    svcCurIdx++;
+    svcActivateCue(svcCurIdx);
+    renderSvcCues();
+  } else {
+    showNotification('Last cue — end of service order');
+  }
+}
+
+function svcPrev() {
+  if (!svcLive) return;
+  if (svcCurIdx > 0) {
+    svcCurIdx--;
+    svcActivateCue(svcCurIdx);
+    renderSvcCues();
+  }
+}
+
+async function svcActivateCue(idx) {
+  const cue = svcCues[idx];
+  if (!cue) return;
+
+  if (cue.type === 'song') {
+    const s = setlist[cue.songIdx];
+    if (!s) { showNotification('⚠️ Song not found in setlist'); return; }
+    if (crossfadeMode === 'auto') {
+      await crossfadeToSong(s);
+    } else {
+      doStop();
+      await loadSongData(s);
+      setTimeout(() => {
+        goView('perform');
+        showNotification('▶ Now: ' + (s.title || 'Song'));
+      }, 300);
+    }
+  }
+
+  if (cue.type === 'loop') {
+    // Start the background loop if one is loaded
+    if (loopBuf) {
+      stopLoop();
+      startLoop();
+      showNotification('🔁 Background pad playing');
+    } else {
+      showNotification('⚠️ No background loop loaded. Load one in Song Setup.');
+    }
+  }
+
+  if (cue.type === 'moment') {
+    var msg = cue.note ? ('\uD83D\uDCCB ' + cue.label + ' \u2014 ' + cue.note) : ('\uD83D\uDCCB ' + cue.label);
+    showNotification(msg);
+  }
+}
+
+// ── CUE MANAGEMENT ──
+
+function svcMoveCue(idx, dir) {
+  const newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= svcCues.length) return;
+  const temp = svcCues[idx];
+  svcCues[idx] = svcCues[newIdx];
+  svcCues[newIdx] = temp;
+  saveSvcCues();
+  renderSvcCues();
+}
+
+function svcRemoveCue(idx) {
+  svcCues.splice(idx, 1);
+  saveSvcCues();
+  renderSvcCues();
+}
+
+function svcClear() {
+  if (!svcCues.length) return;
+  if (!confirm('Clear all service cues?')) return;
+  svcCues = [];
+  svcLive = false;
+  svcCurIdx = -1;
+  saveSvcCues();
+  renderSvcCues();
+}
+
+// ── PERSISTENCE ──
+
+async function saveSvcCues() {
+  try {
+    await window.vwb.saveService({ cues: svcCues });
+  } catch(e) {
+    console.warn('Could not save service cues:', e);
+  }
+}
+
+async function loadSvcCues() {
+  try {
+    const result = await window.vwb.loadService();
+    if (result && result.success && result.data && result.data.cues) {
+      svcCues = result.data.cues;
+    }
+  } catch(e) {
+    console.warn('Could not load service cues:', e);
+  }
+}
+
+// ── MIDI REMOTE: add service next/prev to MRC_FUNCTIONS ──
+// (appended after MRC_FUNCTIONS is defined — splice in via init)
+function initSvcMrcFunctions() {
+  MRC_FUNCTIONS.push(
+    { id:'svc_next', label:'Service: Next Cue', fn: svcNext },
+    { id:'svc_prev', label:'Service: Prev Cue', fn: svcPrev }
+  );
+  renderMrcGrid();
+}
+
+document.addEventListener('keydown', e => {
+  if (['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName)) return;
+  const onPerf = document.getElementById('view-perform').classList.contains('active');
+  const onSetup = document.getElementById('view-setup').classList.contains('active');
+  if (!onPerf && !onSetup) return;
+
+  if (e.key === ' ') { e.preventDefault(); togglePlay(); return; }
+  if (e.key === 'Escape') { e.preventDefault(); doStop(); return; }
+  if (e.key === 'l' || e.key === 'L') { e.preventDefault(); toggleLoop(); return; }
+  if (e.key === 'r' || e.key === 'R') { e.preventDefault(); toggleSecLoop(); return; }
+  if (e.key === 'm' || e.key === 'M') { e.preventDefault(); toggleMidiPlay(); return; }
+
+  // Section hotkeys on perform only
+  if (onPerf) {
+    if (e.key >= '1' && e.key <= '9') { const i = parseInt(e.key)-1; if (i < song.secs.length) queueSection(i); }
+    if (e.key === 'n' || e.key === 'N') { if (curSec < song.secs.length-1) queueSection(curSec+1); }
+    if (e.key === 'b' || e.key === 'B') { if (curSec > 0) queueSection(curSec-1); }
+  }
+});
+
+// ═══════ INIT ═══════
+async function initApp() {
+  document.getElementById('splash').classList.add('hidden');
+  setTimeout(() => { document.getElementById('splash').style.display = 'none'; }, 600);
+  document.getElementById('app').style.display = 'block';
+  if (AC.state === 'suspended') AC.resume();
+  renderStems();
+  renderAuxPanel();
+  renderSections();
+  renderRouting();
+  updMInfo();
+  initMiniBeats();
+  renderMrcGrid();
+
+  // Restore loop volume
+  try {
+    const savedLoopVol = localStorage.getItem('vwb_loopVol');
+    if (savedLoopVol !== null) {
+      const v = parseInt(savedLoopVol);
+      loopGain.gain.value = v / 100;
+      document.querySelectorAll('.loop-vol-slider').forEach(el => { el.value = v; });
+      const pct = document.getElementById('loopPct');
+      if (pct) pct.textContent = v + '%';
+    }
+  } catch(e) {}
+
+  // Load crossfade settings
+  loadCrossfadeSettings();
+  // Init MIDI and load saved mappings
+  initMidi().then(() => { refreshMrcInputs(); });
+  await loadMrcMappings();
+
+  // Auto-load saved setlist from disk
+  try {
+    const result = await window.vwb.loadSetlist();
+    if (result.success && result.data && result.data.length > 0) {
+      setlist = result.data;
+      // Auto-load the first song (or last used)
+      const settings = await window.vwb.loadSettings();
+      let lastIdx = 0;
+      if (settings.success && settings.data && typeof settings.data.lastSongIdx === 'number') {
+        lastIdx = Math.min(settings.data.lastSongIdx, setlist.length - 1);
+      }
+      if (setlist[lastIdx]) {
+        await loadSongData(setlist[lastIdx]);
+        showNotification('Welcome back! Loaded: ' + (setlist[lastIdx].title || 'last song'));
+      }
+    }
+  } catch(e) {
+    console.warn('Could not auto-load setlist:', e);
+  }
+
+  // Auto-load service cues from disk
+  await loadSvcCues();
+  initSvcMrcFunctions();
+
+  document.getElementById('songTempo').addEventListener('change', () => {
+    song.tempo = parseInt(document.getElementById('songTempo').value) || 72;
+    updMInfo(); initMiniBeats();
+  });
+  document.getElementById('songTimeSig').addEventListener('change', () => {
+    song.ts = document.getElementById('songTimeSig').value;
+    updMInfo(); initMiniBeats();
+  });
+}
+</script>
+</body>
+</html>
