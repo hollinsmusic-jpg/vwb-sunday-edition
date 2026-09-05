@@ -1,0 +1,51 @@
+{
+  "id": "Eb_min_keys",
+  "key": "Eb",
+  "quality": "min",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 78,
+      "vel": 90,
+      "time": 0.0063,
+      "duration": 35.9167
+    },
+    {
+      "note": 58,
+      "vel": 71,
+      "time": 0.0083,
+      "duration": 31.45
+    },
+    {
+      "note": 66,
+      "vel": 78,
+      "time": 0.0083,
+      "duration": 35.9
+    },
+    {
+      "note": 51,
+      "vel": 60,
+      "time": 0.0104,
+      "duration": 3.1583
+    },
+    {
+      "note": 75,
+      "vel": 80,
+      "time": 0.0104,
+      "duration": 23.3833
+    },
+    {
+      "note": 54,
+      "vel": 60,
+      "time": 0.0187,
+      "duration": 15.3604
+    },
+    {
+      "note": 70,
+      "vel": 68,
+      "time": 2.0083,
+      "duration": 29.4187
+    }
+  ]
+}

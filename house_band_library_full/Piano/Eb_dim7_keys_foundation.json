@@ -1,0 +1,51 @@
+{
+  "id": "Eb_dim7_keys",
+  "key": "Eb",
+  "quality": "dim7",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 57,
+      "vel": 70,
+      "time": -0.0042,
+      "duration": 27.0979
+    },
+    {
+      "note": 54,
+      "vel": 74,
+      "time": -0.0021,
+      "duration": 14.6438
+    },
+    {
+      "note": 78,
+      "vel": 90,
+      "time": -0.0021,
+      "duration": 27.1583
+    },
+    {
+      "note": 51,
+      "vel": 66,
+      "time": 0.0,
+      "duration": 2.3188
+    },
+    {
+      "note": 60,
+      "vel": 66,
+      "time": 0.0,
+      "duration": 27.0521
+    },
+    {
+      "note": 66,
+      "vel": 83,
+      "time": 0.0021,
+      "duration": 27.1042
+    },
+    {
+      "note": 69,
+      "vel": 81,
+      "time": 0.0021,
+      "duration": 27.15
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "id": "Db_sus13_keys",
+  "key": "Db",
+  "quality": "sus13",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 59,
+      "vel": 93,
+      "time": -0.0396,
+      "duration": 3.6167
+    },
+    {
+      "note": 63,
+      "vel": 94,
+      "time": -0.0375,
+      "duration": 19.4667
+    },
+    {
+      "note": 66,
+      "vel": 90,
+      "time": -0.0354,
+      "duration": 31.4542
+    },
+    {
+      "note": 70,
+      "vel": 98,
+      "time": -0.0354,
+      "duration": 31.4
+    }
+  ]
+}

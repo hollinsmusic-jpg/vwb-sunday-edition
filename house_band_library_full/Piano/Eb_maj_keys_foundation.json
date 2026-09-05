@@ -1,0 +1,51 @@
+{
+  "id": "Eb_maj_keys",
+  "key": "Eb",
+  "quality": "maj",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 67,
+      "vel": 59,
+      "time": -0.1896,
+      "duration": 18.5167
+    },
+    {
+      "note": 70,
+      "vel": 70,
+      "time": -0.0458,
+      "duration": 29.5896
+    },
+    {
+      "note": 51,
+      "vel": 55,
+      "time": -0.0229,
+      "duration": 3.275
+    },
+    {
+      "note": 75,
+      "vel": 103,
+      "time": 0.0,
+      "duration": 33.2333
+    },
+    {
+      "note": 55,
+      "vel": 57,
+      "time": 0.4938,
+      "duration": 18.9229
+    },
+    {
+      "note": 58,
+      "vel": 52,
+      "time": 0.9896,
+      "duration": 14.2063
+    },
+    {
+      "note": 63,
+      "vel": 68,
+      "time": 1.4875,
+      "duration": 31.7104
+    }
+  ]
+}

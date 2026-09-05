@@ -1,0 +1,39 @@
+{
+  "id": "Eb_sus4_keys",
+  "key": "Eb",
+  "quality": "sus4",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 68,
+      "vel": 85,
+      "time": 0.0187,
+      "duration": 23.25
+    },
+    {
+      "note": 75,
+      "vel": 90,
+      "time": 0.0187,
+      "duration": 29.5375
+    },
+    {
+      "note": 51,
+      "vel": 74,
+      "time": 0.0229,
+      "duration": 3.0625
+    },
+    {
+      "note": 70,
+      "vel": 88,
+      "time": 0.0229,
+      "duration": 29.5396
+    },
+    {
+      "note": 63,
+      "vel": 31,
+      "time": 2.4792,
+      "duration": 0.4708
+    }
+  ]
+}

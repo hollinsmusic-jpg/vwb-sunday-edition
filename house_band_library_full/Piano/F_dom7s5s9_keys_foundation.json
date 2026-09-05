@@ -1,0 +1,51 @@
+{
+  "id": "F_dom7#5#9_keys",
+  "key": "F",
+  "quality": "dom7#5#9",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 51,
+      "vel": 98,
+      "time": -0.025,
+      "duration": 27.8896
+    },
+    {
+      "note": 69,
+      "vel": 111,
+      "time": -0.025,
+      "duration": 6.5875
+    },
+    {
+      "note": 80,
+      "vel": 106,
+      "time": -0.0229,
+      "duration": 2.3833
+    },
+    {
+      "note": 73,
+      "vel": 98,
+      "time": -0.0167,
+      "duration": 23.2396
+    },
+    {
+      "note": 75,
+      "vel": 90,
+      "time": -0.0167,
+      "duration": 11.2021
+    },
+    {
+      "note": 57,
+      "vel": 84,
+      "time": -0.0146,
+      "duration": 27.8667
+    },
+    {
+      "note": 61,
+      "vel": 91,
+      "time": -0.0146,
+      "duration": 23.2771
+    }
+  ]
+}

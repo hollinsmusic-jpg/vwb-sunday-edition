@@ -1,0 +1,44 @@
+{
+  "musician": "Sanchez Rivera",
+  "instrument": "Guitar",
+  "style": "Worship Ballad",
+  "mood": "Calm / Worshipful",
+  "originalKey": "D",
+  "originalTempo": 69.99998833333528,
+  "degreeLabel": "One",
+  "quality": "Major 7",
+  "alterations": [],
+  "chordLabel": "One, Major 7",
+  "progressionName": "4over1-1",
+  "section": "D",
+  "sourceChord": "Dmaj7",
+  "measureRange": "m14b1-m15b1",
+  "durationSeconds": 3.428572,
+  "noteCount": 3,
+  "notes": [
+    {
+      "midi": 57,
+      "name": "A3",
+      "time": 0,
+      "duration": 3.8571434999999994,
+      "velocity": 0.6062992125984252,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 62,
+      "name": "D4",
+      "time": 0,
+      "duration": 3.4178577124999947,
+      "velocity": 0.7637795275590551,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 54,
+      "name": "F#3",
+      "time": 0,
+      "duration": 3.4196434270833365,
+      "velocity": 0.5984251968503937,
+      "sustainedFromPrevious": false
+    }
+  ]
+}

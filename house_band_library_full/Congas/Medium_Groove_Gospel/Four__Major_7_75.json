@@ -1,0 +1,101 @@
+{
+  "musician": "Diane Moore",
+  "instrument": "Congas",
+  "style": "Medium Groove Gospel",
+  "mood": "Energetic / Lively",
+  "auxVoicing": null,
+  "originalKey": "Db",
+  "originalTempo": 69.99998833333528,
+  "degreeLabel": "Four",
+  "quality": "Major 7",
+  "alterations": [],
+  "chordLabel": "Four, Major 7",
+  "progressionName": "4-3-6-2-6-5over7",
+  "section": "C",
+  "sourceChord": "Gbmaj7",
+  "measureRange": "m9b1-m10b1",
+  "durationSeconds": 3.428572,
+  "noteCount": 10,
+  "notes": [
+    {
+      "midi": 67,
+      "name": "G4",
+      "time": 0,
+      "duration": 0.5357143750000013,
+      "velocity": 0.7637795275590551,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 62,
+      "name": "D4",
+      "time": 0.417857,
+      "duration": 0.3571429166666711,
+      "velocity": 0.6771653543307087,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 69,
+      "name": "A4",
+      "time": 0.667857,
+      "duration": 0.13214287916666123,
+      "velocity": 0.8818897637795275,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 62,
+      "name": "D4",
+      "time": 1.076786,
+      "duration": 0.16428574166666365,
+      "velocity": 0.6220472440944882,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 67,
+      "name": "G4",
+      "time": 1.267857,
+      "duration": 0.1535714541666664,
+      "velocity": 0.8346456692913385,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 67,
+      "name": "G4",
+      "time": 1.516072,
+      "duration": 0.1428571666666727,
+      "velocity": 0.8031496062992126,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 62,
+      "name": "D4",
+      "time": 2.146429,
+      "duration": 0.29464290624999734,
+      "velocity": 0.7322834645669292,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 69,
+      "name": "A4",
+      "time": 2.382143,
+      "duration": 0.12857144999999903,
+      "velocity": 0.9133858267716536,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 62,
+      "name": "D4",
+      "time": 2.953572,
+      "duration": 0.11607144791666357,
+      "velocity": 0.4645669291338583,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 67,
+      "name": "G4",
+      "time": 3,
+      "duration": 0.1517857395833353,
+      "velocity": 0.8976377952755905,
+      "sustainedFromPrevious": false
+    }
+  ]
+}

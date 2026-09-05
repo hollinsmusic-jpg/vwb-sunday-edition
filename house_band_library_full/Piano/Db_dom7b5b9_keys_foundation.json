@@ -1,0 +1,45 @@
+{
+  "id": "Db_dom7b5b9_keys",
+  "key": "Db",
+  "quality": "dom7b5b9",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 62,
+      "vel": 90,
+      "time": -0.0167,
+      "duration": 39.3438
+    },
+    {
+      "note": 67,
+      "vel": 88,
+      "time": -0.0146,
+      "duration": 35.4479
+    },
+    {
+      "note": 71,
+      "vel": 84,
+      "time": -0.0146,
+      "duration": 39.3917
+    },
+    {
+      "note": 53,
+      "vel": 73,
+      "time": -0.0125,
+      "duration": 3.6625
+    },
+    {
+      "note": 74,
+      "vel": 86,
+      "time": -0.0125,
+      "duration": 31.3771
+    },
+    {
+      "note": 59,
+      "vel": 81,
+      "time": -0.0063,
+      "duration": 27.3417
+    }
+  ]
+}

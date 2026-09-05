@@ -1,0 +1,76 @@
+{
+  "musician": "Paul Simmons",
+  "instrument": "Organ",
+  "style": "Worship Ballad",
+  "mood": "Calm / Worshipful",
+  "originalKey": "D",
+  "originalTempo": 69.99998833333528,
+  "degreeLabel": "Five",
+  "quality": "Suspended 4, Flat 7",
+  "alterations": [],
+  "chordLabel": "Five, Suspended 4, Flat 7",
+  "progressionName": "2-5sus-1-1sus-1dom",
+  "section": "B",
+  "sourceChord": "A7sus4",
+  "measureRange": "m6b1-m7b1",
+  "durationSeconds": 3.428572,
+  "noteCount": 7,
+  "notes": [
+    {
+      "midi": 69,
+      "name": "A4",
+      "time": 0,
+      "duration": 6.921429724999999,
+      "velocity": 0.3228346456692913,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 67,
+      "name": "G4",
+      "time": 0,
+      "duration": 6.905358293749998,
+      "velocity": 0.49606299212598426,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 83,
+      "name": "B5",
+      "time": 0,
+      "duration": 4.280357856249999,
+      "velocity": 0.4566929133858268,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 86,
+      "name": "D6",
+      "time": 0,
+      "duration": 5.8589295479166665,
+      "velocity": 0.6299212598425197,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 79,
+      "name": "G5",
+      "time": 0,
+      "duration": 3.30000055,
+      "velocity": 0.5511811023622047,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 71,
+      "name": "B4",
+      "time": 0,
+      "duration": 3.494643439583335,
+      "velocity": 0.5354330708661418,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 74,
+      "name": "D5",
+      "time": 0.005357,
+      "duration": 3.028571933333332,
+      "velocity": 0.49606299212598426,
+      "sustainedFromPrevious": false
+    }
+  ]
+}

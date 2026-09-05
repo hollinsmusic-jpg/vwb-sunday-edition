@@ -1,0 +1,41 @@
+{
+  "id": "tw-bass-congregational-dom7-gb-v3",
+  "slot": "bass",
+  "musician": "terry-washington",
+  "type": "chord",
+  "quality": "dom7",
+  "key": "Gb",
+  "variation": "v3",
+  "style": "congregational",
+  "feel": "swing",
+  "energy": "medium-high",
+  "timeSig": "4/4",
+  "tempoRange": "medium-uptempo",
+  "beats": 4,
+  "events": [
+    {
+      "note": 42,
+      "vel": 86,
+      "time": 0.0,
+      "duration": 0.65
+    },
+    {
+      "note": 42,
+      "vel": 96,
+      "time": 1.0,
+      "duration": 0.5604
+    },
+    {
+      "note": 42,
+      "vel": 91,
+      "time": 2.0,
+      "duration": 0.5542
+    },
+    {
+      "note": 42,
+      "vel": 82,
+      "time": 3.0,
+      "duration": 0.6521
+    }
+  ]
+}

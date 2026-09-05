@@ -1,0 +1,109 @@
+{
+  "musician": "Sanchez Rivera",
+  "instrument": "Guitar",
+  "style": "Medium Groove Gospel",
+  "mood": "Energetic / Lively",
+  "auxVoicing": null,
+  "originalKey": "Db",
+  "originalTempo": 69.99998833333528,
+  "degreeLabel": "Two",
+  "quality": "Minor 7",
+  "alterations": [],
+  "chordLabel": "Two, Minor 7",
+  "progressionName": "2-5sus-1-1sus-1dom",
+  "section": "B",
+  "sourceChord": "Ebm7",
+  "measureRange": "m5b1-m6b1",
+  "durationSeconds": 3.428572,
+  "noteCount": 11,
+  "notes": [
+    {
+      "midi": 58,
+      "name": "A#3",
+      "time": 0,
+      "duration": 2.221428941666666,
+      "velocity": 0.47244094488188976,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 61,
+      "name": "C#4",
+      "time": 0,
+      "duration": 1.3785716583333336,
+      "velocity": 0.7401574803149606,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 54,
+      "name": "F#3",
+      "time": 0,
+      "duration": 1.6750002791666674,
+      "velocity": 0.5826771653543307,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 61,
+      "name": "C#4",
+      "time": 1.5125,
+      "duration": 0.09285715833333086,
+      "velocity": 0.7716535433070866,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 54,
+      "name": "F#3",
+      "time": 1.932143,
+      "duration": 1.0589287479166654,
+      "velocity": 0.4330708661417323,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 58,
+      "name": "A#3",
+      "time": 2.116072,
+      "duration": 0.5928572416666675,
+      "velocity": 0.5196850393700787,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 61,
+      "name": "C#4",
+      "time": 2.369643,
+      "duration": 0.8589287145833318,
+      "velocity": 0.84251968503937,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 58,
+      "name": "A#3",
+      "time": 2.982143,
+      "duration": 0.4071429249999987,
+      "velocity": 0.28346456692913385,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 63,
+      "name": "D#4",
+      "time": 3.408929,
+      "duration": 1.2982145020833364,
+      "velocity": 0.6850393700787402,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 61,
+      "name": "C#4",
+      "time": 3.412501,
+      "duration": 1.2803573562500041,
+      "velocity": 0.7559055118110236,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 54,
+      "name": "F#3",
+      "time": 3.417858,
+      "duration": 1.642857416666665,
+      "velocity": 0.47244094488188976,
+      "sustainedFromPrevious": false
+    }
+  ]
+}

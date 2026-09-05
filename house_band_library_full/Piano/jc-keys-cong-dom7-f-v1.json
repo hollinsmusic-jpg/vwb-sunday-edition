@@ -1,0 +1,165 @@
+{
+  "id": "jc-keys-cong-dom7-f-v1",
+  "slot": "keys",
+  "style": "congregational",
+  "quality": "dom7",
+  "key": "F",
+  "events": [
+    {
+      "note": 68,
+      "vel": 101,
+      "time": 0.0,
+      "duration": 0.1938
+    },
+    {
+      "note": 67,
+      "vel": 95,
+      "time": 0.0,
+      "duration": 0.2417
+    },
+    {
+      "note": 69,
+      "vel": 100,
+      "time": 0.0,
+      "duration": 0.2437
+    },
+    {
+      "note": 57,
+      "vel": 75,
+      "time": 0.0,
+      "duration": 0.3062
+    },
+    {
+      "note": 60,
+      "vel": 86,
+      "time": 0.0,
+      "duration": 0.3333
+    },
+    {
+      "note": 51,
+      "vel": 100,
+      "time": 0.0,
+      "duration": 0.3417
+    },
+    {
+      "note": 77,
+      "vel": 86,
+      "time": 0.0,
+      "duration": 0.4438
+    },
+    {
+      "note": 72,
+      "vel": 90,
+      "time": 0.0,
+      "duration": 0.4604
+    },
+    {
+      "note": 53,
+      "vel": 84,
+      "time": 0.9625,
+      "duration": 0.2792
+    },
+    {
+      "note": 58,
+      "vel": 87,
+      "time": 0.9625,
+      "duration": 0.3771
+    },
+    {
+      "note": 70,
+      "vel": 101,
+      "time": 0.9625,
+      "duration": 0.3958
+    },
+    {
+      "note": 62,
+      "vel": 88,
+      "time": 0.9646,
+      "duration": 0.2437
+    },
+    {
+      "note": 74,
+      "vel": 90,
+      "time": 0.9646,
+      "duration": 0.4625
+    },
+    {
+      "note": 65,
+      "vel": 108,
+      "time": 0.9708,
+      "duration": 0.3896
+    },
+    {
+      "note": 77,
+      "vel": 95,
+      "time": 0.9708,
+      "duration": 0.4646
+    },
+    {
+      "note": 68,
+      "vel": 98,
+      "time": 1.6208,
+      "duration": 0.2479
+    },
+    {
+      "note": 72,
+      "vel": 84,
+      "time": 1.6208,
+      "duration": 0.4062
+    },
+    {
+      "note": 67,
+      "vel": 93,
+      "time": 1.6229,
+      "duration": 0.2771
+    },
+    {
+      "note": 51,
+      "vel": 87,
+      "time": 1.6313,
+      "duration": 0.4167
+    },
+    {
+      "note": 77,
+      "vel": 53,
+      "time": 1.6313,
+      "duration": 0.4333
+    },
+    {
+      "note": 57,
+      "vel": 68,
+      "time": 1.6375,
+      "duration": 0.4979
+    },
+    {
+      "note": 60,
+      "vel": 64,
+      "time": 1.6521,
+      "duration": 0.3604
+    },
+    {
+      "note": 62,
+      "vel": 57,
+      "time": 1.6583,
+      "duration": 0.0813
+    },
+    {
+      "note": 69,
+      "vel": 86,
+      "time": 1.9125,
+      "duration": 0.2375
+    },
+    {
+      "note": 77,
+      "vel": 106,
+      "time": 2.6583,
+      "duration": 0.8625
+    },
+    {
+      "note": 65,
+      "vel": 108,
+      "time": 2.6583,
+      "duration": 1.1021
+    }
+  ]
+}

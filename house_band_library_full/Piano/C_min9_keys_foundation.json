@@ -1,0 +1,39 @@
+{
+  "id": "C_min9_keys",
+  "key": "C",
+  "quality": "min9",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 67,
+      "vel": 84,
+      "time": 0.0,
+      "duration": 1.8604
+    },
+    {
+      "note": 74,
+      "vel": 90,
+      "time": 0.0,
+      "duration": 1.8583
+    },
+    {
+      "note": 48,
+      "vel": 62,
+      "time": 0.0,
+      "duration": 1.8208
+    },
+    {
+      "note": 58,
+      "vel": 66,
+      "time": 0.0,
+      "duration": 30.5792
+    },
+    {
+      "note": 63,
+      "vel": 79,
+      "time": 0.0,
+      "duration": 34.4771
+    }
+  ]
+}

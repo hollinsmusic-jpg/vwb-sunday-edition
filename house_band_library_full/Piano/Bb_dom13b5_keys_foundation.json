@@ -1,0 +1,39 @@
+{
+  "id": "Bb_dom13b5_keys",
+  "key": "Bb",
+  "quality": "dom13b5",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 72,
+      "vel": 88,
+      "time": -0.0042,
+      "duration": 3.5208
+    },
+    {
+      "note": 76,
+      "vel": 93,
+      "time": 0.0,
+      "duration": 3.5333
+    },
+    {
+      "note": 79,
+      "vel": 102,
+      "time": 0.0,
+      "duration": 3.5458
+    },
+    {
+      "note": 62,
+      "vel": 84,
+      "time": 0.0042,
+      "duration": 3.4688
+    },
+    {
+      "note": 68,
+      "vel": 80,
+      "time": 0.0042,
+      "duration": 3.4875
+    }
+  ]
+}

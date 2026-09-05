@@ -1,0 +1,45 @@
+{
+  "id": "D_dom13_keys",
+  "key": "D",
+  "quality": "dom13",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 60,
+      "vel": 75,
+      "time": -0.0083,
+      "duration": 27.7708
+    },
+    {
+      "note": 54,
+      "vel": 85,
+      "time": -0.0063,
+      "duration": 27.3979
+    },
+    {
+      "note": 71,
+      "vel": 88,
+      "time": -0.0063,
+      "duration": 31.4479
+    },
+    {
+      "note": 64,
+      "vel": 100,
+      "time": -0.0063,
+      "duration": 23.4708
+    },
+    {
+      "note": 68,
+      "vel": 93,
+      "time": -0.0063,
+      "duration": 39.8208
+    },
+    {
+      "note": 76,
+      "vel": 90,
+      "time": -0.0021,
+      "duration": 35.3396
+    }
+  ]
+}

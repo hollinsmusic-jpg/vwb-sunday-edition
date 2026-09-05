@@ -1,0 +1,57 @@
+{
+  "id": "E_maj7_keys",
+  "key": "E",
+  "quality": "maj7",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 68,
+      "vel": 60,
+      "time": -0.0292,
+      "duration": 22.7271
+    },
+    {
+      "note": 56,
+      "vel": 58,
+      "time": -0.0125,
+      "duration": 3.225
+    },
+    {
+      "note": 59,
+      "vel": 62,
+      "time": -0.0125,
+      "duration": 14.3729
+    },
+    {
+      "note": 52,
+      "vel": 57,
+      "time": -0.0104,
+      "duration": 22.725
+    },
+    {
+      "note": 63,
+      "vel": 58,
+      "time": -0.0104,
+      "duration": 19.0729
+    },
+    {
+      "note": 75,
+      "vel": 103,
+      "time": 0.0312,
+      "duration": 1.4917
+    },
+    {
+      "note": 66,
+      "vel": 85,
+      "time": 1.9812,
+      "duration": 29.9896
+    },
+    {
+      "note": 71,
+      "vel": 86,
+      "time": 3.0042,
+      "duration": 19.675
+    }
+  ]
+}

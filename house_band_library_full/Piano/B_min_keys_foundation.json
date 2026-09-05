@@ -1,0 +1,39 @@
+{
+  "id": "B_min_keys",
+  "key": "B",
+  "quality": "min",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 74,
+      "vel": 81,
+      "time": 0.0146,
+      "duration": 3.9167
+    },
+    {
+      "note": 59,
+      "vel": 70,
+      "time": 0.0167,
+      "duration": 3.9479
+    },
+    {
+      "note": 66,
+      "vel": 98,
+      "time": 0.0167,
+      "duration": 3.8917
+    },
+    {
+      "note": 71,
+      "vel": 84,
+      "time": 0.0187,
+      "duration": 3.925
+    },
+    {
+      "note": 78,
+      "vel": 93,
+      "time": 0.0187,
+      "duration": 3.9042
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "id": "Gb_dom7#5#9_keys",
+  "key": "Gb",
+  "quality": "dom7#5#9",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 58,
+      "vel": 107,
+      "time": -0.0479,
+      "duration": 2.5729
+    },
+    {
+      "note": 62,
+      "vel": 110,
+      "time": -0.0417,
+      "duration": 23.8708
+    },
+    {
+      "note": 69,
+      "vel": 107,
+      "time": -0.0417,
+      "duration": 2.6042
+    },
+    {
+      "note": 52,
+      "vel": 93,
+      "time": -0.0375,
+      "duration": 2.5312
+    },
+    {
+      "note": 64,
+      "vel": 102,
+      "time": -0.0375,
+      "duration": 11.3708
+    }
+  ]
+}

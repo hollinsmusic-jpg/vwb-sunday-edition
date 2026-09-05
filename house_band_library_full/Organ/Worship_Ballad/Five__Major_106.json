@@ -1,0 +1,92 @@
+{
+  "musician": "Paul Simmons",
+  "instrument": "Organ",
+  "style": "Worship Ballad",
+  "mood": "Calm / Worshipful",
+  "originalKey": "D",
+  "originalTempo": 69.99998833333528,
+  "degreeLabel": "Five",
+  "quality": "Major",
+  "alterations": [],
+  "chordLabel": "Five, Major",
+  "progressionName": "4-3-6-2-6-5over7",
+  "section": "C",
+  "sourceChord": "A/C#",
+  "measureRange": "m12b3-m13b1",
+  "durationSeconds": 1.714286,
+  "noteCount": 9,
+  "notes": [
+    {
+      "midi": 86,
+      "name": "D6",
+      "time": 0,
+      "duration": 6.858929714583333,
+      "velocity": 0.49606299212598426,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 81,
+      "name": "A5",
+      "time": 0,
+      "duration": 13.744645147916664,
+      "velocity": 0.4409448818897638,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 74,
+      "name": "D5",
+      "time": 0,
+      "duration": 1.7178574291666635,
+      "velocity": 0.2992125984251969,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 69,
+      "name": "A4",
+      "time": 0,
+      "duration": 3.417857712500009,
+      "velocity": 0.4015748031496063,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 88,
+      "name": "E6",
+      "time": 0,
+      "duration": 1.7607145791666667,
+      "velocity": 0.4566929133858268,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 76,
+      "name": "E5",
+      "time": 0,
+      "duration": 1.7535717208333352,
+      "velocity": 0.5748031496062992,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 64,
+      "name": "E4",
+      "time": 0,
+      "duration": 1.750000291666666,
+      "velocity": 0.28346456692913385,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 73,
+      "name": "C#5",
+      "time": 0.007143,
+      "duration": 1.7535717208333352,
+      "velocity": 0.5354330708661418,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 86,
+      "name": "D6",
+      "time": 1.703572,
+      "duration": 6.853572570833336,
+      "velocity": 0.2677165354330709,
+      "sustainedFromPrevious": false
+    }
+  ]
+}

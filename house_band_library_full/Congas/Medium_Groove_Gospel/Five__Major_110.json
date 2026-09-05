@@ -1,0 +1,53 @@
+{
+  "musician": "Diane Moore",
+  "instrument": "Congas",
+  "style": "Medium Groove Gospel",
+  "mood": "Energetic / Lively",
+  "auxVoicing": null,
+  "originalKey": "Db",
+  "originalTempo": 69.99998833333528,
+  "degreeLabel": "Five",
+  "quality": "Major",
+  "alterations": [],
+  "chordLabel": "Five, Major",
+  "progressionName": "4-3-6-2-6-5over7",
+  "section": "C",
+  "sourceChord": "Ab/C",
+  "measureRange": "m12b3-m13b1",
+  "durationSeconds": 1.714286,
+  "noteCount": 4,
+  "notes": [
+    {
+      "midi": 62,
+      "name": "D4",
+      "time": 0.408929,
+      "duration": 0.3178571958333407,
+      "velocity": 0.6220472440944882,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 69,
+      "name": "A4",
+      "time": 0.646429,
+      "duration": 0.13214287916666478,
+      "velocity": 0.9133858267716536,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 62,
+      "name": "D4",
+      "time": 1.066072,
+      "duration": 0.2232143229166681,
+      "velocity": 0.7086614173228346,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 67,
+      "name": "G4",
+      "time": 1.264286,
+      "duration": 0.1535714541666735,
+      "velocity": 0.9133858267716536,
+      "sustainedFromPrevious": false
+    }
+  ]
+}

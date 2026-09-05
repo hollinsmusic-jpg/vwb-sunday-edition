@@ -1,0 +1,57 @@
+{
+  "id": "Gb_maj7_keys",
+  "key": "Gb",
+  "quality": "maj7",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 68,
+      "vel": 53,
+      "time": -0.0333,
+      "duration": 14.7312
+    },
+    {
+      "note": 70,
+      "vel": 78,
+      "time": -0.0167,
+      "duration": 23.9896
+    },
+    {
+      "note": 54,
+      "vel": 52,
+      "time": -0.0063,
+      "duration": 23.9792
+    },
+    {
+      "note": 58,
+      "vel": 66,
+      "time": -0.0063,
+      "duration": 11.1271
+    },
+    {
+      "note": 61,
+      "vel": 74,
+      "time": -0.0042,
+      "duration": 24.0104
+    },
+    {
+      "note": 77,
+      "vel": 93,
+      "time": 0.0437,
+      "duration": 19.0708
+    },
+    {
+      "note": 65,
+      "vel": 75,
+      "time": 2.0021,
+      "duration": 17.1938
+    },
+    {
+      "note": 73,
+      "vel": 83,
+      "time": 2.0063,
+      "duration": 21.9229
+    }
+  ]
+}

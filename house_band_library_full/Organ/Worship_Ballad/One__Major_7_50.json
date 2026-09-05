@@ -1,0 +1,140 @@
+{
+  "musician": "Paul Simmons",
+  "instrument": "Organ",
+  "style": "Worship Ballad",
+  "mood": "Calm / Worshipful",
+  "originalKey": "D",
+  "originalTempo": 69.99998833333528,
+  "degreeLabel": "One",
+  "quality": "Major 7",
+  "alterations": [],
+  "chordLabel": "One, Major 7",
+  "progressionName": "2-5sus-1-1sus-1dom",
+  "section": "B",
+  "sourceChord": "Dmaj7",
+  "measureRange": "m7b1-m8b1",
+  "durationSeconds": 3.428572,
+  "noteCount": 15,
+  "notes": [
+    {
+      "midi": 67,
+      "name": "G4",
+      "time": 0,
+      "duration": 6.905358293749998,
+      "velocity": 0.49606299212598426,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 83,
+      "name": "B5",
+      "time": 0,
+      "duration": 4.280357856249999,
+      "velocity": 0.4566929133858268,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 86,
+      "name": "D6",
+      "time": 0,
+      "duration": 5.8589295479166665,
+      "velocity": 0.6299212598425197,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 71,
+      "name": "B4",
+      "time": 0,
+      "duration": 3.494643439583335,
+      "velocity": 0.5354330708661418,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 69,
+      "name": "A4",
+      "time": 0.025,
+      "duration": 2.991071927083336,
+      "velocity": 0.3228346456692913,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 76,
+      "name": "E5",
+      "time": 0.025,
+      "duration": 1.9660717562500025,
+      "velocity": 0.5748031496062992,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 66,
+      "name": "F#4",
+      "time": 0.030357,
+      "duration": 2.692857591666666,
+      "velocity": 0.41732283464566927,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 74,
+      "name": "D5",
+      "time": 0.030357,
+      "duration": 3.232143395833333,
+      "velocity": 0.2440944881889764,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 81,
+      "name": "A5",
+      "time": 0.035714,
+      "duration": 2.64107186875,
+      "velocity": 0.5748031496062992,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 88,
+      "name": "E6",
+      "time": 2.591072,
+      "duration": 0.10714287500000097,
+      "velocity": 0.2992125984251969,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 89,
+      "name": "F6",
+      "time": 2.626786,
+      "duration": 0.15357145416666285,
+      "velocity": 0.5669291338582677,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 90,
+      "name": "F#6",
+      "time": 2.75,
+      "duration": 0.3392857708333352,
+      "velocity": 0.4409448818897638,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 88,
+      "name": "E6",
+      "time": 3.026786,
+      "duration": 0.1625000270833361,
+      "velocity": 0.5748031496062992,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 86,
+      "name": "D6",
+      "time": 3.183929,
+      "duration": 0.31607148124999895,
+      "velocity": 0.47244094488188976,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 87,
+      "name": "D#6",
+      "time": 3.412501,
+      "duration": 0.18214288750000307,
+      "velocity": 0.5039370078740157,
+      "sustainedFromPrevious": false
+    }
+  ]
+}

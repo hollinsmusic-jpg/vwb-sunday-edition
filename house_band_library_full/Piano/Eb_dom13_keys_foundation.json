@@ -1,0 +1,45 @@
+{
+  "id": "Eb_dom13_keys",
+  "key": "Eb",
+  "quality": "dom13",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 65,
+      "vel": 90,
+      "time": 0.0125,
+      "duration": 23.4542
+    },
+    {
+      "note": 72,
+      "vel": 93,
+      "time": 0.0125,
+      "duration": 31.3333
+    },
+    {
+      "note": 61,
+      "vel": 94,
+      "time": 0.0125,
+      "duration": 27.2958
+    },
+    {
+      "note": 69,
+      "vel": 88,
+      "time": 0.0125,
+      "duration": 19.4708
+    },
+    {
+      "note": 77,
+      "vel": 84,
+      "time": 0.0146,
+      "duration": 35.8021
+    },
+    {
+      "note": 55,
+      "vel": 75,
+      "time": 0.0208,
+      "duration": 27.2292
+    }
+  ]
+}

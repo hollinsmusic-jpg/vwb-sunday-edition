@@ -1,0 +1,165 @@
+{
+  "musician": "Paul Simmons",
+  "instrument": "Organ",
+  "style": "Medium Groove Gospel",
+  "mood": "Energetic / Lively",
+  "auxVoicing": null,
+  "originalKey": "Db",
+  "originalTempo": 69.99998833333528,
+  "degreeLabel": "One",
+  "quality": "Major 7",
+  "alterations": [],
+  "chordLabel": "One, Major 7",
+  "progressionName": "2-5-1-3-6",
+  "section": "A",
+  "sourceChord": "Dbmaj7",
+  "measureRange": "m2b1-m3b1",
+  "durationSeconds": 3.428572,
+  "noteCount": 18,
+  "notes": [
+    {
+      "midi": 72,
+      "name": "C5",
+      "time": 0,
+      "duration": 0.9017858645833332,
+      "velocity": 0.6929133858267716,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 68,
+      "name": "G#4",
+      "time": 0,
+      "duration": 2.600000433333333,
+      "velocity": 0.5905511811023622,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 75,
+      "name": "D#5",
+      "time": 0,
+      "duration": 0.11428573333333336,
+      "velocity": 0.47244094488188976,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 65,
+      "name": "F4",
+      "time": 0,
+      "duration": 1.7392860041666665,
+      "velocity": 0.4015748031496063,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 76,
+      "name": "E5",
+      "time": 0.005357,
+      "duration": 0.11071430416666761,
+      "velocity": 0.7086614173228346,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 77,
+      "name": "F5",
+      "time": 0.051786,
+      "duration": 1.2107144874999998,
+      "velocity": 0.5196850393700787,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 87,
+      "name": "D#6",
+      "time": 1.701786,
+      "duration": 0.08750001458333312,
+      "velocity": 0.6535433070866141,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 80,
+      "name": "G#5",
+      "time": 1.710715,
+      "duration": 0.6000000999999999,
+      "velocity": 0.5354330708661418,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 88,
+      "name": "E6",
+      "time": 1.719643,
+      "duration": 0.11250001875000049,
+      "velocity": 0.5669291338582677,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 89,
+      "name": "F6",
+      "time": 1.766072,
+      "duration": 0.5839286687499987,
+      "velocity": 0.2677165354330709,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 87,
+      "name": "D#6",
+      "time": 2.351786,
+      "duration": 0.18035717291666575,
+      "velocity": 0.5511811023622047,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 78,
+      "name": "F#5",
+      "time": 2.376786,
+      "duration": 0.13750002291666696,
+      "velocity": 0.4566929133858268,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 85,
+      "name": "C#6",
+      "time": 2.55,
+      "duration": 0.8785715750000005,
+      "velocity": 0.5748031496062992,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 77,
+      "name": "F5",
+      "time": 2.557143,
+      "duration": 0.7178572624999999,
+      "velocity": 0.6377952755905512,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 84,
+      "name": "C6",
+      "time": 3.408929,
+      "duration": 0.6250001041666664,
+      "velocity": 0.6771653543307087,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 75,
+      "name": "D#5",
+      "time": 3.416072,
+      "duration": 0.6107143874999998,
+      "velocity": 0.6692913385826772,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 68,
+      "name": "G#4",
+      "time": 3.423215,
+      "duration": 1.7071431416666671,
+      "velocity": 0.5511811023622047,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 72,
+      "name": "C5",
+      "time": 3.423215,
+      "duration": 0.903571579166667,
+      "velocity": 0.4881889763779528,
+      "sustainedFromPrevious": false
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "id": "Gb_sus4_keys",
+  "key": "Gb",
+  "quality": "sus4",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 78,
+      "vel": 95,
+      "time": -0.0271,
+      "duration": 24.0833
+    },
+    {
+      "note": 54,
+      "vel": 74,
+      "time": -0.025,
+      "duration": 3.1396
+    },
+    {
+      "note": 73,
+      "vel": 93,
+      "time": -0.025,
+      "duration": 9.4354
+    },
+    {
+      "note": 71,
+      "vel": 81,
+      "time": -0.0208,
+      "duration": 24.0625
+    },
+    {
+      "note": 66,
+      "vel": 73,
+      "time": 2.0125,
+      "duration": 0.8208
+    }
+  ]
+}

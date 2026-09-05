@@ -1,0 +1,39 @@
+{
+  "id": "D_min6_keys",
+  "key": "D",
+  "quality": "min6",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 69,
+      "vel": 81,
+      "time": 0.0104,
+      "duration": 30.8792
+    },
+    {
+      "note": 62,
+      "vel": 90,
+      "time": 0.0125,
+      "duration": 39.9417
+    },
+    {
+      "note": 71,
+      "vel": 88,
+      "time": 0.0125,
+      "duration": 39.9292
+    },
+    {
+      "note": 50,
+      "vel": 48,
+      "time": 0.0146,
+      "duration": 2.5938
+    },
+    {
+      "note": 65,
+      "vel": 68,
+      "time": 1.9833,
+      "duration": 32.5083
+    }
+  ]
+}

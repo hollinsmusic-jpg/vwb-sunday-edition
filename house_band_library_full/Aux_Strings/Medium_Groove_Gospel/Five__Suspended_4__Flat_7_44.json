@@ -1,0 +1,181 @@
+{
+  "musician": "Larry Evans",
+  "instrument": "Aux Strings",
+  "style": "Medium Groove Gospel",
+  "mood": "Energetic / Lively",
+  "auxVoicing": "Brass Synth",
+  "originalKey": "Db",
+  "originalTempo": 69.99998833333528,
+  "degreeLabel": "Five",
+  "quality": "Suspended 4, Flat 7",
+  "alterations": [],
+  "chordLabel": "Five, Suspended 4, Flat 7",
+  "progressionName": "2-5sus-1-1sus-1dom",
+  "section": "B",
+  "sourceChord": "Ab7sus4",
+  "measureRange": "m6b1-m7b1",
+  "durationSeconds": 3.428572,
+  "noteCount": 20,
+  "notes": [
+    {
+      "midi": 68,
+      "name": "G#4",
+      "time": 0,
+      "duration": 0.12857144999999903,
+      "velocity": 0.7952755905511811,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 56,
+      "name": "G#3",
+      "time": 0,
+      "duration": 0.11785716249999822,
+      "velocity": 0.6456692913385826,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 56,
+      "name": "G#3",
+      "time": 0.425,
+      "duration": 0.1464285958333349,
+      "velocity": 0.7559055118110236,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 68,
+      "name": "G#4",
+      "time": 0.426786,
+      "duration": 0.13214287916666834,
+      "velocity": 0.8582677165354331,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 65,
+      "name": "F4",
+      "time": 0.844643,
+      "duration": 0.1517857395833353,
+      "velocity": 0.6929133858267716,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 53,
+      "name": "F3",
+      "time": 0.85,
+      "duration": 0.11964287708333288,
+      "velocity": 0.6220472440944882,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 70,
+      "name": "A#4",
+      "time": 1.275,
+      "duration": 0.13035716458333368,
+      "velocity": 0.7952755905511811,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 58,
+      "name": "A#3",
+      "time": 1.278572,
+      "duration": 0.10357144583333167,
+      "velocity": 0.7874015748031497,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 56,
+      "name": "G#3",
+      "time": 1.703572,
+      "duration": 0.2571429000000016,
+      "velocity": 0.6850393700787402,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 68,
+      "name": "G#4",
+      "time": 1.708929,
+      "duration": 0.2303571812499996,
+      "velocity": 0.7716535433070866,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 70,
+      "name": "A#4",
+      "time": 1.957143,
+      "duration": 0.12678573541666438,
+      "velocity": 0.7716535433070866,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 58,
+      "name": "A#3",
+      "time": 1.960715,
+      "duration": 0.11071430416666672,
+      "velocity": 0.7007874015748031,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 68,
+      "name": "G#4",
+      "time": 2.571429,
+      "duration": 0.16428574166666365,
+      "velocity": 0.6929133858267716,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 56,
+      "name": "G#3",
+      "time": 2.576786,
+      "duration": 0.1553571687499975,
+      "velocity": 0.6220472440944882,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 70,
+      "name": "A#4",
+      "time": 2.798215,
+      "duration": 0.09821430208333126,
+      "velocity": 0.4409448818897638,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 58,
+      "name": "A#3",
+      "time": 2.801786,
+      "duration": 0.10000001666666591,
+      "velocity": 0.4094488188976378,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 73,
+      "name": "C#5",
+      "time": 2.982143,
+      "duration": 0.31250005208332965,
+      "velocity": 0.8346456692913385,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 61,
+      "name": "C#4",
+      "time": 2.989286,
+      "duration": 0.27500004583333393,
+      "velocity": 0.6220472440944882,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 61,
+      "name": "C#4",
+      "time": 3.426786,
+      "duration": 0.4642857916666685,
+      "velocity": 0.7401574803149606,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 73,
+      "name": "C#5",
+      "time": 3.426786,
+      "duration": 0.43214292916666963,
+      "velocity": 0.8582677165354331,
+      "sustainedFromPrevious": false
+    }
+  ]
+}

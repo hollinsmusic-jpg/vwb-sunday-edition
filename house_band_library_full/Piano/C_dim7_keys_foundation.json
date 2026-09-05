@@ -1,0 +1,63 @@
+{
+  "id": "C_dim7_keys",
+  "key": "C",
+  "quality": "dim7",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 57,
+      "vel": 66,
+      "time": 0.0,
+      "duration": 39.0938
+    },
+    {
+      "note": 60,
+      "vel": 77,
+      "time": 0.0,
+      "duration": 39.0521
+    },
+    {
+      "note": 63,
+      "vel": 74,
+      "time": 0.0,
+      "duration": 39.1125
+    },
+    {
+      "note": 66,
+      "vel": 70,
+      "time": 0.0,
+      "duration": 39.1063
+    },
+    {
+      "note": 72,
+      "vel": 81,
+      "time": 0.0,
+      "duration": 39.1271
+    },
+    {
+      "note": 48,
+      "vel": 53,
+      "time": 0.0,
+      "duration": 2.2146
+    },
+    {
+      "note": 51,
+      "vel": 55,
+      "time": 0.0,
+      "duration": 14.3187
+    },
+    {
+      "note": 54,
+      "vel": 66,
+      "time": 0.0,
+      "duration": 26.6417
+    },
+    {
+      "note": 69,
+      "vel": 77,
+      "time": 0.0,
+      "duration": 39.1521
+    }
+  ]
+}

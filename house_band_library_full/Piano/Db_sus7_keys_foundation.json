@@ -1,0 +1,51 @@
+{
+  "id": "Db_sus7_keys",
+  "key": "Db",
+  "quality": "sus7",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 49,
+      "vel": 76,
+      "time": 0.0063,
+      "duration": 2.3771
+    },
+    {
+      "note": 66,
+      "vel": 90,
+      "time": 0.0063,
+      "duration": 30.7063
+    },
+    {
+      "note": 63,
+      "vel": 89,
+      "time": 0.0083,
+      "duration": 39.2771
+    },
+    {
+      "note": 54,
+      "vel": 79,
+      "time": 0.0104,
+      "duration": 23.3271
+    },
+    {
+      "note": 75,
+      "vel": 95,
+      "time": 0.0104,
+      "duration": 11.0458
+    },
+    {
+      "note": 59,
+      "vel": 75,
+      "time": 0.0104,
+      "duration": 23.2937
+    },
+    {
+      "note": 71,
+      "vel": 86,
+      "time": 0.0104,
+      "duration": 23.2646
+    }
+  ]
+}

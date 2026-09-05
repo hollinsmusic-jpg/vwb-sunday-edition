@@ -1,0 +1,108 @@
+{
+  "musician": "Paul Simmons",
+  "instrument": "Organ",
+  "style": "Worship Ballad",
+  "mood": "Calm / Worshipful",
+  "originalKey": "D",
+  "originalTempo": 69.99998833333528,
+  "degreeLabel": "Two",
+  "quality": "Minor 7",
+  "alterations": [],
+  "chordLabel": "Two, Minor 7",
+  "progressionName": "2-5sus-1-1sus-1dom",
+  "section": "B",
+  "sourceChord": "Em7",
+  "measureRange": "m5b1-m6b1",
+  "durationSeconds": 3.428572,
+  "noteCount": 11,
+  "notes": [
+    {
+      "midi": 74,
+      "name": "D5",
+      "time": 0,
+      "duration": 6.710715404166669,
+      "velocity": 0.4566929133858268,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 69,
+      "name": "A4",
+      "time": 0,
+      "duration": 6.921429724999999,
+      "velocity": 0.3228346456692913,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 71,
+      "name": "B4",
+      "time": 0,
+      "duration": 6.7446439812499985,
+      "velocity": 0.36220472440944884,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 86,
+      "name": "D6",
+      "time": 0,
+      "duration": 2.5946432895833347,
+      "velocity": 0.3779527559055118,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 67,
+      "name": "G4",
+      "time": 0,
+      "duration": 6.905358293749998,
+      "velocity": 0.49606299212598426,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 81,
+      "name": "A5",
+      "time": 2.4625,
+      "duration": 0.1535714541666664,
+      "velocity": 0.2992125984251969,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 82,
+      "name": "A#5",
+      "time": 2.555358,
+      "duration": 0.13928573749999984,
+      "velocity": 0.6062992125984252,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 83,
+      "name": "B5",
+      "time": 2.651786,
+      "duration": 4.280357856249999,
+      "velocity": 0.4566929133858268,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 86,
+      "name": "D6",
+      "time": 3.398215,
+      "duration": 5.8589295479166665,
+      "velocity": 0.6299212598425197,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 79,
+      "name": "G5",
+      "time": 3.416072,
+      "duration": 3.30000055,
+      "velocity": 0.5511811023622047,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 71,
+      "name": "B4",
+      "time": 3.426786,
+      "duration": 3.494643439583335,
+      "velocity": 0.5354330708661418,
+      "sustainedFromPrevious": false
+    }
+  ]
+}

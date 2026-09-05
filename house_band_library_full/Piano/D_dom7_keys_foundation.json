@@ -1,0 +1,51 @@
+{
+  "id": "D_dom7_keys",
+  "key": "D",
+  "quality": "dom7",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 74,
+      "vel": 66,
+      "time": 0.0104,
+      "duration": 33.7229
+    },
+    {
+      "note": 54,
+      "vel": 63,
+      "time": 0.0125,
+      "duration": 19.1333
+    },
+    {
+      "note": 66,
+      "vel": 78,
+      "time": 0.0125,
+      "duration": 25.475
+    },
+    {
+      "note": 57,
+      "vel": 64,
+      "time": 0.0146,
+      "duration": 38.8979
+    },
+    {
+      "note": 60,
+      "vel": 70,
+      "time": 0.0146,
+      "duration": 27.2229
+    },
+    {
+      "note": 50,
+      "vel": 48,
+      "time": 0.0146,
+      "duration": 2.9479
+    },
+    {
+      "note": 69,
+      "vel": 81,
+      "time": 0.0146,
+      "duration": 39.4562
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "id": "F_sus13_keys",
+  "key": "F",
+  "quality": "sus13",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 67,
+      "vel": 90,
+      "time": -0.0063,
+      "duration": 19.3938
+    },
+    {
+      "note": 70,
+      "vel": 88,
+      "time": -0.0063,
+      "duration": 15.3708
+    },
+    {
+      "note": 63,
+      "vel": 105,
+      "time": -0.0063,
+      "duration": 3.4354
+    },
+    {
+      "note": 74,
+      "vel": 102,
+      "time": -0.0021,
+      "duration": 19.3896
+    },
+    {
+      "note": 53,
+      "vel": 68,
+      "time": 0.0042,
+      "duration": 3.3062
+    }
+  ]
+}

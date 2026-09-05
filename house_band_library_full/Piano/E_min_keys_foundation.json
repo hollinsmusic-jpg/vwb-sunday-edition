@@ -1,0 +1,45 @@
+{
+  "id": "E_min_keys",
+  "key": "E",
+  "quality": "min",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 67,
+      "vel": 90,
+      "time": -0.0208,
+      "duration": 14.6375
+    },
+    {
+      "note": 76,
+      "vel": 90,
+      "time": -0.0208,
+      "duration": 23.1104
+    },
+    {
+      "note": 55,
+      "vel": 62,
+      "time": -0.0146,
+      "duration": 15.3083
+    },
+    {
+      "note": 59,
+      "vel": 62,
+      "time": -0.0146,
+      "duration": 31.9792
+    },
+    {
+      "note": 52,
+      "vel": 62,
+      "time": -0.0104,
+      "duration": 2.9271
+    },
+    {
+      "note": 71,
+      "vel": 84,
+      "time": 3.0,
+      "duration": 28.9438
+    }
+  ]
+}

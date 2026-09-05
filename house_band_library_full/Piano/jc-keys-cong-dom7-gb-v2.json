@@ -1,0 +1,63 @@
+{
+  "id": "jc-keys-cong-dom7-gb-v2",
+  "slot": "keys",
+  "style": "congregational",
+  "quality": "dom7",
+  "key": "Gb",
+  "events": [
+    {
+      "note": 64,
+      "vel": 105,
+      "time": 0.0,
+      "duration": 0.1562
+    },
+    {
+      "note": 73,
+      "vel": 110,
+      "time": 0.0,
+      "duration": 0.2271
+    },
+    {
+      "note": 69,
+      "vel": 97,
+      "time": 0.0,
+      "duration": 0.2708
+    },
+    {
+      "note": 63,
+      "vel": 110,
+      "time": 1.0,
+      "duration": 0.1896
+    },
+    {
+      "note": 71,
+      "vel": 93,
+      "time": 1.0,
+      "duration": 0.2188
+    },
+    {
+      "note": 68,
+      "vel": 106,
+      "time": 1.0,
+      "duration": 0.2563
+    },
+    {
+      "note": 61,
+      "vel": 111,
+      "time": 1.6333,
+      "duration": 0.1229
+    },
+    {
+      "note": 66,
+      "vel": 109,
+      "time": 1.6333,
+      "duration": 0.2292
+    },
+    {
+      "note": 69,
+      "vel": 86,
+      "time": 1.6333,
+      "duration": 0.2292
+    }
+  ]
+}

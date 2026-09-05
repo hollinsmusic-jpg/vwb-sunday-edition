@@ -1,0 +1,33 @@
+{
+  "id": "Gb_sus13_keys",
+  "key": "Gb",
+  "quality": "sus13",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 68,
+      "vel": 90,
+      "time": 0.0063,
+      "duration": 23.9979
+    },
+    {
+      "note": 75,
+      "vel": 95,
+      "time": 0.0063,
+      "duration": 18.9125
+    },
+    {
+      "note": 71,
+      "vel": 88,
+      "time": 0.0083,
+      "duration": 15.3875
+    },
+    {
+      "note": 64,
+      "vel": 97,
+      "time": 0.0083,
+      "duration": 23.9688
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "id": "C_min7_keys",
+  "key": "C",
+  "quality": "min7",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 72,
+      "vel": 73,
+      "time": 0.0,
+      "duration": 37.5104
+    },
+    {
+      "note": 75,
+      "vel": 85,
+      "time": 0.0,
+      "duration": 35.0917
+    },
+    {
+      "note": 55,
+      "vel": 68,
+      "time": 0.0,
+      "duration": 39.4
+    },
+    {
+      "note": 63,
+      "vel": 66,
+      "time": 0.0,
+      "duration": 33.3667
+    },
+    {
+      "note": 48,
+      "vel": 55,
+      "time": 0.0063,
+      "duration": 2.575
+    },
+    {
+      "note": 67,
+      "vel": 73,
+      "time": 2.0063,
+      "duration": 16.3542
+    }
+  ]
+}

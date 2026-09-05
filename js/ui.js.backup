@@ -1,0 +1,1602 @@
+// ═══════════════════════════════════════════════════════════════
+//  Virtual Worship Band — UI Rendering
+//  Tab navigation, stem/section/mixer render, audio routing,
+//  mini scrub bar, panic, and keyboard shortcuts.
+//  Depends on: state.js, audio-engine.js, stems.js
+// ═══════════════════════════════════════════════════════════════
+
+// ── Section Jump Quantize Setting ─────────────────────────────
+// Controls how far ahead a section jump is queued before firing.
+// 'immediate' | 'halfbar' | '1bar' (default) | '2bar'
+let sectionJumpQuantize = '1bar';
+
+// ── Fade Out Duration Setting ──────────────────────────────────
+let vwbFadeDuration = 4;
+
+function setFadeDuration(val) {
+  vwbFadeDuration = parseInt(val) || 4;
+  _saveAppSettings();
+  const sel = document.getElementById('fadeDurationSel');
+  if (sel) sel.value = vwbFadeDuration;
+  showNotification('Fade: ' + vwbFadeDuration + 's');
+}
+
+function setSectionJumpQuantize(val) {
+  sectionJumpQuantize = val;
+  // Persist with settings
+  _saveAppSettings();
+  // Update the UI selector
+  const sel = document.getElementById('sectionJumpQuantizeSel');
+  if (sel) sel.value = val;
+  showNotification('Section jump: ' + _quantizeLabel(val));
+}
+
+function _quantizeLabel(val) {
+  return { immediate: 'Immediate', halfbar: '½ Measure', '1bar': '1 Measure (default)', '2bar': '2 Measures' }[val] || val;
+}
+
+async function _saveAppSettings() {
+  if (!window.vwb) return;
+  try {
+    // Merge MIDI output port pref if set
+    const existing = await window.vwb.loadSettings().catch(() => null);
+    const midiOutputPort = (existing && existing.success && existing.data && existing.data.midiOutputPort)
+      ? existing.data.midiOutputPort : undefined;
+    await window.vwb.saveSettings({
+      rMode, crossfadeMode, crossfadeDuration, sectionJumpQuantize, vwbFadeDuration,
+      ...(midiOutputPort !== undefined ? { midiOutputPort } : {})
+    });
+  } catch(e) {}
+}
+
+async function loadAppSettings() {
+  if (!window.vwb) return;
+  try {
+    const res = await window.vwb.loadSettings();
+    if (res && res.success && res.data) {
+      const d = res.data;
+      if (d.rMode)               setRoute(d.rMode, true);
+      if (d.crossfadeMode)       crossfadeMode    = d.crossfadeMode;
+      if (d.crossfadeDuration)   crossfadeDuration = d.crossfadeDuration;
+      if (d.sectionJumpQuantize) sectionJumpQuantize = d.sectionJumpQuantize;
+      if (d.vwbFadeDuration)     vwbFadeDuration     = d.vwbFadeDuration;
+    }
+  } catch(e) {}
+}
+
+// ── Armor Bearer Panel Toggle ──────────────────────────────────
+function toggleAbPanel() {
+  const body  = document.getElementById('abPanelBody');
+  const arrow = document.getElementById('abToggleArrow');
+  const hint  = document.getElementById('abPanelHint');
+  if (!body) return;
+  const open = body.style.display === 'none';
+  body.style.display  = open ? 'block' : 'none';
+  if (arrow) arrow.style.transform = open ? 'rotate(90deg)' : 'rotate(0deg)';
+  if (hint)  hint.textContent      = open ? 'Click to collapse' : 'Click to expand';
+  if (open && typeof renderArmorBearerSetup === 'function') renderArmorBearerSetup();
+}
+
+function goView(v) {
+  document.querySelectorAll('.view').forEach(e => e.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  const viewEl = document.getElementById('view-' + v);
+  if (viewEl) viewEl.classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t => {
+    if (t.getAttribute('onclick') === "goView('" + v + "')") t.classList.add('active');
+  });
+  if (v === 'perform')     { refreshPerfView(); _cpSyncPerformPanel(); }
+  if (v === 'setlist')     renderSetlist();
+  if (v === 'setup')       initMiniBeats();
+  if (v === 'servicepack') { if (typeof renderServicePackBrowser === 'function') renderServicePackBrowser(); }
+  if (v === 'myband')      { if (typeof renderBandUI === 'function') renderBandUI(); }
+  if (v === 'settings') {
+    renderRouting();
+    loadAppSettings();
+    if (typeof renderMrcGrid === 'function') renderMrcGrid();
+    if (typeof refreshMrcInputs === 'function') refreshMrcInputs();
+  }
+  if (v === 'service') {
+    renderSvcCues();
+    const tab = document.getElementById('svcNavTab');
+    if (tab) tab.classList.add('active');
+  }
+}
+
+// ── Theme / Appearance ─────────────────────────────────────────
+
+function setTheme(theme) {
+  document.body.classList.toggle('light-mode', theme === 'light');
+  // Update theme card selection
+  const dark  = document.getElementById('themeCardDark');
+  const light = document.getElementById('themeCardLight');
+  if (dark)  dark.classList.toggle('selected',  theme === 'dark');
+  if (light) light.classList.toggle('selected', theme === 'light');
+  // Persist preference
+  try { localStorage.setItem('vwb_theme', theme); } catch(e) {}
+}
+
+function loadTheme() {
+  try {
+    const saved = localStorage.getItem('vwb_theme') || 'dark';
+    setTheme(saved);
+  } catch(e) { setTheme('dark'); }
+}
+
+
+
+function renderStems() {
+  const g = document.getElementById('stemsGrid');
+  g.innerHTML = '';
+  SK.forEach(k => {
+    const ld = !!S[k].buf;
+    g.innerHTML +=
+      '<div class="stem-slot ' + (ld ? 'loaded' : '') + '" onclick="if(!event.target.classList.contains(\'s-rm\'))pickAndLoadStem(\'' + k + '\')">' +
+      '<button class="s-rm" onclick="event.stopPropagation();rmStem(\'' + k + '\')">×</button>' +
+      '<div class="s-icon">' + SL[k].split(' ')[0] + '</div>' +
+      '<div class="s-label">' + SL[k].split(' ').slice(1).join(' ') + '</div>' +
+      (ld
+        ? '<div class="s-file">' + S[k].fn + '</div><div class="s-status ok">✓ Loaded</div>'
+        : '<div class="s-status">Click to load</div>') +
+      '</div>';
+  });
+}
+
+// ── Aux Panel ──────────────────────────────────────────────────
+
+function renderAuxPanel() {
+  const c = document.getElementById('auxTracksList');
+  if (!c) return;
+  c.innerHTML = '';
+  if (!auxTracks.length) {
+    c.innerHTML = '<p style="font-size:.8rem;color:var(--text-dim);font-style:italic;padding:.5rem 0">No aux tracks loaded yet. Click "+ Add Aux Track" to add drums, strings, pads, etc.</p>';
+    return;
+  }
+  auxTracks.forEach((t, i) => {
+    c.innerHTML +=
+      '<div class="stem-slot loaded" style="border-color:#f0c040;background:rgba(240,192,64,.05);flex-direction:row;justify-content:flex-start;gap:.75rem;min-height:50px;padding:.6rem 1rem">' +
+      '<span style="font-size:1.1rem">🎶</span>' +
+      '<span style="font-size:.85rem;font-weight:500;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="' + t.fn + '">' + t.fn + '</span>' +
+      '<div style="display:flex;align-items:center;gap:.4rem"><span style="font-size:.65rem;color:var(--text-dim)">Vol</span><input type="range" min="0" max="100" value="' + t.vol + '" style="-webkit-appearance:none;width:60px;height:3px;border-radius:2px;background:var(--bg-primary)" oninput="setAuxTrackVol(' + i + ',this.value)"></div>' +
+      '<span style="font-size:.7rem;color:var(--text-dim);font-family:\'Space Mono\',monospace">' + fmt(t.buf.duration) + '</span>' +
+      '<button class="s-rm" style="position:static;display:block" onclick="event.stopPropagation();removeAuxTrack(' + i + ')">×</button>' +
+      '</div>';
+  });
+}
+
+// ── Section Editor ─────────────────────────────────────────────
+
+function renderSections() {
+  const l = document.getElementById('secList');
+  l.innerHTML = '';
+  song.secs.forEach((s, i) => {
+    const isNow     = playing && i === curSec;
+    const isCustom  = s.type === 'Custom' || !SEC_TYPES.slice(0,-1).includes(s.type);
+    const displayType = isCustom ? 'Custom' : s.type;
+    const customVal   = isCustom ? (s.customLabel || s.type || '') : '';
+    const customDisplay = isCustom ? '' : 'none';
+    const opts = SEC_TYPES.map(t => '<option' + (displayType===t?' selected':'') + '>' + t + '</option>').join('');
+
+    const loopFlag = s.loop === true;
+    l.innerHTML +=
+      '<div class="sec-row' + (isNow ? ' now-playing' : '') + '" data-idx="' + i + '">' +
+      '<span class="sec-n">' + (i+1) + '</span>' +
+      '<select onchange="onSecTypeChange(this,' + i + ')">' + opts + '</select>' +
+      '<div style="display:flex;flex-direction:column;gap:.25rem;flex:1">' +
+        '<input type="text" value="' + (s.label||'') + '" placeholder="Optional label" onchange="song.secs[' + i + '].label=this.value">' +
+        '<input type="text" class="custom-sec-name" data-idx="' + i + '" value="' + customVal + '" placeholder="Name this section…" style="display:' + customDisplay + ';font-size:.78rem;border-color:var(--gold);color:var(--gold)" onchange="song.secs[' + i + '].customLabel=this.value">' +
+      '</div>' +
+      '<input type="number" class="m-input" value="' + s.sb + '" min="1" onchange="song.secs[' + i + '].sb=parseInt(this.value)">' +
+      '<input type="number" class="m-input" value="' + s.eb + '" min="1" onchange="song.secs[' + i + '].eb=parseInt(this.value)">' +
+      '<button title="' + (loopFlag ? 'Loop ON — click to turn off' : 'Loop OFF — click to pre-save loop') + '" onclick="toggleSecLoopFlag(' + i + ')" style="font-size:.85rem;width:28px;height:28px;border-radius:6px;border:1px solid ' + (loopFlag ? 'var(--accent)' : 'var(--border)') + ';background:' + (loopFlag ? 'rgba(64,224,208,.15)' : 'none') + ';color:' + (loopFlag ? 'var(--accent)' : 'var(--text-dim)') + ';cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;">🔁</button>' +
+      '<button class="btn-rm" onclick="song.secs.splice(' + i + ',1);renderSections();">×</button>' +
+      '</div>';
+  });
+}
+
+function onSecTypeChange(sel, idx) {
+  song.secs[idx].type = sel.value;
+  const row = sel.closest('.sec-row');
+  const customInput = row.querySelector('.custom-sec-name');
+  if (sel.value === 'Custom') { customInput.style.display = ''; customInput.focus(); }
+  else { customInput.style.display = 'none'; song.secs[idx].customLabel = ''; }
+}
+
+function addSec() {
+  const last = song.secs.length > 0 ? song.secs[song.secs.length-1].eb : 0;
+  song.secs.push({ type:'Verse', label:'', sb:last+1, eb:last+8 });
+  renderSections();
+}
+
+function initMiniBeats() {
+  const c = document.getElementById('mtBeat');
+  c.innerHTML = '';
+  for (let i = 0; i < bpb(); i++) c.innerHTML += '<div class="mt-bd"></div>';
+}
+
+// ── Perform View ───────────────────────────────────────────────
+
+function refreshPerfView() {
+  document.getElementById('pTitle').textContent  = song.title || 'Untitled';
+  document.getElementById('pTempo').textContent  = (song.tempo || 72) + ' BPM';
+  document.getElementById('pTS').textContent     = song.ts || '4/4';
+  document.getElementById('pStems').textContent  = stemCount() + ' tracks' + (auxTracks.length > 0 ? ' (' + auxTracks.length + ' aux)' : '');
+  document.getElementById('pRoute').textContent  = rMode === 'multi' ? '8-Ch Multi-Out' : 'Stereo';
+  document.getElementById('tlTotal').textContent = fmt(getDur());
+  const bi = document.getElementById('beatInd');
+  if (bi) {
+    bi.innerHTML = '';
+    for (let i = 0; i < bpb(); i++) bi.innerHTML += '<div class="b-dot"></div>';
+  }
+  renderMixer();
+  updatePerfLoopUI();
+  updateLoopBtns();
+  // Unified transport refresh
+  if (typeof uniRefreshPerfView === 'function') uniRefreshPerfView();
+  // Armor Bearer perform panel
+  if (typeof renderArmorBearerPerform === 'function') renderArmorBearerPerform();
+}
+
+function renderTimeline() {
+  const c = document.getElementById('tlSecs');
+  c.innerHTML = '';
+  const d = getDur();
+  if (d <= 0 || !song.secs.length) return;
+  song.secs.forEach((s, i) => {
+    const st = bar2time(s.sb), et = bar2time(s.eb + 1);
+    const wp = ((et - st) / d) * 100;
+    const tlLabel = (s.type === 'Custom' && s.customLabel) ? s.customLabel : s.type;
+    c.innerHTML += '<div class="tl-sec' + (i===curSec?' on':'') + '" style="width:' + Math.min(wp,100) + '%;position:relative" onclick="event.stopPropagation();queueSection(' + i + ')">' + tlLabel + '</div>';
+  });
+}
+
+function renderPerfSections() {
+  const c = document.getElementById('pSecs');
+  c.innerHTML = '';
+  song.secs.forEach((s, i) => {
+    const a = i === curSec, q = i === qSec;
+    const hasLoopFlag = s.loop === true;
+    const isLooping   = a && (secLoopOn || hasLoopFlag);
+    const loopInd = isLooping
+      ? '<span class="sec-loop-indicator on">🔁 LOOPING</span>'
+      : (hasLoopFlag ? '<span class="sec-loop-indicator" style="opacity:.45">🔁 preset</span>' : '');
+    const secDisplayName = (s.type === 'Custom' && s.customLabel) ? s.customLabel : s.type;
+    const loopBtnStyle = 'font-size:.65rem;padding:.15rem .35rem;border-radius:4px;border:1px solid ' +
+      (hasLoopFlag ? 'var(--accent)' : 'var(--border)') +
+      ';background:' + (hasLoopFlag ? 'rgba(64,224,208,.15)' : 'none') +
+      ';color:' + (hasLoopFlag ? 'var(--accent)' : 'var(--text-dim)') +
+      ';cursor:pointer;margin-left:auto;flex-shrink:0';
+    c.innerHTML +=
+      '<div class="p-sec' + (a?' act':'') + (q?' q':'') + '" onclick="queueSection(' + i + ')">' +
+      '<span class="s-hk">' + (i+1) + '</span>' +
+      '<div class="s-inf"><h4>' + secDisplayName + (s.label ? ' — ' + s.label : '') + '</h4>' +
+      '<div class="s-meas">Bars ' + s.sb + ' – ' + s.eb + ' ' + loopInd + '</div></div>' +
+      '<button style="' + loopBtnStyle + '" onclick="event.stopPropagation();toggleSecLoopFlag(' + i + ')" title="Toggle pre-saved loop for this section">🔁</button>' +
+      '<div class="s-qlbl">NEXT ▶</div>' +
+      '</div>';
+  });
+}
+
+// ── Mixer ──────────────────────────────────────────────────────
+
+function renderMixer() {
+  const c = document.getElementById('mixCh');
+  c.innerHTML = '';
+
+  SK.forEach(k => {
+    if (!S[k].buf) return;
+    const chLabel = rMode === 'multi'
+      ? (ROUTE_MAP[k].stereo ? (ROUTE_MAP[k].ch[0]+1)+'-'+(ROUTE_MAP[k].ch[1]+1) : ''+(ROUTE_MAP[k].ch[0]+1))
+      : '1-2';
+    c.innerHTML +=
+      '<div class="mix-ch">' +
+      '<button class="cb' + (S[k].muted?' mt':'') + '" onclick="toggleMute(\'' + k + '\')">M</button>' +
+      '<button class="cb' + (S[k].solo?' sl':'')  + '" onclick="toggleSolo(\'' + k + '\')">S</button>' +
+      '<span class="cn" style="color:' + SC[k] + '">' + SL[k].split(' ').slice(1).join(' ') + '</span>' +
+      '<input type="range" class="cs" min="0" max="100" value="' + S[k].vol + '" oninput="setVol(\'' + k + '\',this.value);this.parentElement.querySelector(\'.cl\').textContent=this.value+\'%\'">' +
+      '<span class="cl">' + S[k].vol + '%</span>' +
+      '<span class="co">' + chLabel + '</span>' +
+      '</div>';
+  });
+
+  if (auxTracks.length > 0) {
+    const auxChLabel = rMode === 'multi' ? '6-7' : '1-2';
+    c.innerHTML += '<div style="margin-top:.5rem;padding-top:.5rem;border-top:1px solid var(--border)"><div class="mix-title" style="color:#f0c040;margin-bottom:.3rem;font-size:.7rem">🎶 Aux Stems</div></div>';
+    c.innerHTML +=
+      '<div class="mix-ch" style="border:1px solid rgba(240,192,64,.2);border-radius:8px">' +
+      '<button class="cb' + (auxMasterMuted?' mt':'') + '" onclick="toggleAuxMute()">M</button>' +
+      '<button class="cb' + (auxSolo?' sl':'') + '" onclick="toggleAuxSolo()">S</button>' +
+      '<span class="cn" style="color:#f0c040;font-weight:600">AUX</span>' +
+      '<input type="range" class="cs" min="0" max="100" value="' + auxMasterVol + '" oninput="setAuxMasterVolFn(this.value);this.parentElement.querySelector(\'.cl\').textContent=this.value+\'%\'">' +
+      '<span class="cl">' + auxMasterVol + '%</span>' +
+      '<span class="co">' + auxChLabel + '</span>' +
+      '</div>';
+    auxTracks.forEach((t, i) => {
+      const shortName = t.fn.length > 12 ? t.fn.substring(0,12)+'…' : t.fn;
+      c.innerHTML +=
+        '<div class="mix-ch" style="padding-left:1.5rem;opacity:.85">' +
+        '<button class="cb' + (t.muted?' mt':'') + '" onclick="toggleAuxTrackMute(' + i + ')">M</button>' +
+        '<span class="cn" style="color:#f0c040;font-size:.7rem" title="' + t.fn + '">' + shortName + '</span>' +
+        '<input type="range" class="cs" min="0" max="100" value="' + t.vol + '" oninput="setAuxTrackVol(' + i + ',this.value);this.parentElement.querySelector(\'.cl\').textContent=this.value+\'%\'">' +
+        '<span class="cl">' + t.vol + '%</span>' +
+        '</div>';
+    });
+  }
+
+  const monLoaded = MONITOR_SLOTS.filter(k => MON[k].buf);
+  if (monLoaded.length > 0) {
+    const monChLabel = rMode === 'multi' ? '8' : '—';
+    c.innerHTML += '<div style="margin-top:.5rem;padding-top:.5rem;border-top:1px solid var(--border)"><div class="mix-title" style="color:#ff6464;margin-bottom:.3rem;font-size:.7rem">🎧 Q/Click Monitor</div></div>';
+    MONITOR_SLOTS.forEach(k => {
+      if (!MON[k].buf) return;
+      const mcolor = MONITOR_COLORS[k];
+      const mlabel = MONITOR_LABELS[k].split(' ')[1];
+      c.innerHTML +=
+        '<div class="mix-ch" style="border:1px solid rgba(255,100,100,.2);border-radius:8px">' +
+        '<button class="cb' + (MON[k].muted?' mt':'') + '" onclick="toggleMonitorMute(\'' + k + '\')">M</button>' +
+        '<span class="cn" style="color:' + mcolor + ';font-weight:600">' + mlabel + '</span>' +
+        '<input type="range" class="cs" min="0" max="100" value="' + MON[k].vol + '" oninput="setMonitorVol(\'' + k + '\',this.value);this.parentElement.querySelector(\'.cl\').textContent=this.value+\'%\'">' +
+        '<span class="cl">' + MON[k].vol + '%</span>' +
+        '<span class="co" style="color:#ff6464">' + monChLabel + '</span>' +
+        '</div>';
+    });
+  }
+}
+
+// ── Audio Output Routing ───────────────────────────────────────
+
+function setRoute(m) {
+  rMode = m;
+  document.getElementById('rtStereo').classList.toggle('on', m === 'stereo');
+  document.getElementById('rtMulti').classList.toggle('on', m === 'multi');
+  rebuildRoute();
+  renderRouting();
+}
+
+function rebuildRoute() {
+  SK.forEach(k => { try { S[k].gn.disconnect(); } catch(e) {} });
+  try { auxMasterGain.disconnect(); } catch(e) {}
+
+  if (rMode === 'stereo') {
+    SK.forEach(k => S[k].gn.connect(mGain));
+    auxMasterGain.connect(mGain);
+    return;
+  }
+
+  if (maxCh < 8) { alert('Need at least 8 output channels. Connect your audio interface and refresh.'); setRoute('stereo'); return; }
+  try {
+    AC.destination.channelCount = 8;
+    AC.destination.channelCountMode = 'explicit';
+    AC.destination.channelInterpretation = 'discrete';
+  } catch(e) {}
+
+  const merger = AC.createChannelMerger(8);
+  merger.connect(AC.destination);
+
+  const pianoSplit = AC.createChannelSplitter(2);
+  S.piano.gn.connect(pianoSplit);
+  pianoSplit.connect(merger, 0, 0);
+  pianoSplit.connect(merger, 1, 1);
+
+  const bassMono = AC.createGain(); S.bass.gn.connect(bassMono); bassMono.connect(merger, 0, 2);
+  const guitarMono = AC.createGain(); S.guitar.gn.connect(guitarMono); guitarMono.connect(merger, 0, 3);
+  const rhythmMono = AC.createGain(); S.rhythm.gn.connect(rhythmMono); rhythmMono.connect(merger, 0, 4);
+
+  const auxSplit = AC.createChannelSplitter(2);
+  auxMasterGain.connect(auxSplit);
+  auxSplit.connect(merger, 0, 5);
+  auxSplit.connect(merger, 1, 6);
+
+  const monMono = AC.createGain();
+  monitorMasterGain.connect(monMono);
+  monMono.connect(merger, 0, 7);
+}
+
+function renderRouting() {
+  const el = document.getElementById('rtPanel');
+  if (rMode === 'stereo') {
+    el.innerHTML = '<p style="font-size:.8rem;color:var(--text-dim)">All instruments and aux tracks to stereo output (Ch 1-2).</p>';
+    return;
+  }
+  let h = '<p style="font-size:.8rem;color:var(--green);margin-bottom:.75rem">Fixed 8-channel routing active</p>';
+  h += '<div class="rt-grid">';
+  const routeInfo = [
+    { name:'Piano',           color:SC.piano,    ch:'Ch 1-2', mode:'Stereo' },
+    { name:'Bass',            color:SC.bass,     ch:'Ch 3',   mode:'Mono' },
+    { name:'Guitar',          color:SC.guitar,   ch:'Ch 4',   mode:'Mono' },
+    { name:'Rhythm',          color:'#ff4466',   ch:'Ch 5',   mode:'Mono' },
+    { name:'Aux Stems',       color:'#f0c040',   ch:'Ch 6-7', mode:'Stereo' },
+    { name:'Q/Click Monitor', color:'#ff6464',   ch:'Ch 8',   mode:'Mono — Monitor Only' }
+  ];
+  routeInfo.forEach(r => {
+    h += '<div class="rt-row"><span class="rt-nm" style="color:' + r.color + '">' + r.name + '</span><span style="font-size:.75rem;color:var(--text-dim)">→</span><span style="font-size:.85rem;color:var(--text-secondary);padding:.35rem .5rem">' + r.ch + ' (' + r.mode + ')</span></div>';
+  });
+  el.innerHTML = h + '</div>';
+}
+
+// ── Mini Scrub Bar ─────────────────────────────────────────────
+
+let scrubInterval = null;
+const SCRUB_SPEED = 4;
+
+function mtScrubStart(dir) {
+  if (scrubInterval) return;
+  scrubInterval = setInterval(() => {
+    if (typeof vwbActiveEngine !== 'undefined' && vwbActiveEngine === 'midi') {
+      const cur = (typeof getMidiCurrentTime === 'function') ? getMidiCurrentTime() : 0;
+      const dur = (typeof midiDuration !== 'undefined' && typeof midiTempoPct !== 'undefined')
+        ? midiDuration / (midiTempoPct / 100) : 0;
+      if (dur <= 0) return;
+      const newPos = Math.max(0, Math.min(dur, cur + dir * SCRUB_SPEED * 0.1));
+      if (typeof seekMidi === 'function') seekMidi((newPos / dur) * 100);
+    } else {
+      const cur  = getCurTime(), dur = getDur();
+      if (dur <= 0) return;
+      jumpTo(Math.max(0, Math.min(dur, cur + dir * SCRUB_SPEED * 0.1)));
+      updMtScrubBar();
+    }
+  }, 100);
+}
+
+function mtScrubStop() {
+  if (scrubInterval) { clearInterval(scrubInterval); scrubInterval = null; }
+}
+
+function mtScrubClick(e) {
+  const bar = document.getElementById('mtScrubBar');
+  if (!bar) return;
+  const r   = bar.getBoundingClientRect();
+  const pct = (e.clientX - r.left) / r.width;
+  if (typeof vwbActiveEngine !== 'undefined' && vwbActiveEngine === 'midi') {
+    if (typeof seekMidi === 'function') seekMidi(pct * 100);
+    updMtScrubBar();
+    return;
+  }
+  const dur = getDur();
+  if (dur > 0) { jumpTo(pct * dur); updMtScrubBar(); }
+}
+
+function updMtScrubBar() {
+  const prog = document.getElementById('mtScrubProg');
+  const secs = document.getElementById('mtScrubSecs');
+  if (!prog) return;
+
+  // Hide the scrub bar entirely when Organ engine is active — not applicable there
+  const scrubWrap = document.getElementById('mtScrubBarWrap');
+  if (scrubWrap) {
+    const isOrgan = typeof vwbActiveEngine !== 'undefined' && vwbActiveEngine === 'organ';
+    scrubWrap.style.display = isOrgan ? 'none' : '';
+  }
+
+  if (typeof vwbActiveEngine !== 'undefined' && vwbActiveEngine === 'midi') {
+    const t   = (typeof getMidiCurrentTime === 'function') ? getMidiCurrentTime() : 0;
+    const dur = (typeof midiDuration !== 'undefined' && typeof midiTempoPct !== 'undefined')
+      ? midiDuration / (midiTempoPct / 100) : 0;
+    if (dur > 0) prog.style.width = Math.min(100, (t / dur) * 100) + '%';
+    // Draw song sections on scrub bar using MIDI bar math
+    if (secs && song.secs.length > 0 && dur > 0) {
+      if (secs.children.length !== song.secs.length) {
+        secs.innerHTML = '';
+        song.secs.forEach((s, i) => {
+          const tUnscaled = t * ((typeof midiTempoPct !== 'undefined' ? midiTempoPct : 100) / 100);
+          const st = (typeof midiBar2Time === 'function') ? midiBar2Time(s.sb) : 0;
+          const et = (typeof midiBar2Time === 'function') ? midiBar2Time(s.eb + 1) : 0;
+          const wp = ((et - st) / (dur * ((typeof midiTempoPct !== 'undefined' ? midiTempoPct : 100) / 100))) * 100;
+          const label = (s.type === 'Custom' && s.customLabel) ? s.customLabel : s.type;
+          secs.innerHTML += '<div class="mt-scrub-sec' + (i === curSec ? ' on' : '') + '" style="width:' + Math.min(wp, 100) + '%">' + label + '</div>';
+        });
+      } else {
+        Array.from(secs.children).forEach((el, i) => el.classList.toggle('on', i === curSec));
+      }
+    }
+    return;
+  }
+
+  const t = getCurTime(), dur = getDur();
+  if (dur > 0) prog.style.width = ((t / dur) * 100) + '%';
+  if (secs && secs.children.length !== song.secs.length) {
+    secs.innerHTML = '';
+    song.secs.forEach((s, i) => {
+      const st = bar2time(s.sb), et = bar2time(s.eb + 1);
+      const wp = ((et - st) / dur) * 100;
+      const label = (s.type === 'Custom' && s.customLabel) ? s.customLabel : s.type;
+      secs.innerHTML += '<div class="mt-scrub-sec' + (i===curSec?' on':'') + '" style="width:' + Math.min(wp,100) + '%">' + label + '</div>';
+    });
+  } else if (secs) {
+    Array.from(secs.children).forEach((el, i) => el.classList.toggle('on', i === curSec));
+  }
+}
+
+function initScrubButtons() {
+  const rew = document.getElementById('mtRew');
+  const fwd = document.getElementById('mtFwd');
+  if (!rew || !fwd) return;
+  rew.addEventListener('mousedown',  () => mtScrubStart(-1));
+  rew.addEventListener('touchstart', (e) => { e.preventDefault(); mtScrubStart(-1); });
+  fwd.addEventListener('mousedown',  () => mtScrubStart(1));
+  fwd.addEventListener('touchstart', (e) => { e.preventDefault(); mtScrubStart(1); });
+  ['mouseup','mouseleave'].forEach(ev => { rew.addEventListener(ev, mtScrubStop); fwd.addEventListener(ev, mtScrubStop); });
+  ['touchend','touchcancel'].forEach(ev => { rew.addEventListener(ev, mtScrubStop); fwd.addEventListener(ev, mtScrubStop); });
+}
+
+// ── Panic ──────────────────────────────────────────────────────
+
+function togglePanic() { panicActive ? panicRecover() : panicEngage(); }
+
+function panicEngage() {
+  if (!playing) return;
+  panicActive = true;
+  SK.forEach(k => { if (k === 'rhythm') return; if (S[k].gn) S[k].gn.gain.value = 0; });
+  auxMasterGain.gain.value = 0;
+  const btn = document.getElementById('panicBtn');
+  if (btn) { btn.classList.add('active'); btn.textContent = '✓ RECOVER'; }
+  showNotification('⚠ PANIC — Stems muted. Rhythm holding. Press RECOVER when ready.');
+}
+
+function panicRecover() {
+  panicActive = false;
+  const dur = 2, now = AC.currentTime;
+  SK.forEach(k => {
+    if (k === 'rhythm') return;
+    if (S[k].gn && !S[k].muted) {
+      const target = S[k].vol / 100;
+      S[k].gn.gain.cancelScheduledValues(now);
+      S[k].gn.gain.setValueAtTime(0, now);
+      S[k].gn.gain.linearRampToValueAtTime(target, now + dur);
+    }
+  });
+  const auxTarget = auxMasterMuted ? 0 : auxMasterVol / 100;
+  auxMasterGain.gain.cancelScheduledValues(now);
+  auxMasterGain.gain.setValueAtTime(0, now);
+  auxMasterGain.gain.linearRampToValueAtTime(auxTarget, now + dur);
+  const btn = document.getElementById('panicBtn');
+  if (btn) { btn.classList.remove('active'); btn.textContent = '⚠ PANIC'; }
+  showNotification('✓ Recovered — stems fading back in over 2 seconds');
+}
+
+// ── Keyboard Shortcuts ─────────────────────────────────────────
+
+document.addEventListener('keydown', e => {
+  if (['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName)) return;
+  const onPerf  = document.getElementById('view-perform').classList.contains('active');
+  const onSetup = document.getElementById('view-setup').classList.contains('active');
+  if (!onPerf && !onSetup) return;
+
+  // ── Armor Bearer keyboard triggers (Perform only) ──
+  if (onPerf && typeof abHandleKey === 'function' && typeof abLoaded !== 'undefined' && abLoaded
+      && typeof vwbActiveEngine !== 'undefined' && vwbActiveEngine === 'organ') {
+    // Backtick ` — trigger current Armor Bearer level
+    if (e.key === '`') {
+      e.preventDefault();
+      abHandleKey('`');
+      return;
+    }
+    // Space bar triggers Armor Bearer when Organ engine is active
+    if (e.key === ' ') {
+      e.preventDefault();
+      abTrigger(abCurrentKey, abCurrentLevel);
+      return;
+    }
+    // Number keys 1-4 — select Armor Bearer level
+    if (['1','2','3','4'].includes(e.key)) {
+      e.preventDefault();
+      abHandleKey(e.key);
+      return;
+    }
+  }
+
+  // ── Rubato Mode space bar — trigger next phrase (Setup page, MIDI engine) ──
+  if (e.key === ' ' && onSetup) {
+    const rubatoBody = document.getElementById('rubatoCardBody');
+    const rubatoOpen = rubatoBody && rubatoBody.style.display !== 'none';
+    if (rubatoOpen && typeof rbManualNext === 'function' && typeof rbPhrases !== 'undefined' && rbPhrases.length) {
+      e.preventDefault();
+      rbManualNext();
+      return;
+    }
+  }
+
+  if (e.key === ' ') {
+    e.preventDefault();
+    if (onPerf && typeof uniTogglePlay === 'function') {
+      uniTogglePlay();
+    } else {
+      togglePlay();
+    }
+    return;
+  }
+  if (e.key === 'Escape') {
+    e.preventDefault();
+    if (typeof uniStop === 'function') uniStop(); else doStop();
+    return;
+  }
+  if (e.key === 'l' || e.key === 'L') { e.preventDefault(); toggleLoop();   return; }
+  if (e.key === 'r' || e.key === 'R') {
+    e.preventDefault();
+    if (typeof uniToggleSecLoop === 'function') uniToggleSecLoop(); else toggleSecLoop();
+    return;
+  }
+  if (e.key === 'p' || e.key === 'P') { e.preventDefault(); togglePanic(); return; }
+
+  if (onPerf) {
+    if (e.key >= '5' && e.key <= '9') {
+      const i = parseInt(e.key) - 1;
+      if (typeof uniJumpSection === 'function') {
+        uniJumpSection(i);
+      } else {
+        if (typeof midiSections !== 'undefined' && midiSections.length > i) jumpMidiSection(i);
+        if (i < song.secs.length) queueSection(i);
+      }
+    }
+    if (e.key === 'n' || e.key === 'N') {
+      const maxSec = isMidiPrimary && isMidiPrimary() ? midiSections.length : song.secs.length;
+      const curIdx = isMidiPrimary && isMidiPrimary() ? midiCurSec : curSec;
+      if (curIdx < maxSec - 1) uniJumpSection(curIdx + 1);
+    }
+    if (e.key === 'b' || e.key === 'B') {
+      const curIdx = isMidiPrimary && isMidiPrimary() ? midiCurSec : curSec;
+      if (curIdx > 0) uniJumpSection(curIdx - 1);
+    }
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════
+//  VWB Sunday Edition — Drag & Drop
+//  Drop audio/MIDI files onto stems, aux, loops, MIDI, monitor.
+// ═══════════════════════════════════════════════════════════════
+
+function initDragAndDrop() {
+
+  // ── Helper: extract file path from drag event ────────────────
+  function getDroppedFiles(e) {
+    const files = [];
+    if (e.dataTransfer.files && e.dataTransfer.files.length) {
+      for (const f of e.dataTransfer.files) {
+        if (f.path) files.push({ path: f.path, name: f.name });
+      }
+    }
+    return files;
+  }
+
+  function prevent(e) { e.preventDefault(); e.stopPropagation(); }
+
+  // ── Stem Slots — individual slots get drag events ────────────
+  function addStemSlotDrop(el, k) {
+    el.addEventListener('dragover',  e => { prevent(e); el.classList.add('drag-over'); });
+    el.addEventListener('dragleave', e => { prevent(e); el.classList.remove('drag-over'); });
+    el.addEventListener('drop', async e => {
+      prevent(e);
+      el.classList.remove('drag-over');
+      const files = getDroppedFiles(e);
+      if (!files.length) return;
+      const file = files[0];
+      const songTitle = document.getElementById('songTitle').value || 'untitled';
+      const stored = await window.vwb.storeStem({ songTitle, stemKey: k, sourcePath: file.path, fileName: file.name });
+      if (stored.success) await loadStemFromPath(k, stored.storedPath, file.name);
+    });
+  }
+
+  // Attach to stem slots after they render
+  const stemObserver = new MutationObserver(() => {
+    SK.forEach(k => {
+      const slots = document.querySelectorAll(`#stemsGrid .stem-slot`);
+      slots.forEach((slot, i) => {
+        const stemKey = SK[i];
+        if (stemKey && !slot.dataset.dropReady) {
+          slot.dataset.dropReady = '1';
+          addStemSlotDrop(slot, stemKey);
+        }
+      });
+    });
+  });
+  const stemsGrid = document.getElementById('stemsGrid');
+  if (stemsGrid) stemObserver.observe(stemsGrid, { childList: true });
+
+  // ── Aux Tracks ───────────────────────────────────────────────
+  const auxList = document.getElementById('auxTracksList');
+  if (auxList) {
+    auxList.addEventListener('dragover',  e => { prevent(e); auxList.classList.add('drag-over'); });
+    auxList.addEventListener('dragleave', e => { prevent(e); auxList.classList.remove('drag-over'); });
+    auxList.addEventListener('drop', async e => {
+      prevent(e);
+      auxList.classList.remove('drag-over');
+      const files = getDroppedFiles(e);
+      if (!files.length) return;
+      const songTitle = document.getElementById('songTitle').value || 'untitled';
+      for (const file of files) {
+        const stored = await window.vwb.storeStem({
+          songTitle,
+          stemKey: 'aux_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+          sourcePath: file.path, fileName: file.name
+        });
+        if (stored.success) await addAuxTrackFromPath(stored.storedPath, file.name);
+      }
+    });
+  }
+
+  // ── Monitor Bus ──────────────────────────────────────────────
+  const monList = document.getElementById('monitorBusList');
+  if (monList) {
+    monList.addEventListener('dragover',  e => { prevent(e); monList.classList.add('drag-over'); });
+    monList.addEventListener('dragleave', e => { prevent(e); monList.classList.remove('drag-over'); });
+    monList.addEventListener('drop', async e => {
+      prevent(e);
+      monList.classList.remove('drag-over');
+      const files = getDroppedFiles(e);
+      if (!files.length) return;
+      const songTitle = document.getElementById('songTitle').value || 'untitled';
+      // Fill empty slots first — don't overwrite what's already loaded
+      const emptySlots = ['cues', 'click'].filter(s => !MON[s].buf);
+      if (!emptySlots.length) {
+        showNotification('⚠ Both Cues and Click are filled. Remove one first.');
+        return;
+      }
+      for (let i = 0; i < Math.min(files.length, emptySlots.length); i++) {
+        const file = files[i];
+        const slot = emptySlots[i];
+        const stored = await window.vwb.storeStem({
+          songTitle, stemKey: 'mon_' + slot,
+          sourcePath: file.path, fileName: file.name
+        });
+        const path = stored.success ? stored.storedPath : file.path;
+        await loadMonitorFromPath(slot, path, file.name);
+      }
+    });
+  }
+
+  // ── Loop Library ─────────────────────────────────────────────
+  const loopLib = document.getElementById('loopLibrary');
+  if (loopLib) {
+    loopLib.addEventListener('dragover',  e => { prevent(e); loopLib.classList.add('drag-over'); });
+    loopLib.addEventListener('dragleave', e => { prevent(e); loopLib.classList.remove('drag-over'); });
+    loopLib.addEventListener('drop', async e => {
+      prevent(e);
+      loopLib.classList.remove('drag-over');
+      const files = getDroppedFiles(e);
+      if (!files.length) return;
+      const songTitle = document.getElementById('songTitle').value || 'untitled';
+      for (const file of files) {
+        const stored = await window.vwb.storeStem({
+          songTitle,
+          stemKey: 'bgloop_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+          sourcePath: file.path, fileName: file.name
+        });
+        if (stored.success) await addLoopFromPath(stored.storedPath, file.name);
+        else await addLoopFromPath(file.path, file.name);
+      }
+    });
+  }
+
+  // ── MIDI Panel ───────────────────────────────────────────────
+  const midiBody = document.getElementById('midiPanelBody');
+  if (midiBody) {
+    midiBody.addEventListener('dragover',  e => { prevent(e); midiBody.classList.add('drag-over'); });
+    midiBody.addEventListener('dragleave', e => { prevent(e); midiBody.classList.remove('drag-over'); });
+    midiBody.addEventListener('drop', async e => {
+      prevent(e);
+      midiBody.classList.remove('drag-over');
+      const files = getDroppedFiles(e);
+      if (!files.length) return;
+      if (midiPlaylist.length >= 8) { alert('Maximum 8 MIDI files reached.'); return; }
+      const songTitle = document.getElementById('songTitle').value || 'untitled';
+      for (const file of files) {
+        if (!file.name.toLowerCase().endsWith('.mid') && !file.name.toLowerCase().endsWith('.midi')) {
+          showNotification('⚠ ' + file.name + ' is not a MIDI file');
+          continue;
+        }
+        const stored = await window.vwb.storeStem({
+          songTitle, stemKey: 'midi_' + Date.now(),
+          sourcePath: file.path, fileName: file.name
+        });
+        const storedPath = stored.success ? stored.storedPath : file.path;
+        const rb = await window.vwb.readFileBuffer(file.path);
+        if (rb.success) await addMidiFileFromBuffer(rb.buffer, file.name, storedPath);
+      }
+    });
+  }
+}
+
+// Init drag and drop after app loads
+document.addEventListener('DOMContentLoaded', () => {
+  // Small delay to ensure all DOM elements are rendered
+  setTimeout(initDragAndDrop, 500);
+});
+
+// ── Chart Player Perform Panel sync ───────────────────────────
+//  Called whenever the Perform view is activated.
+//  Shows the chart player panel if a chart is loaded,
+//  shows the load CTA if House Band engine is active but no chart,
+//  hides both if a different engine is in use.
+
+function _cpSyncPerformPanel() {
+  const performPanel = document.getElementById('cpPerformPanel');
+  const loadCta      = document.getElementById('cpLoadCta');
+  if (!performPanel || !loadCta) return;
+
+  const hasChart = typeof _cp !== 'undefined' && _cp.chart !== null;
+
+  if (hasChart) {
+    performPanel.style.display = 'block';
+    loadCta.style.display      = 'none';
+    if (typeof cpRenderUI === 'function') cpRenderUI();
+    _cpBuildHouseBandMixer();
+    _cpUpdateSetupPageForChart(true);
+    _cpTogglePerfChartMode(true);
+    _cpUpdatePerfHeader();
+    // Add "Load New Chart" button to the perform panel if not already there
+    if (!document.getElementById('cpLoadNewBtn')) {
+      var loadNewBtn = document.createElement('button');
+      loadNewBtn.id = 'cpLoadNewBtn';
+      loadNewBtn.textContent = '✕ Close Chart';
+      loadNewBtn.style.cssText = 'font-family:\'Outfit\',sans-serif;font-size:.75rem;font-weight:600;' +
+        'padding:.35rem .85rem;border-radius:7px;cursor:pointer;margin-top:.5rem;' +
+        'border:1px solid var(--border);background:none;color:var(--text-dim);display:block;';
+      loadNewBtn.onclick = function() {
+        if (typeof cpClearChart === 'function') {
+          cpClearChart();
+          if (typeof goView === 'function') goView('setup');
+        }
+      };
+      performPanel.appendChild(loadNewBtn);
+    }
+  } else {
+    performPanel.style.display = 'none';
+    loadCta.style.display      = 'block';
+    var oldBtn = document.getElementById('cpLoadNewBtn');
+    if (oldBtn) oldBtn.remove();
+    _cpUpdateSetupPageForChart(false);
+    _cpTogglePerfChartMode(false);
+  }
+}
+
+// Build House Band mixer strips directly — self-contained, no renderMidiMixer dependency.
+// ── FX State per channel ──────────────────────────────────────
+var _hbChPan       = {};
+var _hbChReverb    = {};
+var _hbChEqLow     = {};
+var _hbChEqMid     = {};
+var _hbChEqHigh    = {};
+var _hbChComp      = {};
+var _hbFxPanelOpen = {};
+
+function hbSetPan(ch, val) {
+  _hbChPan[ch] = parseInt(val);
+  var label = document.getElementById('hbPanVal_' + ch);
+  if (label) {
+    var v = parseInt(val);
+    label.textContent = v === 0 ? 'C' : (v < 0 ? 'L' + Math.abs(v) : 'R' + v);
+  }
+  if (typeof synthSetPan === 'function') synthSetPan(ch, parseInt(val) / 100);
+}
+
+function hbSetReverb(ch, val) {
+  _hbChReverb[ch] = parseInt(val);
+  var label = document.getElementById('hbRevVal_' + ch);
+  if (label) label.textContent = val + '%';
+  if (typeof synthSetReverb === 'function') synthSetReverb(ch, parseInt(val) / 100);
+}
+
+function hbSetEq(ch, band, val) {
+  val = parseFloat(val);
+  if (band === 'low')  _hbChEqLow[ch]  = val;
+  if (band === 'mid')  _hbChEqMid[ch]  = val;
+  if (band === 'high') _hbChEqHigh[ch] = val;
+  var capBand = band.charAt(0).toUpperCase() + band.slice(1);
+  var label = document.getElementById('hbEq' + capBand + 'Val_' + ch);
+  if (label) label.textContent = (val >= 0 ? '+' : '') + val + 'dB';
+  if (typeof synthSetEq === 'function') synthSetEq(ch, band, val);
+}
+
+function hbSetComp(ch, val) {
+  _hbChComp[ch] = parseInt(val);
+  var label = document.getElementById('hbCompVal_' + ch);
+  if (label) label.textContent = val + '%';
+  if (typeof synthSetCompression === 'function') synthSetCompression(ch, parseInt(val) / 100);
+}
+
+function hbToggleFxPanel(ch) {
+  Object.keys(_hbFxPanelOpen).forEach(function(c) {
+    if (c != ch && _hbFxPanelOpen[c]) {
+      _hbFxPanelOpen[c] = false;
+      var ob = document.getElementById('hbFxBtn_' + c);
+      if (ob) ob.classList.remove('active');
+    }
+  });
+
+  _hbFxPanelOpen[ch] = !_hbFxPanelOpen[ch];
+  var btn = document.getElementById('hbFxBtn_' + ch);
+  if (btn) btn.classList.toggle('active', !!_hbFxPanelOpen[ch]);
+
+  var overlay = document.getElementById('hbFxOverlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'hbFxOverlay';
+    overlay.style.cssText = 'position:fixed;z-index:99999;display:none;';
+    document.body.appendChild(overlay);
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.vwb-ch-strip') && !e.target.closest('#hbFxOverlay')) {
+        Object.keys(_hbFxPanelOpen).forEach(function(c) {
+          _hbFxPanelOpen[c] = false;
+          var b = document.getElementById('hbFxBtn_' + c);
+          if (b) b.classList.remove('active');
+        });
+        overlay.style.display = 'none';
+        overlay.innerHTML = '';
+      }
+    });
+  }
+
+  if (!_hbFxPanelOpen[ch]) {
+    overlay.style.display = 'none';
+    overlay.innerHTML = '';
+    return;
+  }
+
+  if (btn) {
+    var rect = btn.getBoundingClientRect();
+    overlay.style.left = Math.min(rect.left, window.innerWidth - 225) + 'px';
+    overlay.style.top  = (rect.bottom + 6) + 'px';
+  }
+
+  var rev    = _hbChReverb[ch] !== undefined ? _hbChReverb[ch] : 0;
+  var eqLow  = _hbChEqLow[ch]  !== undefined ? _hbChEqLow[ch]  : 0;
+  var eqMid  = _hbChEqMid[ch]  !== undefined ? _hbChEqMid[ch]  : 0;
+  var eqHigh = _hbChEqHigh[ch] !== undefined ? _hbChEqHigh[ch] : 0;
+  var comp   = _hbChComp[ch]   !== undefined ? _hbChComp[ch]   : 0;
+
+  var s = 'background:var(--bg-secondary);border:1px solid var(--border);border-radius:10px;padding:.75rem;width:210px;box-shadow:0 8px 32px rgba(0,0,0,.6);';
+  var rs = 'font-size:.6rem;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.35rem;';
+  var fs = 'display:flex;align-items:center;gap:.4rem;margin-bottom:.28rem;';
+  var ns = 'font-size:.6rem;color:var(--text-dim);min-width:40px;';
+  var vs = 'font-size:.6rem;font-family:Space Mono,monospace;color:var(--text-primary);min-width:40px;text-align:right;';
+  var is = '-webkit-appearance:none;flex:1;height:3px;background:rgba(255,255,255,.15);border-radius:2px;outline:none;cursor:pointer;';
+  var hr = '<hr style="border:none;border-top:1px solid var(--border);margin:.4rem 0;">';
+
+  var html = '<div style="' + s + '">';
+
+  html += '<div style="' + rs + '">Reverb</div>';
+  html += '<div style="' + fs + '">';
+  html += '<span style="' + ns + '">Send</span>';
+  html += '<input type="range" style="' + is + '" min="0" max="100" value="' + rev + '" step="1" oninput="hbSetReverb(' + ch + ',this.value)">';
+  html += '<span style="' + vs + '" id="hbRevVal_' + ch + '">' + rev + '%</span>';
+  html += '</div>' + hr;
+
+  html += '<div style="' + rs + '">EQ</div>';
+  [['Low', eqLow], ['Mid', eqMid], ['High', eqHigh]].forEach(function(b) {
+    var bName = b[0], bVal = b[1], bKey = bName.toLowerCase();
+    var bLbl = (bVal >= 0 ? '+' : '') + bVal + 'dB';
+    html += '<div style="' + fs + '">';
+    html += '<span style="' + ns + '">' + bName + '</span>';
+    html += '<input type="range" style="' + is + '" min="-12" max="12" value="' + bVal + '" step="1" oninput="hbSetEq(' + ch + ',\'' + bKey + '\',this.value)">';
+    html += '<span style="' + vs + '" id="hbEq' + bName + 'Val_' + ch + '">' + bLbl + '</span>';
+    html += '</div>';
+  });
+  html += hr;
+
+  html += '<div style="' + rs + '">Compression</div>';
+  html += '<div style="' + fs + '">';
+  html += '<span style="' + ns + '">Amount</span>';
+  html += '<input type="range" style="' + is + '" min="0" max="100" value="' + comp + '" step="1" oninput="hbSetComp(' + ch + ',this.value)">';
+  html += '<span style="' + vs + '" id="hbCompVal_' + ch + '">' + comp + '%</span>';
+  html += '</div>';
+
+  html += '</div>';
+  overlay.innerHTML = html;
+  overlay.style.display = 'block';
+}
+
+function _cpBuildHouseBandMixer() {
+  if (typeof HB_SLOT_TO_CHANNEL === 'undefined' ||
+      typeof HB_SLOT_TO_PROGRAM  === 'undefined') {
+    setTimeout(_cpBuildHouseBandMixer, 200);
+    return;
+  }
+
+  var SLOT_LABELS = {
+    keys:   'Keys - Julian',
+    bass:   'Bass - Terry',
+    organ:  'Organ - Paul',
+    guitar: 'Guitar - Sanchez',
+    aux:    'Aux - Larry',
+    drums:  'Drums - Jason',
+  };
+
+  if (typeof midiChNames !== 'undefined' && typeof midiChPrograms !== 'undefined') {
+    Object.entries(HB_SLOT_TO_CHANNEL).forEach(function(entry) {
+      var slot = entry[0], ch = entry[1];
+      if (slot === 'percussion') return;
+      midiChNames[ch]    = SLOT_LABELS[slot] || slot;
+      midiChPrograms[ch] = HB_SLOT_TO_PROGRAM[slot];
+    });
+  }
+
+  var wrap = document.getElementById('midiMixer');
+  if (!wrap) return;
+
+  if (!document.getElementById('vwb-hb-mixer-style')) {
+    var st = document.createElement('style');
+    st.id = 'vwb-hb-mixer-style';
+    st.textContent = [
+      '.vwb-ch-strip{display:flex;flex-direction:column;align-items:center;',
+      'background:var(--bg-tertiary);border:1px solid var(--border);',
+      'border-radius:10px;padding:.5rem .45rem;width:96px;min-width:96px;',
+      'gap:.28rem;position:relative;user-select:none;}',
+      '.vwb-ch-strip.silenced{opacity:.4;}',
+      '.vwb-ms-row{display:flex;gap:.2rem;width:100%;}',
+      '.vwb-btn-m,.vwb-btn-s,.vwb-btn-fx{flex:1;font-size:.55rem;font-weight:700;',
+      'padding:.18rem 0;border-radius:4px;border:1px solid var(--border);',
+      "background:none;color:var(--text-dim);cursor:pointer;font-family:'Outfit',sans-serif;}",
+      '.vwb-btn-m.active{border-color:#e63946;color:#e63946;background:rgba(230,57,70,.12);}',
+      '.vwb-btn-s.active{border-color:var(--gold);color:var(--gold);background:rgba(240,192,64,.12);}',
+      '.vwb-btn-fx.active{border-color:#7c4dff;color:#7c4dff;background:rgba(124,77,255,.12);}',
+      '.vwb-pan-row{display:flex;align-items:center;gap:.2rem;width:100%;justify-content:center;}',
+      '.vwb-pan-knob{-webkit-appearance:none;width:52px;height:3px;',
+      'background:rgba(255,255,255,.15);border-radius:2px;outline:none;cursor:pointer;}',
+      '.vwb-pan-knob::-webkit-slider-thumb{-webkit-appearance:none;width:10px;height:10px;',
+      'border-radius:50%;background:#4ecdc4;cursor:grab;}',
+      '.vwb-pan-lbl{font-size:.55rem;color:var(--text-dim);font-family:"Space Mono",monospace;',
+      'min-width:22px;text-align:center;}',
+      '.vwb-fader-wrap{position:relative;height:100px;display:flex;align-items:center;justify-content:center;}',
+      '.vwb-fader{-webkit-appearance:none;writing-mode:vertical-lr;direction:rtl;',
+      'width:28px;height:90px;cursor:pointer;background:transparent;outline:none;border:none;}',
+      '.vwb-fader::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:10px;',
+      'border-radius:3px;background:linear-gradient(135deg,#4ecdc4,#2a9d8f);',
+      'border:1px solid rgba(78,205,196,.5);cursor:grab;margin-left:-10px;}',
+      '.vwb-fader::-webkit-slider-runnable-track{width:4px;background:rgba(255,255,255,.12);',
+      'border-radius:2px;margin:0 auto;}',
+      '.vwb-meter-wrap{width:6px;height:100px;background:rgba(255,255,255,.07);',
+      'border-radius:3px;position:relative;overflow:hidden;flex-shrink:0;}',
+      '.vwb-meter-bar{position:absolute;bottom:0;left:0;width:100%;height:0%;',
+      'border-radius:3px;background:linear-gradient(to top,#2a9d8f,#4ecdc4);',
+      'transition:height 0.04s linear;}',
+      '.vwb-meter-peak{position:absolute;left:0;width:100%;height:2px;',
+      'background:#ffeb3b;border-radius:1px;bottom:0%;}',
+      '.vwb-vol-pct{font-size:.62rem;font-family:"Space Mono",monospace;',
+      'color:var(--text-dim);text-align:center;}',
+      '.vwb-ch-name{font-size:.6rem;color:var(--text-primary);font-weight:600;',
+      'text-align:center;width:100%;overflow:hidden;text-overflow:ellipsis;',
+      'white-space:nowrap;line-height:1.2;}',
+      '.vwb-mixer-scroll{display:flex;gap:.5rem;overflow-x:auto;padding-bottom:.5rem;',
+      'scrollbar-width:thin;scrollbar-color:var(--border) transparent;}',
+      '.vwb-fx-panel{display:none;position:absolute;top:calc(100% + 6px);left:50%;',
+      'transform:translateX(-50%);z-index:9999;',
+      'background:var(--bg-secondary);border:1px solid var(--border);',
+      'border-radius:10px;padding:.75rem;width:210px;',
+      'box-shadow:0 8px 32px rgba(0,0,0,.5);}',
+      '.vwb-fx-section-label{font-size:.6rem;font-weight:700;color:var(--text-dim);',
+      'text-transform:uppercase;letter-spacing:.06em;margin-bottom:.35rem;',
+      'display:flex;align-items:center;gap:.3rem;}',
+      '.vwb-fx-row{display:flex;align-items:center;gap:.4rem;margin-bottom:.3rem;}',
+      '.vwb-fx-band{font-size:.6rem;color:var(--text-dim);min-width:30px;}',
+      '.vwb-fx-val{font-size:.6rem;font-family:"Space Mono",monospace;',
+      'color:var(--text-primary);min-width:40px;text-align:right;}',
+      '.vwb-fx-sl{-webkit-appearance:none;flex:1;height:3px;',
+      'background:rgba(255,255,255,.15);border-radius:2px;outline:none;cursor:pointer;}',
+      '.vwb-fx-sl.rev::-webkit-slider-thumb{-webkit-appearance:none;',
+      'width:10px;height:10px;border-radius:50%;background:#7c4dff;cursor:grab;}',
+      '.vwb-fx-sl.eq::-webkit-slider-thumb{-webkit-appearance:none;',
+      'width:10px;height:10px;border-radius:50%;background:#ff9800;cursor:grab;}',
+      '.vwb-fx-sl.comp::-webkit-slider-thumb{-webkit-appearance:none;',
+      'width:10px;height:10px;border-radius:50%;background:#e63946;cursor:grab;}',
+      '.vwb-fx-divider{border:none;border-top:1px solid var(--border);margin:.45rem 0;}',
+    ].join('');
+    document.head.appendChild(st);
+  }
+
+  var slots = Object.entries(HB_SLOT_TO_CHANNEL)
+    .filter(function(e) { return e[0] !== 'percussion'; })
+    .sort(function(a, b) { return a[1] - b[1]; });
+
+  var html = '<div class="vwb-mixer-scroll">';
+
+  slots.forEach(function(entry) {
+    var slot   = entry[0], ch = entry[1];
+    var label  = SLOT_LABELS[slot] || slot;
+    var vol    = (typeof midiChVolumes !== 'undefined' && midiChVolumes[ch] !== undefined) ? midiChVolumes[ch] : 100;
+    var muted  = (typeof getMidiChMute === 'function') ? getMidiChMute(ch) : false;
+    var solod  = (typeof getMidiChSolo === 'function') ? getMidiChSolo(ch) : false;
+    var pan    = _hbChPan[ch]    !== undefined ? _hbChPan[ch]    : 0;
+    var rev    = _hbChReverb[ch] !== undefined ? _hbChReverb[ch] : 0;
+    var eqLow  = _hbChEqLow[ch]  !== undefined ? _hbChEqLow[ch]  : 0;
+    var eqMid  = _hbChEqMid[ch]  !== undefined ? _hbChEqMid[ch]  : 0;
+    var eqHigh = _hbChEqHigh[ch] !== undefined ? _hbChEqHigh[ch] : 0;
+    var comp   = _hbChComp[ch]   !== undefined ? _hbChComp[ch]   : 0;
+    var panLbl = pan === 0 ? 'C' : (pan < 0 ? 'L' + Math.abs(pan) : 'R' + pan);
+
+    html += '<div class="vwb-ch-strip' + (muted ? ' silenced' : '') + '" id="midiChRow_' + ch + '">';
+
+    // M S FX row
+    html += '<div class="vwb-ms-row">';
+    html += '<button class="vwb-btn-m' + (muted ? ' active' : '') + '" id="midiMute_' + ch + '"';
+    html += ' onclick="event.stopPropagation();hbToggleMute(' + ch + ')">M</button>';
+    html += '<button class="vwb-btn-s' + (solod ? ' active' : '') + '" id="midiSolo_' + ch + '"';
+    html += ' onclick="event.stopPropagation();hbToggleSolo(' + ch + ')">S</button>';
+    html += '<button class="vwb-btn-fx" id="hbFxBtn_' + ch + '"';
+    html += ' onclick="event.stopPropagation();hbToggleFxPanel(' + ch + ')">FX</button>';
+    html += '</div>';
+
+    // Pan row
+    html += '<div class="vwb-pan-row">';
+    html += '<span style="font-size:.5rem;color:var(--text-dim)">PAN</span>';
+    html += '<input type="range" class="vwb-pan-knob" min="-100" max="100" value="' + pan + '" step="1"';
+    html += ' oninput="hbSetPan(' + ch + ',this.value)">';
+    html += '<span class="vwb-pan-lbl" id="hbPanVal_' + ch + '">' + panLbl + '</span>';
+    html += '</div>';
+
+    // Fader + meter
+    html += '<div style="display:flex;gap:5px;align-items:center;height:100px;">';
+    html += '<div class="vwb-fader-wrap">';
+    html += '<input type="range" class="vwb-fader" min="0" max="100" value="' + vol + '" step="1"';
+    html += ' oninput="hbSetVolume(' + ch + ',this.value);';
+    html += 'document.getElementById(\'midiChVol_' + ch + '\').textContent=this.value+\'%\';">';
+    html += '</div>';
+    html += '<div class="vwb-meter-wrap">';
+    html += '<div class="vwb-meter-bar" data-ch="' + ch + '"></div>';
+    html += '<div class="vwb-meter-peak"></div>';
+    html += '</div></div>';
+
+    // Vol pct + name
+    html += '<div class="vwb-vol-pct" id="midiChVol_' + ch + '">' + vol + '%</div>';
+    html += '<div class="vwb-ch-name">' + label + '</div>';
+
+    // FX Panel
+    html += '<div class="vwb-fx-panel" id="hbFxPanel_' + ch + '">';
+
+    // Reverb section
+    html += '<div class="vwb-fx-section-label">\uD83C\uDF00 Reverb</div>';
+    html += '<div class="vwb-fx-row">';
+    html += '<span class="vwb-fx-band">Send</span>';
+    html += '<input type="range" class="vwb-fx-sl rev" min="0" max="100" value="' + rev + '" step="1"';
+    html += ' oninput="hbSetReverb(' + ch + ',this.value)">';
+    html += '<span class="vwb-fx-val" id="hbRevVal_' + ch + '">' + rev + '%</span>';
+    html += '</div>';
+
+    html += '<div class="vwb-fx-divider"></div>';
+
+    // EQ section
+    html += '<div class="vwb-fx-section-label">\uD83C\uDFB5 EQ</div>';
+    var eqBands = [['Low', eqLow], ['Mid', eqMid], ['High', eqHigh]];
+    eqBands.forEach(function(b) {
+      var bName = b[0], bVal = b[1];
+      var bKey  = bName.toLowerCase();
+      var bLbl  = (bVal >= 0 ? '+' : '') + bVal + 'dB';
+      html += '<div class="vwb-fx-row">';
+      html += '<span class="vwb-fx-band">' + bName + '</span>';
+      html += '<input type="range" class="vwb-fx-sl eq" min="-12" max="12" value="' + bVal + '" step="1"';
+      html += ' oninput="hbSetEq(' + ch + ',\'' + bKey + '\',this.value)">';
+      html += '<span class="vwb-fx-val" id="hbEq' + bName + 'Val_' + ch + '">' + bLbl + '</span>';
+      html += '</div>';
+    });
+
+    html += '<div class="vwb-fx-divider"></div>';
+
+    // Compression section
+    html += '<div class="vwb-fx-section-label">\u26A1 Compression</div>';
+    html += '<div class="vwb-fx-row">';
+    html += '<span class="vwb-fx-band">Amount</span>';
+    html += '<input type="range" class="vwb-fx-sl comp" min="0" max="100" value="' + comp + '" step="1"';
+    html += ' oninput="hbSetComp(' + ch + ',this.value)">';
+    html += '<span class="vwb-fx-val" id="hbCompVal_' + ch + '">' + comp + '%</span>';
+    html += '</div>';
+
+    html += '</div>'; // end vwb-fx-panel
+    html += '</div>'; // end vwb-ch-strip
+  });
+
+  html += '</div>'; // end vwb-mixer-scroll
+  wrap.innerHTML = html;
+
+  // Close all FX panels when clicking outside any channel strip
+  if (!window._hbFxOutsideHandler) {
+    window._hbFxOutsideHandler = true;
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.vwb-ch-strip')) {
+        Object.keys(_hbFxPanelOpen).forEach(function(ch) {
+          _hbFxPanelOpen[ch] = false;
+          var panel = document.getElementById('hbFxPanel_' + ch);
+          var btn   = document.getElementById('hbFxBtn_' + ch);
+          if (panel) panel.style.display = 'none';
+          if (btn)   btn.classList.remove('active');
+        });
+      }
+    });
+  }
+
+  var midiControls = document.getElementById('uniMidiControls');
+  if (midiControls) midiControls.style.display = 'flex';
+}
+
+
+// Make it available globally so chart-player.js can call it after loading a chart
+// Update the Perform page song header from chart data
+function _cpUpdatePerfHeader() {
+  if (typeof _cp === 'undefined' || !_cp.chart) return;
+  const song  = _cp.chart.song || {};
+  const title = song.title || _cp.fileName || 'Untitled';
+  const bpm   = _cp.tempo  || song.bpm    || 70;
+  const ts    = song.timeSig || song.timeSignature || '4/4';
+  // Use live transposed key
+  const origKey = _cp.originalKey || song.key || 'C';
+  const key     = (typeof cpTransposeRoot === 'function')
+                  ? cpTransposeRoot(origKey, _cp.keyOffset || 0)
+                  : origKey;
+
+  var el;
+  el = document.getElementById('pTitle');  if (el) el.textContent = title;
+  el = document.getElementById('pTempo');  if (el) el.textContent = bpm + ' BPM';
+  el = document.getElementById('pTS');     if (el) el.textContent = ts;
+  el = document.getElementById('pStems');  if (el) el.textContent = 'Chart';
+  el = document.getElementById('pRoute');  if (el) el.textContent = key + (song.style ? ' \u00b7 ' + song.style : '');
+}
+
+// ── Toggle Perform page into chart mode ────────────────────────
+// When a chart is loaded: hides the MIDI/audio timeline scrubber
+// and keyboard shortcut panel, and injects a chart info panel
+// into that space showing current chord, sections, and key/BPM.
+function _cpTogglePerfChartMode(chartActive) {
+  const timeline  = document.getElementById('uniTimelineWrap');
+  const hotkeyPnl = document.getElementById('perfHotkeyPanel');
+  const uniSecs   = document.getElementById('uniSecs');
+  const secLoopBtn = document.getElementById('uniSecLoopBtn');
+  const panicBtn   = document.getElementById('panicBtn');
+
+  if (timeline)    timeline.style.display    = chartActive ? 'none' : '';
+  if (hotkeyPnl)   hotkeyPnl.style.display   = chartActive ? 'none' : '';
+  // Sec Loop and Panic are not applicable to chart playback — hide them
+  if (secLoopBtn)  secLoopBtn.style.display  = chartActive ? 'none' : '';
+  if (panicBtn)    panicBtn.style.display    = chartActive ? 'none' : '';
+
+  // Hide the MIDI playlist controls inside the FLEX panel when chart is loaded
+  // Target by specific element IDs that belong to MIDI playlist, not chart playback
+  const midiOnlyEls = [
+    'midiTimelineStripPerf',   // progress strip
+    'midiProgFillPerf',        // progress fill (find its wrapper)
+  ];
+  // Also hide the Transpose/Tempo control rows inside uniMidiControls
+  const uniMidiCtrl = document.getElementById('uniMidiControls');
+  if (uniMidiCtrl) {
+    // The transpose/tempo row contains the midiTempoPct input and midi-transpose-val span
+    const transposeVal = uniMidiCtrl.querySelector('.midi-transpose-val');
+    const tempoInput   = uniMidiCtrl.querySelector('#midiTempoPct');
+    const progressFill = uniMidiCtrl.querySelector('.midi-progress-wrap');
+    const progressStrip = document.getElementById('midiTimelineStripPerf');
+    if (transposeVal) {
+      var transposeRow = transposeVal.closest('div[style*="flex"]') ||
+                         transposeVal.parentElement?.parentElement?.parentElement;
+      if (transposeRow) transposeRow.style.display = chartActive ? 'none' : '';
+    }
+    if (progressFill)  progressFill.style.display  = chartActive ? 'none' : '';
+    if (progressStrip) progressStrip.style.display  = chartActive ? 'none' : '';
+  }
+
+  // Also hide Transpose/Tempo on Song Setup (setupMidiCard) when chart is loaded
+  const setupMidiCard = document.getElementById('setupMidiCard');
+  if (setupMidiCard) {
+    const setupTranspose = setupMidiCard.querySelector('.midi-transpose-val');
+    if (setupTranspose) {
+      var setupTransposeRow = setupTranspose.closest('[style*="flex-direction:column"]') ||
+                              setupTranspose.parentElement?.parentElement?.parentElement;
+      // Walk up to the full Transpose+Tempo row
+      var setupCtrlRow = setupMidiCard.querySelector('div[style*="gap:1rem"]') ||
+                         (setupTranspose.parentElement?.parentElement?.parentElement?.parentElement);
+      if (setupCtrlRow) setupCtrlRow.style.display = chartActive ? 'none' : '';
+    }
+  }
+
+  // Fix Key/BPM sliders — constrain width so they don't overflow
+  ['cpKeySlider', 'cpBpmSlider'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) {
+      el.style.width    = '80px';
+      el.style.maxWidth = '80px';
+    }
+  });
+
+  // Show the mixer in the left column when chart is active
+  var cpMixerWrap = document.getElementById('cpPerfMixerWrap');
+  if (cpMixerWrap) cpMixerWrap.style.display = chartActive ? 'block' : 'none';
+
+  // Chart info panel — injected into the left column area
+  let chartPanel = document.getElementById('cpPerfChartPanel');
+
+  if (chartActive) {
+    if (!chartPanel) {
+      chartPanel = document.createElement('div');
+      chartPanel.id = 'cpPerfChartPanel';
+      chartPanel.style.cssText = 'display:flex;flex-direction:column;gap:.75rem;padding:.5rem 0;';
+      // Insert before uniSecs so it sits in the left column flow
+      if (uniSecs && uniSecs.parentNode) {
+        uniSecs.parentNode.insertBefore(chartPanel, uniSecs);
+      }
+    }
+    _cpRenderPerfChartPanel(chartPanel);
+  } else {
+    if (chartPanel) chartPanel.remove();
+  }
+}
+
+// Render the content of the chart info panel on Perform page
+function _cpRenderPerfChartPanel(panel) {
+  if (!panel || typeof _cp === 'undefined' || !_cp.chart) return;
+
+  const chart    = _cp.chart;
+  const sections = chart.sections || [];
+  const title    = chart.song?.title || 'Chart';
+  // Use live transposed key — cpTransposeRoot is defined in chart-player.js
+  const origKey  = _cp.originalKey || chart.song?.key || 'C';
+  const key      = (typeof cpTransposeRoot === 'function')
+                   ? cpTransposeRoot(origKey, _cp.keyOffset || 0)
+                   : origKey;
+  const bpm      = _cp.tempo || chart.song?.bpm || 70;
+
+  // Current chord from active measure
+  let currentChord = '';
+  const activeSec  = sections[_cp.activeSectionIdx];
+  if (activeSec && activeSec.measures) {
+    const meas = activeSec.measures[_cp.activeMeasureIdx];
+    if (meas && meas.chords && meas.chords[0]) {
+      currentChord = meas.chords[0].label || meas.chords[0].root || '';
+    }
+  }
+
+  // Section buttons with per-section loop toggle
+  const isLooping = _cp.looping;
+  const LOOP_ICON = '🔁';
+  // Inject pulse keyframe once (guard against duplicates)
+  if (!document.getElementById('cpSecPulseStyle')) {
+    const styleEl = document.createElement('style');
+    styleEl.id = 'cpSecPulseStyle';
+    styleEl.textContent =
+      '@keyframes cpSecPulse {' +
+        '0%,100% { box-shadow: 0 0 0 0 rgba(64,224,208,0.0); background: rgba(64,224,208,.15); }' +
+        '50%      { box-shadow: 0 0 0 6px rgba(64,224,208,0.35); background: rgba(64,224,208,.30); }' +
+      '}' +
+      '.cp-sec-playing {' +
+        'animation: cpSecPulse 1.8s ease-in-out infinite !important;' +
+      '}';
+    document.head.appendChild(styleEl);
+  }
+
+  const secBtns = sections.map((sec, i) => {
+    const isActive      = i === _cp.activeSectionIdx;
+    const isPlaying     = isActive && _cp.playing;
+    const isLoopingThis = isActive && isLooping;
+    var btn = '<div style="display:inline-flex;align-items:center;gap:.2rem;">';
+    btn += '<button onclick="if(typeof cpJumpToSection===\'function\')cpJumpToSection(' + i + ')" ' +
+      (isPlaying ? 'class="cp-sec-playing" ' : '') +
+      'style="' +
+      'font-family:\'Outfit\',sans-serif;font-size:.78rem;font-weight:700;' +
+      'padding:.4rem .9rem;border-radius:7px;cursor:pointer;transition:border .2s,color .2s;' +
+      'border:1px solid ' + (isActive ? 'var(--accent)' : 'var(--border)') + ';' +
+      'background:' + (isActive ? 'rgba(64,224,208,.15)' : 'none') + ';' +
+      'color:' + (isActive ? 'var(--accent)' : 'var(--text-dim)') + ';">' +
+      (sec.label || ('Section ' + (i + 1))) + '</button>';
+    if (isActive) {
+      btn += '<button onclick="cpToggleSectionLoop()" title="Loop this section" style="' +
+        'font-family:\'Outfit\',sans-serif;font-size:.72rem;padding:.35rem .45rem;' +
+        'border-radius:7px;cursor:pointer;transition:all .2s;' +
+        'border:1px solid ' + (isLoopingThis ? '#f0c040' : 'var(--border)') + ';' +
+        'background:' + (isLoopingThis ? 'rgba(240,192,64,.15)' : 'none') + ';' +
+        'color:' + (isLoopingThis ? '#f0c040' : 'var(--text-dim)') + ';">' + LOOP_ICON + '</button>';
+    }
+    btn += '</div>';
+    return btn;
+  }).join('');
+
+  const loopBorder = isLooping ? 'rgba(240,192,64,.4)' : 'var(--border)';
+  const loopBadge  = isLooping ? (' &nbsp;<span style="color:#f0c040;">' + LOOP_ICON + ' Looping</span>') : '';
+
+  panel.innerHTML =
+    '<div style="background:var(--bg-secondary);border:1px solid var(--border);' +
+    'border-radius:12px;padding:.75rem 1rem;display:flex;align-items:center;gap:1rem;">' +
+      '<div style="flex:1;">' +
+        '<div style="font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;' +
+        'color:var(--text-dim);font-weight:700;margin-bottom:.2rem;">Now Playing</div>' +
+        '<div id="cpPerfCurrentChord" style="font-size:1.6rem;font-weight:800;' +
+        'color:var(--accent);font-family:\'Space Mono\',monospace;min-height:2rem;">' +
+        currentChord + '</div>' +
+      '</div>' +
+      '<div style="display:flex;gap:1.25rem;align-items:center;">' +
+        // ── Key control ──────────────────────────────────────────
+        '<div style="text-align:center;">' +
+          '<div style="font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;' +
+          'color:var(--text-dim);font-weight:700;margin-bottom:.3rem;">Key</div>' +
+          '<div style="display:flex;align-items:center;gap:.3rem;">' +
+            '<button onclick="if(typeof cpSetKeyOffset===\'function\')cpSetKeyOffset((_cp.keyOffset||0)-1)" ' +
+            'title="Key down" style="font-size:.85rem;font-weight:700;width:1.6rem;height:1.6rem;' +
+            'border-radius:5px;border:1px solid var(--border);background:none;' +
+            'color:var(--text-secondary);cursor:pointer;line-height:1;padding:0;">◀</button>' +
+            '<div style="min-width:2.4rem;text-align:center;">' +
+              '<div id="cpPerfKeyVal" style="font-size:1.1rem;font-weight:800;color:var(--accent);' +
+              'font-family:\'Space Mono\',monospace;">' + key + '</div>' +
+              (_cp.keyOffset !== 0
+                ? '<div style="font-size:.58rem;color:var(--text-dim);">orig: ' + origKey + '</div>'
+                : '<div style="font-size:.58rem;color:transparent;">·</div>') +
+            '</div>' +
+            '<button onclick="if(typeof cpSetKeyOffset===\'function\')cpSetKeyOffset((_cp.keyOffset||0)+1)" ' +
+            'title="Key up" style="font-size:.85rem;font-weight:700;width:1.6rem;height:1.6rem;' +
+            'border-radius:5px;border:1px solid var(--border);background:none;' +
+            'color:var(--text-secondary);cursor:pointer;line-height:1;padding:0;">▶</button>' +
+          '</div>' +
+        '</div>' +
+        // ── Tempo control ────────────────────────────────────────
+        '<div style="text-align:center;">' +
+          '<div style="font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;' +
+          'color:var(--text-dim);font-weight:700;margin-bottom:.3rem;">BPM</div>' +
+          '<div style="display:flex;align-items:center;gap:.3rem;">' +
+            '<button onclick="if(typeof cpSetTempo===\'function\')cpSetTempo((_cp.tempo||70)-1)" ' +
+            'title="Slower" style="font-size:.85rem;font-weight:700;width:1.6rem;height:1.6rem;' +
+            'border-radius:5px;border:1px solid var(--border);background:none;' +
+            'color:var(--text-secondary);cursor:pointer;line-height:1;padding:0;">◀</button>' +
+            '<input id="cpPerfTempoVal" type="number" min="20" max="300" value="' + bpm + '" ' +
+            'onchange="if(typeof cpSetTempo===\'function\')cpSetTempo(parseInt(this.value)||70)" ' +
+            'onkeydown="if(event.key===\'Enter\'&&typeof cpSetTempo===\'function\')cpSetTempo(parseInt(this.value)||70)" ' +
+            'style="width:3.4rem;text-align:center;font-size:1rem;font-weight:800;' +
+            'color:var(--text-primary);font-family:\'Space Mono\',monospace;' +
+            'background:var(--bg-primary);border:1px solid var(--border);' +
+            'border-radius:5px;padding:.15rem .2rem;" />' +
+            '<button onclick="if(typeof cpSetTempo===\'function\')cpSetTempo((_cp.tempo||70)+1)" ' +
+            'title="Faster" style="font-size:.85rem;font-weight:700;width:1.6rem;height:1.6rem;' +
+            'border-radius:5px;border:1px solid var(--border);background:none;' +
+            'color:var(--text-secondary);cursor:pointer;line-height:1;padding:0;">▶</button>' +
+          '</div>' +
+          // Reset button — tap to go back to chart's original tempo
+          '<div style="margin-top:.2rem;">' +
+            '<button onclick="if(typeof cpSetTempo===\'function\'&&typeof _cp!==\'undefined\')cpSetTempo(_cp.originalTempo||70)" ' +
+            'title="Reset to original tempo" style="font-size:.55rem;color:var(--text-dim);' +
+            'background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;">reset</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+    '<div style="background:var(--bg-secondary);border:1px solid ' + loopBorder + ';' +
+    'border-radius:12px;padding:.75rem 1rem;">' +
+      '<div style="font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;' +
+      'color:var(--text-dim);font-weight:700;margin-bottom:.5rem;">Sections — Tap to Jump' + loopBadge + '</div>' +
+      '<div style="display:flex;flex-wrap:wrap;gap:.4rem;">' + secBtns + '</div>' +
+    '</div>';
+}
+
+// ── Update Song Setup page when a chart is loaded ─────────────
+// Hides the Song Sections transport bar (which doesn't apply to
+// chart playback) and shows a clear "Go to Perform" prompt.
+// Called with true when chart loads, false when chart is cleared.
+function _cpUpdateSetupPageForChart(chartActive) {
+  // Song Sections card — hide transport bar, show prompt instead
+  const sectionCard = document.getElementById('setupSectionCard');
+  if (sectionCard) {
+    // The MIDI progress bar / transport row inside the section card
+    const midiProgress = sectionCard.querySelector('.midi-progress-wrap') ||
+                         sectionCard.querySelector('#midiProgressWrap') ||
+                         sectionCard.querySelector('.song-progress');
+    if (midiProgress) midiProgress.style.display = chartActive ? 'none' : '';
+
+    // Add or remove the "Go to Perform" banner
+    let banner = document.getElementById('cpGoPerformBanner');
+    if (chartActive) {
+      if (!banner) {
+        banner = document.createElement('div');
+        banner.id = 'cpGoPerformBanner';
+        banner.style.cssText = [
+          'margin:1rem 0 .5rem;padding:.85rem 1.25rem;',
+          'background:rgba(64,224,208,.08);border:1px solid rgba(64,224,208,.3);',
+          'border-radius:10px;display:flex;align-items:center;',
+          'justify-content:space-between;gap:1rem;'
+        ].join('');
+        banner.innerHTML =
+          '<span style="font-size:.88rem;color:var(--text-secondary);line-height:1.4;">' +
+          '✅ <strong style="color:var(--accent)">' + (typeof _cp !== 'undefined' && _cp.chart?.song?.title ? _cp.chart.song.title : 'Chart') + '</strong> loaded — ' +
+          'hit <strong>Play</strong>, jump sections, and control the mixer on the ' +
+          '<strong style="color:var(--accent)">Perform</strong> page.</span>' +
+          '<button onclick="goView(\'perform\')" style="' +
+          'font-family:\'Outfit\',sans-serif;font-size:.82rem;font-weight:700;' +
+          'padding:.5rem 1.1rem;border-radius:8px;cursor:pointer;white-space:nowrap;' +
+          'background:var(--accent);border:none;color:#000;">' +
+          '▶ Go to Perform</button>';
+        sectionCard.insertBefore(banner, sectionCard.firstChild);
+      }
+    } else {
+      if (banner) banner.remove();
+    }
+  }
+}
+
+window._cpSyncPerformPanel = _cpSyncPerformPanel;
+
+// ── Safe wrappers for HB mixer strip controls ─────────────────
+function hbSetVolume(ch, pct) {
+  var v = parseInt(pct);
+  var c = parseInt(ch);
+  // Write to midiChVolumes if available
+  if (typeof midiChVolumes !== 'undefined') midiChVolumes[c] = v;
+  // Apply to synth gain (midi-synth.js)
+  if (typeof synthSetVolume === 'function') synthSetVolume(c, v);
+  // Also route through midi-player setMidiChannelVolume if loaded
+  if (typeof setMidiChannelVolume === 'function') setMidiChannelVolume(c, v);
+  // Update display label
+  var el = document.getElementById('midiChVol_' + c);
+  if (el) el.textContent = v + '%';
+}
+function hbToggleMute(ch) {
+  if (typeof toggleMidiChMute === 'function') {
+    toggleMidiChMute(parseInt(ch));
+    _hbApplyMixerGains();
+  }
+}
+function hbToggleSolo(ch) {
+  if (typeof toggleMidiChSolo === 'function') {
+    toggleMidiChSolo(parseInt(ch));
+    _hbApplyMixerGains();
+  }
+}
+// Apply current mute/solo/volume state to Tone.js synth for all HB channels
+function _hbApplyMixerGains() {
+  if (typeof HB_SLOT_TO_CHANNEL === 'undefined') return;
+  var anyS = (typeof anySolo === 'function') ? anySolo() : false;
+  Object.values(HB_SLOT_TO_CHANNEL).forEach(function(ch) {
+    var muted    = (typeof getMidiChMute === 'function') ? getMidiChMute(ch) : false;
+    var soloed   = (typeof getMidiChSolo === 'function') ? getMidiChSolo(ch) : false;
+    var silenced = muted || (anyS && !soloed);
+    var vol      = (typeof midiChVolumes !== 'undefined' && midiChVolumes[ch] !== undefined)
+                   ? midiChVolumes[ch] : 100;
+    if (typeof synthSetVolume === 'function') synthSetVolume(parseInt(ch), silenced ? 0 : vol);
+    if (typeof _updateMixerRowState === 'function') _updateMixerRowState(parseInt(ch));
+  });
+}
+
+// Toggle section loop for chart playback
+// Flips _cp.looping and re-renders the chart panel so the 🔁 button updates
+function cpToggleSectionLoop() {
+  if (typeof _cp === 'undefined' || !_cp.chart) return;
+  _cp.looping = !_cp.looping;
+  if (typeof cpRenderUI === 'function') cpRenderUI();
+}
+
+// ── Flex File button — accepts .mid, .vwbs, AND .vwba ──────────
+//  vwbPickFlexFile() replaces pickAndAddMidiFile on the button.
+//  .mid  → original MIDI playlist behavior (unchanged)
+//  .vwbs → loads as a House Band song chart (unchanged)
+//  .vwba → loads as a full multi-track House Band arrangement
+//          (see vwb-arrangement.js) — plays straight through the
+//          same House Band instrument sounds, no chunk matching
+
+async function vwbPickFlexFile() {
+  try {
+    const result = await window.vwb.pickFlexFile();
+    if (!result || result.canceled) return;
+
+    if (result.ext === 'vwbs') {
+      // ── Song Chart ─────────────────────────────────────────
+      if (result.error) { alert('Could not read chart: ' + result.error); return; }
+      const chart = JSON.parse(result.text);
+      if (cpLoadChart(chart, result.fileName)) {
+        // Switch to Flex Engine so the mixer and transport route correctly
+        if (typeof setVwbEngine === 'function') setVwbEngine('midi', false);
+        if (typeof showNotification === 'function')
+          showNotification('Chart loaded: ' + (chart.song?.title || result.fileName));
+        _cpSyncPerformPanel();
+        _cpUpdateSetupPageForChart(true);
+      }
+    } else if (result.ext === 'vwba') {
+      // ── VWB Arrangement ──────────────────────────────────────
+      if (result.error) { alert('Could not read arrangement: ' + result.error); return; }
+      if (typeof setVwbEngine === 'function') setVwbEngine('midi', false);
+      await addVwbaArrangementFromText(result.text, result.fileName, result.filePath);
+    } else {
+      // ── MIDI file — original playlist behavior ─────────────
+      if (midiPlaylist.length >= 8) { alert('Maximum 8 MIDI files reached.'); return; }
+      const songTitle = document.getElementById('songTitle')?.value || 'untitled';
+      const stored = await window.vwb.storeStem({
+        songTitle, stemKey: 'midi_' + Date.now(),
+        sourcePath: result.filePath, fileName: result.fileName
+      });
+      const storedPath = stored.success ? stored.storedPath : result.filePath;
+      const rb = await window.vwb.readFileBuffer(result.filePath);
+      if (!rb.success) { alert('Could not read MIDI file.'); return; }
+      await addMidiFileFromBuffer(rb.buffer, result.fileName, storedPath);
+    }
+  } catch(e) {
+    console.error('[VWB] vwbPickFlexFile error:', e);
+    if (typeof showNotification === 'function') showNotification('Could not open file: ' + e.message);
+  }
+}

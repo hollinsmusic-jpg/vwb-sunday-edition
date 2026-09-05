@@ -1,0 +1,28 @@
+{
+  "musician": "Diane Moore",
+  "instrument": "Congas",
+  "style": "Worship Ballad",
+  "mood": "Calm / Worshipful",
+  "originalKey": "D",
+  "originalTempo": 69.99998833333528,
+  "degreeLabel": "One",
+  "quality": "Major 7",
+  "alterations": [],
+  "chordLabel": "One, Major 7",
+  "progressionName": "4over1-1",
+  "section": "D",
+  "sourceChord": "Dmaj7",
+  "measureRange": "m14b1-m15b1",
+  "durationSeconds": 3.428572,
+  "noteCount": 1,
+  "notes": [
+    {
+      "midi": 62,
+      "name": "D4",
+      "time": 0,
+      "duration": 3.392857708333338,
+      "velocity": 0.7480314960629921,
+      "sustainedFromPrevious": true
+    }
+  ]
+}

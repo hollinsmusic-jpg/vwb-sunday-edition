@@ -1,0 +1,39 @@
+{
+  "id": "Gb_min_keys",
+  "key": "Gb",
+  "quality": "min",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 78,
+      "vel": 90,
+      "time": -0.0104,
+      "duration": 23.9333
+    },
+    {
+      "note": 66,
+      "vel": 88,
+      "time": -0.0083,
+      "duration": 23.9167
+    },
+    {
+      "note": 73,
+      "vel": 80,
+      "time": -0.0083,
+      "duration": 19.4042
+    },
+    {
+      "note": 54,
+      "vel": 76,
+      "time": 0.0,
+      "duration": 3.3792
+    },
+    {
+      "note": 69,
+      "vel": 57,
+      "time": 2.0187,
+      "duration": 13.0813
+    }
+  ]
+}

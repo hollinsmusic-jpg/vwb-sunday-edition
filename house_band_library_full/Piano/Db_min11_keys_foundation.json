@@ -1,0 +1,63 @@
+{
+  "id": "Db_min11_keys",
+  "key": "Db",
+  "quality": "min11",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 71,
+      "vel": 77,
+      "time": 0.0042,
+      "duration": 35.1417
+    },
+    {
+      "note": 78,
+      "vel": 98,
+      "time": 0.0042,
+      "duration": 2.7542
+    },
+    {
+      "note": 66,
+      "vel": 88,
+      "time": 0.0042,
+      "duration": 43.9708
+    },
+    {
+      "note": 75,
+      "vel": 78,
+      "time": 0.0042,
+      "duration": 38.1271
+    },
+    {
+      "note": 52,
+      "vel": 66,
+      "time": 0.0063,
+      "duration": 23.1812
+    },
+    {
+      "note": 63,
+      "vel": 60,
+      "time": 0.0083,
+      "duration": 38.1042
+    },
+    {
+      "note": 56,
+      "vel": 60,
+      "time": 0.0083,
+      "duration": 38.1792
+    },
+    {
+      "note": 59,
+      "vel": 62,
+      "time": 0.0083,
+      "duration": 35.1625
+    },
+    {
+      "note": 54,
+      "vel": 55,
+      "time": 0.0104,
+      "duration": 30.2437
+    }
+  ]
+}

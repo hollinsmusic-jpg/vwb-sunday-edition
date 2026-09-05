@@ -1,0 +1,45 @@
+{
+  "id": "F_dom7b9_keys",
+  "key": "F",
+  "quality": "dom7b9",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 66,
+      "vel": 106,
+      "time": -0.0042,
+      "duration": 27.8979
+    },
+    {
+      "note": 75,
+      "vel": 106,
+      "time": -0.0042,
+      "duration": 15.4042
+    },
+    {
+      "note": 69,
+      "vel": 86,
+      "time": -0.0021,
+      "duration": 27.8729
+    },
+    {
+      "note": 63,
+      "vel": 87,
+      "time": -0.0021,
+      "duration": 27.9292
+    },
+    {
+      "note": 72,
+      "vel": 84,
+      "time": -0.0021,
+      "duration": 27.8917
+    },
+    {
+      "note": 60,
+      "vel": 73,
+      "time": 0.0021,
+      "duration": 27.9104
+    }
+  ]
+}

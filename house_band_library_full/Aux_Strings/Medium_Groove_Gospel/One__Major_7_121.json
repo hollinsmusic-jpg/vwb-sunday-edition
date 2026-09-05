@@ -1,0 +1,69 @@
+{
+  "musician": "Larry Evans",
+  "instrument": "Aux Strings",
+  "style": "Medium Groove Gospel",
+  "mood": "Energetic / Lively",
+  "auxVoicing": "Brass Synth",
+  "originalKey": "Db",
+  "originalTempo": 69.99998833333528,
+  "degreeLabel": "One",
+  "quality": "Major 7",
+  "alterations": [],
+  "chordLabel": "One, Major 7",
+  "progressionName": "4over1-1",
+  "section": "D",
+  "sourceChord": "Dbmaj7",
+  "measureRange": "m14b1-m15b1",
+  "durationSeconds": 3.428572,
+  "noteCount": 6,
+  "notes": [
+    {
+      "midi": 65,
+      "name": "F4",
+      "time": 0,
+      "duration": 1.2857144999999974,
+      "velocity": 0.6377952755905512,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 73,
+      "name": "C#5",
+      "time": 0,
+      "duration": 1.3089287895833337,
+      "velocity": 0.6535433070866141,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 68,
+      "name": "G#4",
+      "time": 0,
+      "duration": 1.2839287854166557,
+      "velocity": 0.6141732283464567,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 63,
+      "name": "D#4",
+      "time": 1.701786,
+      "duration": 1.6107145541666696,
+      "velocity": 0.7401574803149606,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 73,
+      "name": "C#5",
+      "time": 1.701786,
+      "duration": 1.6267859854166673,
+      "velocity": 0.6299212598425197,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 68,
+      "name": "G#4",
+      "time": 1.703572,
+      "duration": 1.6125002687499972,
+      "velocity": 0.7086614173228346,
+      "sustainedFromPrevious": false
+    }
+  ]
+}

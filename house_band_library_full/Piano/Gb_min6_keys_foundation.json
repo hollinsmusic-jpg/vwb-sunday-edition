@@ -1,0 +1,51 @@
+{
+  "id": "Gb_min6_keys",
+  "key": "Gb",
+  "quality": "min6",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 61,
+      "vel": 71,
+      "time": -0.0167,
+      "duration": 18.5562
+    },
+    {
+      "note": 63,
+      "vel": 68,
+      "time": -0.0146,
+      "duration": 10.9667
+    },
+    {
+      "note": 75,
+      "vel": 101,
+      "time": -0.0146,
+      "duration": 3.0167
+    },
+    {
+      "note": 54,
+      "vel": 60,
+      "time": -0.0125,
+      "duration": 2.6021
+    },
+    {
+      "note": 66,
+      "vel": 90,
+      "time": -0.0125,
+      "duration": 23.9792
+    },
+    {
+      "note": 57,
+      "vel": 64,
+      "time": -0.0104,
+      "duration": 14.225
+    },
+    {
+      "note": 69,
+      "vel": 84,
+      "time": -0.0104,
+      "duration": 14.9
+    }
+  ]
+}

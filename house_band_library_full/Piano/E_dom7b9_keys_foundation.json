@@ -1,0 +1,45 @@
+{
+  "id": "E_dom7b9_keys",
+  "key": "E",
+  "quality": "dom7b9",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 62,
+      "vel": 90,
+      "time": 0.0104,
+      "duration": 27.2042
+    },
+    {
+      "note": 59,
+      "vel": 81,
+      "time": 0.0146,
+      "duration": 27.1667
+    },
+    {
+      "note": 74,
+      "vel": 90,
+      "time": 0.0146,
+      "duration": 27.3938
+    },
+    {
+      "note": 65,
+      "vel": 100,
+      "time": 0.0146,
+      "duration": 27.2188
+    },
+    {
+      "note": 68,
+      "vel": 103,
+      "time": 0.0146,
+      "duration": 27.4146
+    },
+    {
+      "note": 71,
+      "vel": 86,
+      "time": 0.0187,
+      "duration": 27.4083
+    }
+  ]
+}

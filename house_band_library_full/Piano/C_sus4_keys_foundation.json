@@ -1,0 +1,33 @@
+{
+  "id": "C_sus4_keys",
+  "key": "C",
+  "quality": "sus4",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 65,
+      "vel": 93,
+      "time": 0.0063,
+      "duration": 21.8146
+    },
+    {
+      "note": 48,
+      "vel": 64,
+      "time": 0.0083,
+      "duration": 3.0375
+    },
+    {
+      "note": 67,
+      "vel": 95,
+      "time": 0.0083,
+      "duration": 30.7583
+    },
+    {
+      "note": 72,
+      "vel": 90,
+      "time": 0.0125,
+      "duration": 30.7729
+    }
+  ]
+}

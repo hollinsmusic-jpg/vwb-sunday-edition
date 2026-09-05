@@ -1,0 +1,135 @@
+{
+  "id": "jc-keys-cong-dom7-ab-v1",
+  "slot": "keys",
+  "style": "congregational",
+  "quality": "dom7",
+  "key": "Ab",
+  "events": [
+    {
+      "note": 54,
+      "vel": 79,
+      "time": 0.0,
+      "duration": 0.3583
+    },
+    {
+      "note": 66,
+      "vel": 109,
+      "time": 0.0,
+      "duration": 0.3625
+    },
+    {
+      "note": 60,
+      "vel": 77,
+      "time": 0.0,
+      "duration": 0.3687
+    },
+    {
+      "note": 72,
+      "vel": 84,
+      "time": 0.0,
+      "duration": 0.375
+    },
+    {
+      "note": 63,
+      "vel": 91,
+      "time": 0.0,
+      "duration": 0.4021
+    },
+    {
+      "note": 75,
+      "vel": 93,
+      "time": 0.0,
+      "duration": 0.475
+    },
+    {
+      "note": 80,
+      "vel": 103,
+      "time": 0.0,
+      "duration": 0.5562
+    },
+    {
+      "note": 61,
+      "vel": 74,
+      "time": 0.9667,
+      "duration": 0.4854
+    },
+    {
+      "note": 53,
+      "vel": 57,
+      "time": 0.9813,
+      "duration": 0.4042
+    },
+    {
+      "note": 68,
+      "vel": 101,
+      "time": 0.9833,
+      "duration": 0.4167
+    },
+    {
+      "note": 80,
+      "vel": 88,
+      "time": 0.9833,
+      "duration": 0.5542
+    },
+    {
+      "note": 56,
+      "vel": 85,
+      "time": 0.9854,
+      "duration": 0.4583
+    },
+    {
+      "note": 73,
+      "vel": 98,
+      "time": 0.9854,
+      "duration": 0.4875
+    },
+    {
+      "note": 77,
+      "vel": 86,
+      "time": 0.9958,
+      "duration": 0.4125
+    },
+    {
+      "note": 60,
+      "vel": 100,
+      "time": 1.6396,
+      "duration": 0.2188
+    },
+    {
+      "note": 66,
+      "vel": 110,
+      "time": 1.6417,
+      "duration": 0.1604
+    },
+    {
+      "note": 80,
+      "vel": 93,
+      "time": 1.6417,
+      "duration": 0.2958
+    },
+    {
+      "note": 72,
+      "vel": 93,
+      "time": 1.6437,
+      "duration": 0.2917
+    },
+    {
+      "note": 56,
+      "vel": 58,
+      "time": 1.6437,
+      "duration": 0.3813
+    },
+    {
+      "note": 75,
+      "vel": 103,
+      "time": 1.6479,
+      "duration": 0.3
+    },
+    {
+      "note": 54,
+      "vel": 79,
+      "time": 1.6479,
+      "duration": 0.3562
+    }
+  ]
+}

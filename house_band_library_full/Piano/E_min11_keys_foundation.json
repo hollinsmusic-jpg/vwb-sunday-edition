@@ -1,0 +1,45 @@
+{
+  "id": "E_min11_keys",
+  "key": "E",
+  "quality": "min11",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 59,
+      "vel": 77,
+      "time": -0.0042,
+      "duration": 23.175
+    },
+    {
+      "note": 57,
+      "vel": 79,
+      "time": -0.0042,
+      "duration": 31.9729
+    },
+    {
+      "note": 66,
+      "vel": 75,
+      "time": -0.0042,
+      "duration": 31.9792
+    },
+    {
+      "note": 52,
+      "vel": 73,
+      "time": -0.0021,
+      "duration": 11.1896
+    },
+    {
+      "note": 55,
+      "vel": 79,
+      "time": -0.0021,
+      "duration": 23.225
+    },
+    {
+      "note": 62,
+      "vel": 90,
+      "time": 0.0,
+      "duration": 31.9688
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "id": "G_sus4_keys",
+  "key": "G",
+  "quality": "sus4",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 67,
+      "vel": 97,
+      "time": 0.0,
+      "duration": 2.7667
+    },
+    {
+      "note": 72,
+      "vel": 90,
+      "time": 0.0,
+      "duration": 2.7854
+    },
+    {
+      "note": 55,
+      "vel": 73,
+      "time": 0.0021,
+      "duration": 3.1167
+    },
+    {
+      "note": 74,
+      "vel": 95,
+      "time": 0.0021,
+      "duration": 9.7271
+    },
+    {
+      "note": 79,
+      "vel": 97,
+      "time": 0.0021,
+      "duration": 2.8542
+    }
+  ]
+}

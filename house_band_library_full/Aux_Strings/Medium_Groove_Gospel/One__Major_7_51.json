@@ -1,0 +1,85 @@
+{
+  "musician": "Larry Evans",
+  "instrument": "Aux Strings",
+  "style": "Medium Groove Gospel",
+  "mood": "Energetic / Lively",
+  "auxVoicing": "Brass Synth",
+  "originalKey": "Db",
+  "originalTempo": 69.99998833333528,
+  "degreeLabel": "One",
+  "quality": "Major 7",
+  "alterations": [],
+  "chordLabel": "One, Major 7",
+  "progressionName": "2-5sus-1-1sus-1dom",
+  "section": "B",
+  "sourceChord": "Dbmaj7",
+  "measureRange": "m7b1-m8b1",
+  "durationSeconds": 3.428572,
+  "noteCount": 8,
+  "notes": [
+    {
+      "midi": 61,
+      "name": "C#4",
+      "time": 0,
+      "duration": 0.4642857916666685,
+      "velocity": 0.7401574803149606,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 73,
+      "name": "C#5",
+      "time": 0,
+      "duration": 0.43214292916666963,
+      "velocity": 0.8582677165354331,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 68,
+      "name": "G#4",
+      "time": 2.553572,
+      "duration": 0.26250004374999847,
+      "velocity": 0.7716535433070866,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 77,
+      "name": "F5",
+      "time": 2.553572,
+      "duration": 0.28928576249999693,
+      "velocity": 0.7086614173228346,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 61,
+      "name": "C#4",
+      "time": 2.555358,
+      "duration": 0.2767857604166686,
+      "velocity": 0.7165354330708661,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 66,
+      "name": "F#4",
+      "time": 3.403572,
+      "duration": 0.8017858479166655,
+      "velocity": 0.7322834645669292,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 71,
+      "name": "B4",
+      "time": 3.405358,
+      "duration": 0.8303572812499986,
+      "velocity": 0.6771653543307087,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 75,
+      "name": "D#5",
+      "time": 3.405358,
+      "duration": 0.8339287104166644,
+      "velocity": 0.7086614173228346,
+      "sustainedFromPrevious": false
+    }
+  ]
+}

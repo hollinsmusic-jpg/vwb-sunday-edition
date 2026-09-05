@@ -1,0 +1,109 @@
+{
+  "musician": "Paul Simmons",
+  "instrument": "Organ",
+  "style": "Medium Groove Gospel",
+  "mood": "Energetic / Lively",
+  "auxVoicing": null,
+  "originalKey": "Db",
+  "originalTempo": 69.99998833333528,
+  "degreeLabel": "One",
+  "quality": "Suspended 4, Flat 7",
+  "alterations": [],
+  "chordLabel": "One, Suspended 4, Flat 7",
+  "progressionName": "2-5sus-1-1sus-1dom",
+  "section": "B",
+  "sourceChord": "Db7sus4",
+  "measureRange": "m8b1-m8b3",
+  "durationSeconds": 1.714286,
+  "noteCount": 11,
+  "notes": [
+    {
+      "midi": 73,
+      "name": "C#5",
+      "time": 0,
+      "duration": 0.4589286479166681,
+      "velocity": 0.6535433070866141,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 75,
+      "name": "D#5",
+      "time": 0,
+      "duration": 1.6428574166666685,
+      "velocity": 0.6299212598425197,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 66,
+      "name": "F#4",
+      "time": 0,
+      "duration": 1.6857145666666682,
+      "velocity": 0.5118110236220472,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 78,
+      "name": "F#5",
+      "time": 0,
+      "duration": 1.5285716833333325,
+      "velocity": 0.5511811023622047,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 71,
+      "name": "B4",
+      "time": 0,
+      "duration": 1.6482145604166654,
+      "velocity": 0.5905511811023622,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 73,
+      "name": "C#5",
+      "time": 1.694643,
+      "duration": 0.6214286750000042,
+      "velocity": 0.5748031496062992,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 65,
+      "name": "F4",
+      "time": 1.696429,
+      "duration": 1.730357431249999,
+      "velocity": 0.5354330708661418,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 68,
+      "name": "G#4",
+      "time": 1.696429,
+      "duration": 1.669643135416667,
+      "velocity": 0.5354330708661418,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 77,
+      "name": "F5",
+      "time": 1.698215,
+      "duration": 0.0732142979166639,
+      "velocity": 0.3464566929133858,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 71,
+      "name": "B4",
+      "time": 1.703572,
+      "duration": 1.7053574270833316,
+      "velocity": 0.25196850393700787,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 75,
+      "name": "D#5",
+      "time": 1.703572,
+      "duration": 0.1375000229166652,
+      "velocity": 0.7480314960629921,
+      "sustainedFromPrevious": false
+    }
+  ]
+}

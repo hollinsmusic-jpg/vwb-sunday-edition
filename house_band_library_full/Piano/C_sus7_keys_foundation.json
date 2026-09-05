@@ -1,0 +1,45 @@
+{
+  "id": "C_sus7_keys",
+  "key": "C",
+  "quality": "sus7",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 60,
+      "vel": 77,
+      "time": 0.0,
+      "duration": 43.2771
+    },
+    {
+      "note": 65,
+      "vel": 88,
+      "time": 0.0,
+      "duration": 31.1771
+    },
+    {
+      "note": 48,
+      "vel": 51,
+      "time": 0.0,
+      "duration": 1.8
+    },
+    {
+      "note": 58,
+      "vel": 79,
+      "time": 0.0,
+      "duration": 22.9604
+    },
+    {
+      "note": 53,
+      "vel": 77,
+      "time": 0.0,
+      "duration": 22.975
+    },
+    {
+      "note": 62,
+      "vel": 79,
+      "time": 0.0,
+      "duration": 39.1979
+    }
+  ]
+}

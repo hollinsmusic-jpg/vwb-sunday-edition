@@ -1,0 +1,45 @@
+{
+  "id": "Db_dom13_keys",
+  "key": "Db",
+  "quality": "dom13",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 75,
+      "vel": 95,
+      "time": 0.0125,
+      "duration": 35.4167
+    },
+    {
+      "note": 59,
+      "vel": 73,
+      "time": 0.0146,
+      "duration": 27.5479
+    },
+    {
+      "note": 67,
+      "vel": 86,
+      "time": 0.0146,
+      "duration": 39.3104
+    },
+    {
+      "note": 63,
+      "vel": 94,
+      "time": 0.0167,
+      "duration": 43.8188
+    },
+    {
+      "note": 70,
+      "vel": 85,
+      "time": 0.0167,
+      "duration": 31.5396
+    },
+    {
+      "note": 53,
+      "vel": 66,
+      "time": 0.0208,
+      "duration": 27.5
+    }
+  ]
+}

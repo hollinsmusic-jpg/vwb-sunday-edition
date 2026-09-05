@@ -1,0 +1,61 @@
+{
+  "musician": "Diane Moore",
+  "instrument": "Congas",
+  "style": "Medium Groove Gospel",
+  "mood": "Energetic / Lively",
+  "auxVoicing": null,
+  "originalKey": "Db",
+  "originalTempo": 69.99998833333528,
+  "degreeLabel": "Three",
+  "quality": "Minor 7",
+  "alterations": [],
+  "chordLabel": "Three, Minor 7",
+  "progressionName": "4-3-6-2-6-5over7",
+  "section": "C",
+  "sourceChord": "Fm7",
+  "measureRange": "m10b1-m10b3",
+  "durationSeconds": 1.714286,
+  "noteCount": 5,
+  "notes": [
+    {
+      "midi": 62,
+      "name": "D4",
+      "time": 0.421429,
+      "duration": 0.3000000500000013,
+      "velocity": 0.8031496062992126,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 69,
+      "name": "A4",
+      "time": 0.658929,
+      "duration": 0.14642859583333134,
+      "velocity": 0.8976377952755905,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 62,
+      "name": "D4",
+      "time": 1.069643,
+      "duration": 0.18214288750000307,
+      "velocity": 0.7086614173228346,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 67,
+      "name": "G4",
+      "time": 1.264286,
+      "duration": 0.160714312500005,
+      "velocity": 0.8031496062992126,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 67,
+      "name": "G4",
+      "time": 1.505357,
+      "duration": 0.14821431041666955,
+      "velocity": 0.7637795275590551,
+      "sustainedFromPrevious": false
+    }
+  ]
+}

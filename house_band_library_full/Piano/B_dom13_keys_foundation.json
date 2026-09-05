@@ -1,0 +1,39 @@
+{
+  "id": "B_dom13_keys",
+  "key": "B",
+  "quality": "dom13",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 77,
+      "vel": 86,
+      "time": 0.0,
+      "duration": 3.8167
+    },
+    {
+      "note": 63,
+      "vel": 98,
+      "time": 0.0021,
+      "duration": 3.8333
+    },
+    {
+      "note": 73,
+      "vel": 106,
+      "time": 0.0021,
+      "duration": 3.8
+    },
+    {
+      "note": 68,
+      "vel": 109,
+      "time": 0.0042,
+      "duration": 3.8104
+    },
+    {
+      "note": 57,
+      "vel": 79,
+      "time": 0.0063,
+      "duration": 3.8042
+    }
+  ]
+}

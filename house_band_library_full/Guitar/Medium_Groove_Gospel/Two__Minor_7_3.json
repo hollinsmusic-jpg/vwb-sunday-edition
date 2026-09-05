@@ -1,0 +1,85 @@
+{
+  "musician": "Sanchez Rivera",
+  "instrument": "Guitar",
+  "style": "Medium Groove Gospel",
+  "mood": "Energetic / Lively",
+  "auxVoicing": null,
+  "originalKey": "Db",
+  "originalTempo": 69.99998833333528,
+  "degreeLabel": "Two",
+  "quality": "Minor 7",
+  "alterations": [],
+  "chordLabel": "Two, Minor 7",
+  "progressionName": "2-5-1-3-6",
+  "section": "A",
+  "sourceChord": "Ebm7",
+  "measureRange": "m1b1-m1b3",
+  "durationSeconds": 1.714286,
+  "noteCount": 8,
+  "notes": [
+    {
+      "midi": 61,
+      "name": "C#4",
+      "time": 0,
+      "duration": 0.278571475,
+      "velocity": 0.5826771653543307,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 56,
+      "name": "G#3",
+      "time": 0.25,
+      "duration": 0.09821430208333332,
+      "velocity": 0.47244094488188976,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 58,
+      "name": "A#3",
+      "time": 0.432143,
+      "duration": 0.28214290416666676,
+      "velocity": 0.33070866141732286,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 61,
+      "name": "C#4",
+      "time": 0.680357,
+      "duration": 0.11428573333333336,
+      "velocity": 0.7401574803149606,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 56,
+      "name": "G#3",
+      "time": 1.108929,
+      "duration": 0.11964287708333354,
+      "velocity": 0.30708661417322836,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 58,
+      "name": "A#3",
+      "time": 1.310715,
+      "duration": 0.2589286145833334,
+      "velocity": 0.3700787401574803,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 61,
+      "name": "C#4",
+      "time": 1.530357,
+      "duration": 0.11250001875000004,
+      "velocity": 0.6456692913385826,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 63,
+      "name": "D#4",
+      "time": 1.701786,
+      "duration": 0.61607153125,
+      "velocity": 0.6692913385826772,
+      "sustainedFromPrevious": false
+    }
+  ]
+}

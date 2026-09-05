@@ -1,0 +1,93 @@
+{
+  "musician": "Sanchez Rivera",
+  "instrument": "Guitar",
+  "style": "Medium Groove Gospel",
+  "mood": "Energetic / Lively",
+  "auxVoicing": null,
+  "originalKey": "Db",
+  "originalTempo": 69.99998833333528,
+  "degreeLabel": "One",
+  "quality": "Suspended 4, Flat 7",
+  "alterations": [],
+  "chordLabel": "One, Suspended 4, Flat 7",
+  "progressionName": "2-5sus-1-1sus-1dom",
+  "section": "B",
+  "sourceChord": "Db7sus4",
+  "measureRange": "m8b1-m8b3",
+  "durationSeconds": 1.714286,
+  "noteCount": 9,
+  "notes": [
+    {
+      "midi": 59,
+      "name": "B3",
+      "time": 0,
+      "duration": 0.600000099999999,
+      "velocity": 0.6220472440944882,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 63,
+      "name": "D#4",
+      "time": 0,
+      "duration": 0.6142858166666656,
+      "velocity": 0.6692913385826772,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 63,
+      "name": "D#4",
+      "time": 0.642857,
+      "duration": 0.10714287500000097,
+      "velocity": 0.6456692913385826,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 59,
+      "name": "B3",
+      "time": 0.646429,
+      "duration": 0.10000001666666947,
+      "velocity": 0.6220472440944882,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 59,
+      "name": "B3",
+      "time": 1.273214,
+      "duration": 0.3714286333333341,
+      "velocity": 0.6220472440944882,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 63,
+      "name": "D#4",
+      "time": 1.280357,
+      "duration": 0.282142904166669,
+      "velocity": 0.7874015748031497,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 63,
+      "name": "D#4",
+      "time": 1.678572,
+      "duration": 0.06428572500000129,
+      "velocity": 0.4566929133858268,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 61,
+      "name": "C#4",
+      "time": 1.701786,
+      "duration": 1.010714454166667,
+      "velocity": 0.6456692913385826,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 64,
+      "name": "E4",
+      "time": 1.705357,
+      "duration": 0.12142859166666753,
+      "velocity": 0.7874015748031497,
+      "sustainedFromPrevious": false
+    }
+  ]
+}

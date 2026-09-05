@@ -1,0 +1,39 @@
+{
+  "id": "E_sus4_keys",
+  "key": "E",
+  "quality": "sus4",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 64,
+      "vel": 90,
+      "time": 0.0083,
+      "duration": 1.4229
+    },
+    {
+      "note": 69,
+      "vel": 81,
+      "time": 0.0104,
+      "duration": 21.7188
+    },
+    {
+      "note": 76,
+      "vel": 97,
+      "time": 0.0104,
+      "duration": 32.0292
+    },
+    {
+      "note": 52,
+      "vel": 70,
+      "time": 0.0125,
+      "duration": 3.1917
+    },
+    {
+      "note": 71,
+      "vel": 84,
+      "time": 1.9917,
+      "duration": 30.05
+    }
+  ]
+}

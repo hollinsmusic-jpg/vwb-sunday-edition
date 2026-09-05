@@ -1,0 +1,39 @@
+{
+  "id": "Ab_sus4_keys",
+  "key": "Ab",
+  "quality": "sus4",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 56,
+      "vel": 79,
+      "time": 0.0187,
+      "duration": 3.1688
+    },
+    {
+      "note": 80,
+      "vel": 101,
+      "time": 0.0208,
+      "duration": 1.4479
+    },
+    {
+      "note": 73,
+      "vel": 88,
+      "time": 0.025,
+      "duration": 1.3854
+    },
+    {
+      "note": 75,
+      "vel": 90,
+      "time": 0.025,
+      "duration": 9.5312
+    },
+    {
+      "note": 68,
+      "vel": 58,
+      "time": 1.9958,
+      "duration": 1.2729
+    }
+  ]
+}

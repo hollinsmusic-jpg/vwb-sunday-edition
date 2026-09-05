@@ -1,0 +1,105 @@
+{
+  "id": "jc-keys-cong-dom7-b-v3",
+  "slot": "keys",
+  "style": "congregational",
+  "quality": "dom7",
+  "key": "B",
+  "events": [
+    {
+      "note": 71,
+      "vel": 120,
+      "time": 0.0,
+      "duration": 0.1667
+    },
+    {
+      "note": 83,
+      "vel": 121,
+      "time": 0.0,
+      "duration": 0.3083
+    },
+    {
+      "note": 71,
+      "vel": 116,
+      "time": 0.9792,
+      "duration": 0.1688
+    },
+    {
+      "note": 83,
+      "vel": 115,
+      "time": 0.9792,
+      "duration": 0.3687
+    },
+    {
+      "note": 53,
+      "vel": 75,
+      "time": 1.9708,
+      "duration": 0.3563
+    },
+    {
+      "note": 62,
+      "vel": 88,
+      "time": 1.9708,
+      "duration": 0.4813
+    },
+    {
+      "note": 83,
+      "vel": 116,
+      "time": 1.975,
+      "duration": 0.4104
+    },
+    {
+      "note": 56,
+      "vel": 91,
+      "time": 1.975,
+      "duration": 0.4396
+    },
+    {
+      "note": 74,
+      "vel": 107,
+      "time": 1.9771,
+      "duration": 0.3083
+    },
+    {
+      "note": 77,
+      "vel": 108,
+      "time": 1.9771,
+      "duration": 0.3104
+    },
+    {
+      "note": 59,
+      "vel": 84,
+      "time": 1.9771,
+      "duration": 0.4188
+    },
+    {
+      "note": 80,
+      "vel": 110,
+      "time": 1.9854,
+      "duration": 0.4833
+    },
+    {
+      "note": 72,
+      "vel": 88,
+      "time": 1.9937,
+      "duration": 0.2833
+    },
+    {
+      "note": 75,
+      "vel": 122,
+      "time": 2.6479,
+      "duration": 0.1646
+    },
+    {
+      "note": 83,
+      "vel": 114,
+      "time": 2.6479,
+      "duration": 0.2271
+    },
+    {
+      "note": 78,
+      "vel": 119,
+      "time": 2.6521,
+      "duration": 0.2458
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "id": "A_sus7_keys",
+  "key": "A",
+  "quality": "sus7",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 62,
+      "vel": 114,
+      "time": -0.0063,
+      "duration": 3.2042
+    },
+    {
+      "note": 64,
+      "vel": 108,
+      "time": -0.0063,
+      "duration": 11.8313
+    },
+    {
+      "note": 57,
+      "vel": 102,
+      "time": -0.0042,
+      "duration": 11.7937
+    },
+    {
+      "note": 69,
+      "vel": 97,
+      "time": -0.0042,
+      "duration": 11.825
+    }
+  ]
+}

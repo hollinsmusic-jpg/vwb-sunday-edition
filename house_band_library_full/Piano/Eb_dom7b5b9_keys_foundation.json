@@ -1,0 +1,45 @@
+{
+  "id": "Eb_dom7b5b9_keys",
+  "key": "Eb",
+  "quality": "dom7b5b9",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 69,
+      "vel": 88,
+      "time": -0.0042,
+      "duration": 35.9083
+    },
+    {
+      "note": 73,
+      "vel": 90,
+      "time": -0.0042,
+      "duration": 19.3833
+    },
+    {
+      "note": 61,
+      "vel": 76,
+      "time": -0.0021,
+      "duration": 27.3271
+    },
+    {
+      "note": 76,
+      "vel": 95,
+      "time": -0.0021,
+      "duration": 31.3604
+    },
+    {
+      "note": 55,
+      "vel": 79,
+      "time": 0.0042,
+      "duration": 3.5646
+    },
+    {
+      "note": 64,
+      "vel": 15,
+      "time": 1.9375,
+      "duration": 13.5521
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "id": "Gb_sus7_keys",
+  "key": "Gb",
+  "quality": "sus7",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 54,
+      "vel": 91,
+      "time": 0.0042,
+      "duration": 3.3333
+    },
+    {
+      "note": 59,
+      "vel": 93,
+      "time": 0.0042,
+      "duration": 3.3
+    },
+    {
+      "note": 68,
+      "vel": 109,
+      "time": 0.0083,
+      "duration": 3.2667
+    },
+    {
+      "note": 71,
+      "vel": 102,
+      "time": 0.0083,
+      "duration": 3.2667
+    },
+    {
+      "note": 56,
+      "vel": 82,
+      "time": 0.0083,
+      "duration": 19.3417
+    },
+    {
+      "note": 64,
+      "vel": 105,
+      "time": 0.0083,
+      "duration": 23.8167
+    }
+  ]
+}

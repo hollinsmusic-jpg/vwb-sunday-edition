@@ -1,0 +1,33 @@
+{
+  "id": "Ab_sus7_keys",
+  "key": "Ab",
+  "quality": "sus7",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 56,
+      "vel": 98,
+      "time": 0.0,
+      "duration": 11.35
+    },
+    {
+      "note": 73,
+      "vel": 109,
+      "time": 0.0,
+      "duration": 2.7083
+    },
+    {
+      "note": 66,
+      "vel": 106,
+      "time": 0.0021,
+      "duration": 2.7104
+    },
+    {
+      "note": 70,
+      "vel": 111,
+      "time": 0.0021,
+      "duration": 11.2396
+    }
+  ]
+}

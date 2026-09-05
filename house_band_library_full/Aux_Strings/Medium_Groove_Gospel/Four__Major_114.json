@@ -1,0 +1,93 @@
+{
+  "musician": "Larry Evans",
+  "instrument": "Aux Strings",
+  "style": "Medium Groove Gospel",
+  "mood": "Energetic / Lively",
+  "auxVoicing": "Brass Synth",
+  "originalKey": "Db",
+  "originalTempo": 69.99998833333528,
+  "degreeLabel": "Four",
+  "quality": "Major",
+  "alterations": [],
+  "chordLabel": "Four, Major",
+  "progressionName": "4over1-1",
+  "section": "D",
+  "sourceChord": "Gb/Db",
+  "measureRange": "m13b1-m14b1",
+  "durationSeconds": 3.428572,
+  "noteCount": 9,
+  "notes": [
+    {
+      "midi": 73,
+      "name": "C#5",
+      "time": 0,
+      "duration": 1.453571670833334,
+      "velocity": 0.7086614173228346,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 66,
+      "name": "F#4",
+      "time": 0,
+      "duration": 1.4500002416666717,
+      "velocity": 0.7086614173228346,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 68,
+      "name": "G#4",
+      "time": 0,
+      "duration": 1.4660716729166694,
+      "velocity": 0.6692913385826772,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 66,
+      "name": "F#4",
+      "time": 1.701786,
+      "duration": 1.3732145145833385,
+      "velocity": 0.7322834645669292,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 73,
+      "name": "C#5",
+      "time": 1.701786,
+      "duration": 1.3642859416666724,
+      "velocity": 0.6929133858267716,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 68,
+      "name": "G#4",
+      "time": 1.703572,
+      "duration": 1.371428800000004,
+      "velocity": 0.6299212598425197,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 65,
+      "name": "F4",
+      "time": 3.425001,
+      "duration": 1.2857144999999974,
+      "velocity": 0.6377952755905512,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 73,
+      "name": "C#5",
+      "time": 3.425001,
+      "duration": 1.3089287895833337,
+      "velocity": 0.6535433070866141,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 68,
+      "name": "G#4",
+      "time": 3.426786,
+      "duration": 1.2839287854166557,
+      "velocity": 0.6141732283464567,
+      "sustainedFromPrevious": false
+    }
+  ]
+}

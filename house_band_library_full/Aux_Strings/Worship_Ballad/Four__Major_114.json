@@ -1,0 +1,76 @@
+{
+  "musician": "Larry Evans",
+  "instrument": "Aux Strings",
+  "style": "Worship Ballad",
+  "mood": "Calm / Worshipful",
+  "originalKey": "D",
+  "originalTempo": 69.99998833333528,
+  "degreeLabel": "Four",
+  "quality": "Major",
+  "alterations": [],
+  "chordLabel": "Four, Major",
+  "progressionName": "4over1-1",
+  "section": "D",
+  "sourceChord": "G/D",
+  "measureRange": "m13b1-m14b1",
+  "durationSeconds": 3.428572,
+  "noteCount": 7,
+  "notes": [
+    {
+      "midi": 73,
+      "name": "C#5",
+      "time": 0,
+      "duration": 1.8285717333333338,
+      "velocity": 0.4645669291338583,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 61,
+      "name": "C#4",
+      "time": 0,
+      "duration": 1.8464288791666732,
+      "velocity": 0.28346456692913385,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 67,
+      "name": "G4",
+      "time": 0.041071,
+      "duration": 3.344643414583338,
+      "velocity": 0.3779527559055118,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 74,
+      "name": "D5",
+      "time": 0.041071,
+      "duration": 6.83035828125,
+      "velocity": 0.4566929133858268,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 62,
+      "name": "D4",
+      "time": 0.044643,
+      "duration": 6.814286849999995,
+      "velocity": 0.33070866141732286,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 69,
+      "name": "A4",
+      "time": 3.369643,
+      "duration": 3.483929152083334,
+      "velocity": 0.3779527559055118,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 66,
+      "name": "F#4",
+      "time": 3.403572,
+      "duration": 3.4500005750000042,
+      "velocity": 0.33070866141732286,
+      "sustainedFromPrevious": false
+    }
+  ]
+}

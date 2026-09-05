@@ -1,0 +1,51 @@
+{
+  "id": "Db_maj_keys",
+  "key": "Db",
+  "quality": "maj",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 65,
+      "vel": 70,
+      "time": -0.0479,
+      "duration": 39.0333
+    },
+    {
+      "note": 68,
+      "vel": 73,
+      "time": -0.0312,
+      "duration": 31.3271
+    },
+    {
+      "note": 49,
+      "vel": 55,
+      "time": -0.0271,
+      "duration": 3.1854
+    },
+    {
+      "note": 53,
+      "vel": 77,
+      "time": -0.025,
+      "duration": 39.0438
+    },
+    {
+      "note": 56,
+      "vel": 66,
+      "time": -0.025,
+      "duration": 31.3083
+    },
+    {
+      "note": 73,
+      "vel": 103,
+      "time": 0.0167,
+      "duration": 35.1771
+    },
+    {
+      "note": 61,
+      "vel": 76,
+      "time": 1.9896,
+      "duration": 33.0688
+    }
+  ]
+}

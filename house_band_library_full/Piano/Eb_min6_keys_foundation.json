@@ -1,0 +1,57 @@
+{
+  "id": "Eb_min6_keys",
+  "key": "Eb",
+  "quality": "min6",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 63,
+      "vel": 82,
+      "time": 0.0187,
+      "duration": 22.9333
+    },
+    {
+      "note": 66,
+      "vel": 73,
+      "time": 0.0187,
+      "duration": 35.9479
+    },
+    {
+      "note": 72,
+      "vel": 75,
+      "time": 0.0208,
+      "duration": 26.8604
+    },
+    {
+      "note": 60,
+      "vel": 62,
+      "time": 0.0208,
+      "duration": 26.1875
+    },
+    {
+      "note": 75,
+      "vel": 80,
+      "time": 0.0208,
+      "duration": 14.9812
+    },
+    {
+      "note": 51,
+      "vel": 66,
+      "time": 0.0229,
+      "duration": 2.3125
+    },
+    {
+      "note": 58,
+      "vel": 66,
+      "time": 0.0229,
+      "duration": 30.4458
+    },
+    {
+      "note": 54,
+      "vel": 55,
+      "time": 0.0271,
+      "duration": 14.5625
+    }
+  ]
+}

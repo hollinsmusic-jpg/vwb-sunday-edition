@@ -1,0 +1,39 @@
+{
+  "id": "tw-bass-cong-dom7-bb-v2",
+  "slot": "bass",
+  "style": "congregational",
+  "quality": "dom7",
+  "key": "Bb",
+  "events": [
+    {
+      "note": 46,
+      "vel": 98,
+      "time": 0.0,
+      "duration": 0.3771
+    },
+    {
+      "note": 50,
+      "vel": 100,
+      "time": 1.0,
+      "duration": 0.3417
+    },
+    {
+      "note": 53,
+      "vel": 106,
+      "time": 2.0,
+      "duration": 0.9771
+    },
+    {
+      "note": 55,
+      "vel": 105,
+      "time": 3.0,
+      "duration": 0.5417
+    },
+    {
+      "note": 53,
+      "vel": 86,
+      "time": 3.6333,
+      "duration": 0.2979
+    }
+  ]
+}

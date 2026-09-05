@@ -1,0 +1,77 @@
+{
+  "musician": "Sanchez Rivera",
+  "instrument": "Guitar",
+  "style": "Medium Groove Gospel",
+  "mood": "Energetic / Lively",
+  "auxVoicing": null,
+  "originalKey": "Db",
+  "originalTempo": 69.99998833333528,
+  "degreeLabel": "Five",
+  "quality": "Major",
+  "alterations": [],
+  "chordLabel": "Five, Major",
+  "progressionName": "4-3-6-2-6-5over7",
+  "section": "C",
+  "sourceChord": "Ab/C",
+  "measureRange": "m12b3-m13b1",
+  "durationSeconds": 1.714286,
+  "noteCount": 7,
+  "notes": [
+    {
+      "midi": 63,
+      "name": "D#4",
+      "time": 0,
+      "duration": 1.137500189583335,
+      "velocity": 0.7874015748031497,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 60,
+      "name": "C4",
+      "time": 0,
+      "duration": 1.157143050000002,
+      "velocity": 0.6062992125984252,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 60,
+      "name": "C4",
+      "time": 1.25,
+      "duration": 0.383928635416666,
+      "velocity": 0.5354330708661418,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 56,
+      "name": "G#3",
+      "time": 1.257143,
+      "duration": 0.40714292500000226,
+      "velocity": 0.5984251968503937,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 58,
+      "name": "A#3",
+      "time": 1.685715,
+      "duration": 0.6303572479166633,
+      "velocity": 0.4094488188976378,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 54,
+      "name": "F#3",
+      "time": 1.689286,
+      "duration": 0.680357256249998,
+      "velocity": 0.5984251968503937,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 61,
+      "name": "C#4",
+      "time": 1.689286,
+      "duration": 0.6232143895833318,
+      "velocity": 0.7716535433070866,
+      "sustainedFromPrevious": false
+    }
+  ]
+}

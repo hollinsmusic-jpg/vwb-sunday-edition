@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VWB News Admin — HMPI</title>
+<style>
+  :root {
+    --bg: #0d1117; --surface: #161b22; --card: #1c2330;
+    --border: rgba(64,224,208,0.15); --accent: #40E0D0;
+    --orange: #E87C2A; --text: #e8ecf0; --muted: #8899aa; --dim: #556677;
+    --red: #ff4466; --green: #44dd88;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* Login */
+  #loginScreen { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: var(--bg); z-index: 100; }
+  .login-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 2.5rem; width: 360px; text-align: center; }
+  .login-logo { font-size: 2rem; font-weight: 700; color: var(--accent); letter-spacing: .12em; margin-bottom: .25rem; }
+  .login-sub { font-size: .8rem; color: var(--muted); letter-spacing: .2em; text-transform: uppercase; margin-bottom: 2rem; }
+  .login-input { width: 100%; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: .75rem 1rem; color: var(--text); font-size: 1rem; outline: none; margin-bottom: 1rem; }
+  .login-input:focus { border-color: var(--accent); }
+  .login-btn { width: 100%; padding: .85rem; background: rgba(64,224,208,.15); border: 1px solid var(--accent); border-radius: 10px; color: var(--accent); font-size: 1rem; font-weight: 600; cursor: pointer; transition: background .2s; }
+  .login-btn:hover { background: rgba(64,224,208,.25); }
+  .login-err { color: var(--red); font-size: .82rem; margin-top: .5rem; min-height: 1rem; }
+
+  /* App */
+  #adminApp { display: none; }
+  .topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: .9rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+  .topbar-brand { display: flex; align-items: center; gap: .75rem; }
+  .topbar-brand .logo { font-size: 1.2rem; font-weight: 700; color: var(--accent); letter-spacing: .1em; }
+  .topbar-brand .sub { font-size: .75rem; color: var(--muted); }
+  .topbar-actions { display: flex; align-items: center; gap: .75rem; }
+  .btn { padding: .55rem 1.25rem; border-radius: 8px; font-size: .85rem; font-weight: 600; cursor: pointer; border: none; transition: all .2s; }
+  .btn-primary { background: var(--orange); color: #fff; }
+  .btn-primary:hover { background: #f0922e; }
+  .btn-secondary { background: var(--card); color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { border-color: rgba(64,224,208,.4); }
+  .btn-danger { background: rgba(255,68,102,.1); color: var(--red); border: 1px solid rgba(255,68,102,.3); }
+  .btn-sm { padding: .35rem .75rem; font-size: .78rem; }
+
+  .main { max-width: 920px; margin: 0 auto; padding: 2rem 1.5rem; display: grid; grid-template-columns: 1fr 320px; gap: 1.5rem; align-items: start; }
+
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.25rem; }
+  .card h2 { font-size: .8rem; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: var(--orange); margin-bottom: 1.25rem; }
+
+  .field { margin-bottom: 1rem; }
+  .field label { display: block; font-size: .75rem; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: .4rem; }
+  .field input, .field textarea, .field select {
+    width: 100%; background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: .65rem .9rem; color: var(--text); font-size: .9rem; font-family: inherit; outline: none; resize: vertical;
+  }
+  .field input:focus, .field textarea:focus, .field select:focus { border-color: var(--accent); }
+  .field textarea { min-height: 80px; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+  .toggle-row { display: flex; align-items: center; gap: .75rem; }
+  .toggle-row input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--orange); cursor: pointer; }
+  .toggle-row label { font-size: .875rem; color: var(--text); cursor: pointer; }
+
+  /* Tips list */
+  .tip-item { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: .85rem 1rem; margin-bottom: .6rem; }
+  .tip-item-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: .5rem; }
+  .tip-item-title { font-size: .875rem; font-weight: 600; }
+
+  /* Announcements */
+  .ann-item { background: var(--card); border: 1px solid var(--border); border-left: 3px solid var(--orange); border-radius: 8px; padding: .85rem 1rem; margin-bottom: .6rem; }
+  .ann-item-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: .5rem; }
+  .ann-item-title { font-size: .875rem; font-weight: 600; }
+
+  /* Preview sidebar */
+  .preview-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; position: sticky; top: 1.5rem; }
+  .preview-card h3 { font-size: .75rem; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin-bottom: 1rem; }
+  .preview-feat { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: .85rem; }
+  .preview-feat-top { padding: .75rem 1rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: .75rem; }
+  .preview-icon { font-size: 1.4rem; }
+  .preview-eyebrow { font-size: .65rem; color: var(--orange); letter-spacing: .1em; text-transform: uppercase; margin-bottom: .1rem; }
+  .preview-title { font-size: .95rem; font-weight: 600; }
+  .preview-feat-body { padding: .75rem 1rem; font-size: .78rem; color: var(--muted); line-height: 1.5; }
+  .preview-cta { display: inline-block; margin-top: .6rem; background: var(--orange); color: #fff; border-radius: 6px; padding: .35rem .85rem; font-size: .75rem; font-weight: 600; text-decoration: none; }
+
+  .status-bar { position: fixed; bottom: 1.5rem; right: 1.5rem; background: var(--green); color: #071a0f; font-size: .85rem; font-weight: 600; padding: .65rem 1.25rem; border-radius: 8px; display: none; z-index: 50; }
+
+  .json-output { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; font-family: 'Courier New', monospace; font-size: .72rem; color: var(--muted); white-space: pre-wrap; word-break: break-all; max-height: 300px; overflow-y: auto; }
+
+  .id-display { font-family: 'Courier New', monospace; font-size: .78rem; color: var(--accent); background: var(--card); padding: .4rem .75rem; border-radius: 6px; border: 1px solid var(--border); }
+
+  .section-divider { border: none; border-top: 1px solid var(--border); margin: 1.25rem 0; }
+  .add-btn { background: none; border: 1px dashed var(--border); border-radius: 8px; width: 100%; padding: .6rem; color: var(--muted); font-size: .85rem; cursor: pointer; transition: all .2s; margin-top: .4rem; }
+  .add-btn:hover { border-color: var(--orange); color: var(--orange); }
+</style>
+</head>
+<body>
+
+<!-- Login -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">VWB</div>
+    <div class="login-sub">News Admin · HMPI</div>
+    <input class="login-input" type="password" id="pwInput" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">Sign In</button>
+    <div class="login-err" id="loginErr"></div>
+  </div>
+</div>
+
+<!-- Admin App -->
+<div id="adminApp">
+  <div class="topbar">
+    <div class="topbar-brand">
+      <span class="logo">VWB</span>
+      <span class="sub">News Admin — Hollins Musical Productions International</span>
+    </div>
+    <div class="topbar-actions">
+      <span class="id-display" id="currentId">ID: —</span>
+      <button class="btn btn-secondary" onclick="copyJSON()">📋 Copy JSON</button>
+      <button class="btn btn-primary" onclick="publishNews()">🚀 Publish Update</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div>
+
+      <!-- Featured -->
+      <div class="card">
+        <h2>⭐ Featured Announcement</h2>
+        <div class="row2">
+          <div class="field">
+            <label>Category / Eyebrow</label>
+            <input type="text" id="featEyebrow" placeholder="e.g. New · Artist Series" oninput="updatePreview()">
+          </div>
+          <div class="field">
+            <label>Icon (emoji)</label>
+            <input type="text" id="featIcon" placeholder="🎹" maxlength="4" oninput="updatePreview()">
+          </div>
+        </div>
+        <div class="field">
+          <label>Title</label>
+          <input type="text" id="featTitle" placeholder="e.g. Marcus Webb Service Pack" oninput="updatePreview()">
+        </div>
+        <div class="field">
+          <label>Subtitle</label>
+          <input type="text" id="featSubtitle" placeholder="e.g. B3 Organ · Contemporary Gospel" oninput="updatePreview()">
+        </div>
+        <div class="field">
+          <label>Description (HTML ok: &lt;strong&gt; for bold)</label>
+          <textarea id="featDesc" placeholder="Describe what's new in 1-2 sentences..." oninput="updatePreview()"></textarea>
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label>Button Label</label>
+            <input type="text" id="featCtaLabel" placeholder="e.g. Get This Pack" oninput="updatePreview()">
+          </div>
+          <div class="field">
+            <label>Button URL</label>
+            <input type="text" id="featCtaUrl" placeholder="https://hmpi.lemonsqueezy.com/..." oninput="updatePreview()">
+          </div>
+        </div>
+        <div class="toggle-row">
+          <input type="checkbox" id="featNew" checked onchange="updatePreview()">
+          <label for="featNew">Show "Just Released" badge</label>
+        </div>
+      </div>
+
+      <!-- Tips -->
+      <div class="card">
+        <h2>💡 Tips &amp; Tricks</h2>
+        <div id="tipsList"></div>
+        <button class="add-btn" onclick="addTip()">+ Add Tip</button>
+      </div>
+
+      <!-- Announcements -->
+      <div class="card">
+        <h2>📢 Announcements</h2>
+        <div id="annList"></div>
+        <button class="add-btn" onclick="addAnnouncement()">+ Add Announcement</button>
+      </div>
+
+      <!-- JSON Output -->
+      <div class="card">
+        <h2>📄 Generated JSON</h2>
+        <p style="font-size:.8rem;color:var(--muted);margin-bottom:.75rem;">This is the content VWB will display. Copy it and save it as <code style="color:var(--accent)">vwb-news.json</code> in your Netlify site.</p>
+        <div class="json-output" id="jsonOutput"></div>
+      </div>
+
+    </div>
+
+    <!-- Preview sidebar -->
+    <div class="preview-card">
+      <h3>Live Preview</h3>
+      <div class="preview-feat" id="previewFeat">
+        <div class="preview-feat-top">
+          <span class="preview-icon" id="pvIcon">🎵</span>
+          <div>
+            <div class="preview-eyebrow" id="pvEyebrow">Eyebrow</div>
+            <div class="preview-title" id="pvTitle">Title</div>
+          </div>
+        </div>
+        <div class="preview-feat-body" id="pvDesc">
+          Description will appear here.
+          <br><a class="preview-cta" id="pvCta" href="#">Button</a>
+        </div>
+      </div>
+      <div style="font-size:.7rem;color:var(--dim);">Bell badge pulses in VWB until user opens this panel.</div>
+    </div>
+  </div>
+</div>
+
+<div class="status-bar" id="statusBar">✓ JSON ready — copy and deploy to Netlify</div>
+
+<script>
+  // ── Simple password auth (client-side only) ──────────────────
+  const ADMIN_PASSWORD = 'HMPIadmin2026';
+
+  function doLogin() {
+    const pw = document.getElementById('pwInput').value;
+    if (pw === ADMIN_PASSWORD) {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('adminApp').style.display = 'block';
+      initDefaults();
+      updatePreview();
+      updateJSON();
+    } else {
+      document.getElementById('loginErr').textContent = 'Incorrect password.';
+    }
+  }
+
+  // ── Default starter content ──────────────────────────────────
+  function initDefaults() {
+    document.getElementById('featEyebrow').value = 'New · Artist Series';
+    document.getElementById('featIcon').value = '🎹';
+    document.getElementById('featTitle').value = 'Marcus Webb Service Pack';
+    document.getElementById('featSubtitle').value = 'B3 Organ · Contemporary Gospel';
+    document.getElementById('featDesc').value = '<strong>Marcus Webb\'s Artist Series pack</strong> is now available — 6 full songs with stems, organ tracks, and MIDI ready to load straight into VWB.';
+    document.getElementById('featCtaLabel').value = 'Get This Pack';
+    document.getElementById('featCtaUrl').value = 'https://hmpi.lemonsqueezy.com/checkout/buy/YOUR-PACK-LINK-HERE';
+
+    addTipData('🔁', 'Loop any section on the fly', 'Right-click any section marker to set a loop range. VWB will repeat it seamlessly until you move on.');
+    addTipData('📱', 'Control VWB from your phone', 'Open the VWB Remote app and connect to the same Wi-Fi. Run the whole service from the pulpit or keyboard.');
+    addTipData('🎵', 'Rubato Mode for free worship', 'Switch to Rubato and follow the spirit of the room. Piano phrases trigger on demand — no click track needed.');
+
+    addAnnouncementData('⭐', 'VWB v2.0 now available for all founding customers', 'Your free update is ready. Check your email for the download link or visit the website.', 'Learn More', 'https://virtualworshipband.netlify.app');
+
+    updateJSON();
+  }
+
+  // ── Tips ─────────────────────────────────────────────────────
+  let tipCount = 0;
+  function addTip() { addTipData('💡', '', ''); }
+  function addTipData(icon, title, body) {
+    const id = 'tip' + (++tipCount);
+    const div = document.createElement('div');
+    div.className = 'tip-item';
+    div.id = id;
+    div.innerHTML = `
+      <div class="tip-item-header">
+        <span class="tip-item-title">Tip #${tipCount}</span>
+        <button class="btn btn-danger btn-sm" onclick="removeItem('${id}');updateJSON();">Remove</button>
+      </div>
+      <div class="row2" style="margin-bottom:.5rem;">
+        <div class="field" style="margin:0;"><label>Icon</label><input type="text" class="tip-icon" value="${icon}" maxlength="4" oninput="updateJSON()"></div>
+        <div class="field" style="margin:0;"><label>Title</label><input type="text" class="tip-title-input" value="${escHtml(title)}" oninput="updateJSON()"></div>
+      </div>
+      <div class="field" style="margin:0;"><label>Body</label><textarea class="tip-body" rows="2" oninput="updateJSON()">${escHtml(body)}</textarea></div>`;
+    document.getElementById('tipsList').appendChild(div);
+    updateJSON();
+  }
+
+  // ── Announcements ────────────────────────────────────────────
+  let annCount = 0;
+  function addAnnouncement() { addAnnouncementData('📢', '', '', '', ''); }
+  function addAnnouncementData(icon, title, body, linkLabel, linkUrl) {
+    const id = 'ann' + (++annCount);
+    const div = document.createElement('div');
+    div.className = 'ann-item';
+    div.id = id;
+    div.innerHTML = `
+      <div class="ann-item-header">
+        <span class="ann-item-title">Announcement #${annCount}</span>
+        <button class="btn btn-danger btn-sm" onclick="removeItem('${id}');updateJSON();">Remove</button>
+      </div>
+      <div class="row2" style="margin-bottom:.5rem;">
+        <div class="field" style="margin:0;"><label>Icon</label><input type="text" class="ann-icon" value="${icon}" maxlength="4" oninput="updateJSON()"></div>
+        <div class="field" style="margin:0;"><label>Title</label><input type="text" class="ann-title-input" value="${escHtml(title)}" oninput="updateJSON()"></div>
+      </div>
+      <div class="field"><label>Body</label><textarea class="ann-body" rows="2" oninput="updateJSON()">${escHtml(body)}</textarea></div>
+      <div class="row2">
+        <div class="field" style="margin:0;"><label>Link Label</label><input type="text" class="ann-link-label" value="${escHtml(linkLabel)}" oninput="updateJSON()"></div>
+        <div class="field" style="margin:0;"><label>Link URL</label><input type="text" class="ann-link-url" value="${escHtml(linkUrl)}" oninput="updateJSON()"></div>
+      </div>`;
+    document.getElementById('annList').appendChild(div);
+    updateJSON();
+  }
+
+  function removeItem(id) { const el = document.getElementById(id); if (el) el.remove(); }
+
+  // ── Build JSON ───────────────────────────────────────────────
+  function buildJSON() {
+    const id = 'update-' + new Date().toISOString().slice(0,10) + '-' + Math.floor(Date.now()/1000).toString(36);
+    document.getElementById('currentId').textContent = 'ID: ' + id;
+
+    const tips = [];
+    document.querySelectorAll('.tip-item').forEach(el => {
+      tips.push({
+        icon: el.querySelector('.tip-icon').value || '💡',
+        title: el.querySelector('.tip-title-input').value,
+        body: el.querySelector('.tip-body').value
+      });
+    });
+
+    const announcements = [];
+    document.querySelectorAll('.ann-item').forEach(el => {
+      const obj = {
+        icon: el.querySelector('.ann-icon').value || '📢',
+        title: el.querySelector('.ann-title-input').value,
+        body: el.querySelector('.ann-body').value
+      };
+      const ll = el.querySelector('.ann-link-label').value;
+      const lu = el.querySelector('.ann-link-url').value;
+      if (ll && lu) { obj.link_label = ll; obj.link_url = lu; }
+      announcements.push(obj);
+    });
+
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const now = new Date();
+    const updated = months[now.getMonth()] + ' ' + now.getFullYear();
+
+    return {
+      latest_id: id,
+      updated: updated,
+      featured: {
+        eyebrow: document.getElementById('featEyebrow').value,
+        title: document.getElementById('featTitle').value,
+        subtitle: document.getElementById('featSubtitle').value,
+        icon: document.getElementById('featIcon').value || '🎵',
+        new: document.getElementById('featNew').checked,
+        description: document.getElementById('featDesc').value,
+        cta_label: document.getElementById('featCtaLabel').value,
+        cta_url: document.getElementById('featCtaUrl').value
+      },
+      tips: tips,
+      announcements: announcements
+    };
+  }
+
+  function updateJSON() {
+    const data = buildJSON();
+    document.getElementById('jsonOutput').textContent = JSON.stringify(data, null, 2);
+  }
+
+  function updatePreview() {
+    document.getElementById('pvIcon').textContent = document.getElementById('featIcon').value || '🎵';
+    document.getElementById('pvEyebrow').textContent = document.getElementById('featEyebrow').value || 'Eyebrow';
+    document.getElementById('pvTitle').textContent = document.getElementById('featTitle').value || 'Title';
+    document.getElementById('pvDesc').innerHTML = (document.getElementById('featDesc').value || 'Description will appear here.') + '<br><a class="preview-cta" href="#">' + (document.getElementById('featCtaLabel').value || 'Button') + '</a>';
+    updateJSON();
+  }
+
+  function copyJSON() {
+    const text = document.getElementById('jsonOutput').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const bar = document.getElementById('statusBar');
+      bar.style.display = 'block';
+      setTimeout(() => bar.style.display = 'none', 3000);
+    });
+  }
+
+  function publishNews() {
+    copyJSON();
+    document.getElementById('statusBar').textContent = '✓ JSON copied — paste it into vwb-news.json on Netlify';
+    document.getElementById('statusBar').style.display = 'block';
+    setTimeout(() => document.getElementById('statusBar').style.display = 'none', 4000);
+  }
+
+  function escHtml(str) {
+    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+</script>
+</body>
+</html>

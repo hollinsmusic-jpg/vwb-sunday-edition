@@ -1,0 +1,39 @@
+{
+  "id": "G_dom13b5_keys",
+  "key": "G",
+  "quality": "dom13b5",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 69,
+      "vel": 90,
+      "time": 0.0,
+      "duration": 19.925
+    },
+    {
+      "note": 73,
+      "vel": 85,
+      "time": 0.0,
+      "duration": 19.9125
+    },
+    {
+      "note": 59,
+      "vel": 68,
+      "time": 0.0,
+      "duration": 3.3646
+    },
+    {
+      "note": 65,
+      "vel": 64,
+      "time": 0.0,
+      "duration": 3.5542
+    },
+    {
+      "note": 76,
+      "vel": 95,
+      "time": 0.0042,
+      "duration": 15.5292
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "id": "F_sus7_keys",
+  "key": "F",
+  "quality": "sus7",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 60,
+      "vel": 105,
+      "time": 0.0042,
+      "duration": 23.2729
+    },
+    {
+      "note": 53,
+      "vel": 75,
+      "time": 0.0063,
+      "duration": 2.9688
+    },
+    {
+      "note": 63,
+      "vel": 96,
+      "time": 0.0063,
+      "duration": 23.2792
+    },
+    {
+      "note": 58,
+      "vel": 94,
+      "time": 0.0063,
+      "duration": 2.9542
+    },
+    {
+      "note": 65,
+      "vel": 95,
+      "time": 0.0063,
+      "duration": 11.1708
+    }
+  ]
+}

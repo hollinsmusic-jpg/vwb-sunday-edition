@@ -1,0 +1,39 @@
+{
+  "id": "G_min_keys",
+  "key": "G",
+  "quality": "min",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 62,
+      "vel": 86,
+      "time": -0.0063,
+      "duration": 2.6125
+    },
+    {
+      "note": 67,
+      "vel": 86,
+      "time": -0.0063,
+      "duration": 2.6229
+    },
+    {
+      "note": 74,
+      "vel": 90,
+      "time": -0.0042,
+      "duration": 19.9354
+    },
+    {
+      "note": 55,
+      "vel": 77,
+      "time": 0.0042,
+      "duration": 3.2896
+    },
+    {
+      "note": 70,
+      "vel": 93,
+      "time": 2.9937,
+      "duration": 12.4333
+    }
+  ]
+}

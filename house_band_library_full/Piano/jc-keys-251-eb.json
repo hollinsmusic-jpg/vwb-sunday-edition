@@ -1,0 +1,143 @@
+{
+  "id": "jc-keys-251-eb",
+  "slot": "keys",
+  "musician": "julian-cross",
+  "type": "progression",
+  "progression": "2-5-1",
+  "key": "Eb",
+  "two": "Fmin7",
+  "five": "Bb7",
+  "one": "Ebmaj7",
+  "beats": 8,
+  "timeSig": "4/4",
+  "feel": "straight",
+  "events": [
+    {
+      "note": 63,
+      "vel": 96,
+      "time": 0.0,
+      "duration": 0.3937
+    },
+    {
+      "note": 72,
+      "vel": 84,
+      "time": 0.0,
+      "duration": 0.4271
+    },
+    {
+      "note": 51,
+      "vel": 60,
+      "time": 0.0,
+      "duration": 1.2896
+    },
+    {
+      "note": 56,
+      "vel": 71,
+      "time": 0.0,
+      "duration": 1.4438
+    },
+    {
+      "note": 60,
+      "vel": 66,
+      "time": 0.0,
+      "duration": 1.4625
+    },
+    {
+      "note": 68,
+      "vel": 68,
+      "time": 0.5167,
+      "duration": 0.1854
+    },
+    {
+      "note": 72,
+      "vel": 88,
+      "time": 0.9833,
+      "duration": 0.1667
+    },
+    {
+      "note": 75,
+      "vel": 112,
+      "time": 1.45,
+      "duration": 0.1479
+    },
+    {
+      "note": 65,
+      "vel": 90,
+      "time": 1.9625,
+      "duration": 0.7188
+    },
+    {
+      "note": 74,
+      "vel": 95,
+      "time": 1.9625,
+      "duration": 0.7583
+    },
+    {
+      "note": 56,
+      "vel": 66,
+      "time": 1.9646,
+      "duration": 1.3396
+    },
+    {
+      "note": 62,
+      "vel": 75,
+      "time": 1.9646,
+      "duration": 1.3396
+    },
+    {
+      "note": 50,
+      "vel": 68,
+      "time": 1.9667,
+      "duration": 1.2729
+    },
+    {
+      "note": 58,
+      "vel": 71,
+      "time": 1.9667,
+      "duration": 1.3687
+    },
+    {
+      "note": 70,
+      "vel": 110,
+      "time": 2.9562,
+      "duration": 0.2479
+    },
+    {
+      "note": 58,
+      "vel": 74,
+      "time": 3.9646,
+      "duration": 3.1562
+    },
+    {
+      "note": 62,
+      "vel": 95,
+      "time": 3.9646,
+      "duration": 3.1771
+    },
+    {
+      "note": 67,
+      "vel": 88,
+      "time": 3.9667,
+      "duration": 3.1375
+    },
+    {
+      "note": 55,
+      "vel": 73,
+      "time": 3.9667,
+      "duration": 3.1896
+    },
+    {
+      "note": 70,
+      "vel": 90,
+      "time": 3.9688,
+      "duration": 3.2271
+    }
+  ],
+  "energy": "medium-low",
+  "tempoRange": "slow-medium",
+  "styles": [
+    "slow-hymn",
+    "worship-ballad",
+    "medium-groove-gospel"
+  ]
+}

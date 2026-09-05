@@ -1,0 +1,45 @@
+{
+  "id": "E_sus7_keys",
+  "key": "E",
+  "quality": "sus7",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 57,
+      "vel": 90,
+      "time": -0.0021,
+      "duration": 31.7917
+    },
+    {
+      "note": 52,
+      "vel": 84,
+      "time": 0.0,
+      "duration": 3.1875
+    },
+    {
+      "note": 62,
+      "vel": 106,
+      "time": 0.0042,
+      "duration": 23.1938
+    },
+    {
+      "note": 66,
+      "vel": 103,
+      "time": 0.0042,
+      "duration": 18.7083
+    },
+    {
+      "note": 69,
+      "vel": 97,
+      "time": 0.0042,
+      "duration": 31.8167
+    },
+    {
+      "note": 74,
+      "vel": 102,
+      "time": 0.0042,
+      "duration": 3.1021
+    }
+  ]
+}

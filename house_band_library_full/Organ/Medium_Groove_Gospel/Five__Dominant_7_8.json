@@ -1,0 +1,77 @@
+{
+  "musician": "Paul Simmons",
+  "instrument": "Organ",
+  "style": "Medium Groove Gospel",
+  "mood": "Energetic / Lively",
+  "auxVoicing": null,
+  "originalKey": "Db",
+  "originalTempo": 69.99998833333528,
+  "degreeLabel": "Five",
+  "quality": "Dominant 7",
+  "alterations": [],
+  "chordLabel": "Five, Dominant 7",
+  "progressionName": "2-5-1-3-6",
+  "section": "A",
+  "sourceChord": "Ab7",
+  "measureRange": "m1b3-m2b1",
+  "durationSeconds": 1.714286,
+  "noteCount": 7,
+  "notes": [
+    {
+      "midi": 80,
+      "name": "G#5",
+      "time": 0.842857,
+      "duration": 0.8267858520833333,
+      "velocity": 0.6929133858267716,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 72,
+      "name": "C5",
+      "time": 0.844643,
+      "duration": 0.9017858645833332,
+      "velocity": 0.6929133858267716,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 75,
+      "name": "D#5",
+      "time": 0.844643,
+      "duration": 0.6285715333333335,
+      "velocity": 0.7086614173228346,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 66,
+      "name": "F#4",
+      "time": 0.848214,
+      "duration": 0.8089287062499997,
+      "velocity": 0.49606299212598426,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 68,
+      "name": "G#4",
+      "time": 0.848214,
+      "duration": 2.600000433333333,
+      "velocity": 0.5905511811023622,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 75,
+      "name": "D#5",
+      "time": 1.680357,
+      "duration": 0.11428573333333336,
+      "velocity": 0.47244094488188976,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 65,
+      "name": "F4",
+      "time": 1.698215,
+      "duration": 1.7392860041666665,
+      "velocity": 0.4015748031496063,
+      "sustainedFromPrevious": false
+    }
+  ]
+}

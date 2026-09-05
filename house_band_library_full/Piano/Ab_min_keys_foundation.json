@@ -1,0 +1,39 @@
+{
+  "id": "Ab_min_keys",
+  "key": "Ab",
+  "quality": "min",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 63,
+      "vel": 96,
+      "time": -0.0083,
+      "duration": 3.4188
+    },
+    {
+      "note": 75,
+      "vel": 83,
+      "time": -0.0083,
+      "duration": 3.4021
+    },
+    {
+      "note": 68,
+      "vel": 85,
+      "time": -0.0063,
+      "duration": 3.3771
+    },
+    {
+      "note": 71,
+      "vel": 84,
+      "time": -0.0063,
+      "duration": 15.95
+    },
+    {
+      "note": 56,
+      "vel": 82,
+      "time": -0.0042,
+      "duration": 3.5
+    }
+  ]
+}

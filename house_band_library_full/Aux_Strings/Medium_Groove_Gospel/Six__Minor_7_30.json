@@ -1,0 +1,173 @@
+{
+  "musician": "Larry Evans",
+  "instrument": "Aux Strings",
+  "style": "Medium Groove Gospel",
+  "mood": "Energetic / Lively",
+  "auxVoicing": "Brass Synth",
+  "originalKey": "Db",
+  "originalTempo": 69.99998833333528,
+  "degreeLabel": "Six",
+  "quality": "Minor 7",
+  "alterations": [],
+  "chordLabel": "Six, Minor 7",
+  "progressionName": "2-5-1-3-6",
+  "section": "A",
+  "sourceChord": "Bbm7",
+  "measureRange": "m4b1-m5b1",
+  "durationSeconds": 3.428572,
+  "noteCount": 19,
+  "notes": [
+    {
+      "midi": 65,
+      "name": "F4",
+      "time": 0,
+      "duration": 0.5178572291666672,
+      "velocity": 0.7322834645669292,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 77,
+      "name": "F5",
+      "time": 0,
+      "duration": 0.5107143708333322,
+      "velocity": 0.6771653543307087,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 73,
+      "name": "C#5",
+      "time": 0,
+      "duration": 0.5392858041666653,
+      "velocity": 0.6535433070866141,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 58,
+      "name": "A#3",
+      "time": 0,
+      "duration": 0.539285804166667,
+      "velocity": 0.5590551181102362,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 68,
+      "name": "G#4",
+      "time": 0,
+      "duration": 0.5464286625000003,
+      "velocity": 0.6929133858267716,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 61,
+      "name": "C#4",
+      "time": 0,
+      "duration": 0.5375000895833342,
+      "velocity": 0.6456692913385826,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 68,
+      "name": "G#4",
+      "time": 0.667857,
+      "duration": 0.13214287916666656,
+      "velocity": 0.7322834645669292,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 65,
+      "name": "F4",
+      "time": 0.671429,
+      "duration": 0.10714287500000097,
+      "velocity": 0.7086614173228346,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 73,
+      "name": "C#5",
+      "time": 0.671429,
+      "duration": 0.1357143083333341,
+      "velocity": 0.6299212598425197,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 58,
+      "name": "A#3",
+      "time": 0.673214,
+      "duration": 0.13928573749999984,
+      "velocity": 0.5984251968503937,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 77,
+      "name": "F5",
+      "time": 0.673214,
+      "duration": 0.12321430625000218,
+      "velocity": 0.6929133858267716,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 61,
+      "name": "C#4",
+      "time": 0.676786,
+      "duration": 0.1125000187499996,
+      "velocity": 0.6456692913385826,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 66,
+      "name": "F#4",
+      "time": 3.414286,
+      "duration": 0.5142857999999997,
+      "velocity": 0.6299212598425197,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 70,
+      "name": "A#4",
+      "time": 3.417858,
+      "duration": 0.5321429458333338,
+      "velocity": 0.5748031496062992,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 73,
+      "name": "C#5",
+      "time": 3.417858,
+      "duration": 0.5339286604166649,
+      "velocity": 0.5748031496062992,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 58,
+      "name": "A#3",
+      "time": 3.419643,
+      "duration": 0.5482143770833332,
+      "velocity": 0.47244094488188976,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 61,
+      "name": "C#4",
+      "time": 3.419643,
+      "duration": 0.5410715187499999,
+      "velocity": 0.5196850393700787,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 54,
+      "name": "F#3",
+      "time": 3.421429,
+      "duration": 0.5000000833333331,
+      "velocity": 0.47244094488188976,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 78,
+      "name": "F#5",
+      "time": 3.421429,
+      "duration": 0.5250000875000005,
+      "velocity": 0.6141732283464567,
+      "sustainedFromPrevious": false
+    }
+  ]
+}

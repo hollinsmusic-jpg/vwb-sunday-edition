@@ -1,0 +1,76 @@
+{
+  "musician": "Larry Evans",
+  "instrument": "Aux Strings",
+  "style": "Worship Ballad",
+  "mood": "Calm / Worshipful",
+  "originalKey": "D",
+  "originalTempo": 69.99998833333528,
+  "degreeLabel": "One",
+  "quality": "Dominant 7",
+  "alterations": [],
+  "chordLabel": "One, Dominant 7",
+  "progressionName": "2-5sus-1-1sus-1dom",
+  "section": "B",
+  "sourceChord": "D7",
+  "measureRange": "m8b3-m9b1",
+  "durationSeconds": 1.714286,
+  "noteCount": 7,
+  "notes": [
+    {
+      "midi": 55,
+      "name": "G3",
+      "time": 0,
+      "duration": 1.7857145833333306,
+      "velocity": 0.3700787401574803,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 67,
+      "name": "G4",
+      "time": 0,
+      "duration": 1.8142860166666672,
+      "velocity": 0.5118110236220472,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 69,
+      "name": "A4",
+      "time": 0.008929,
+      "duration": 1.6535717041666658,
+      "velocity": 0.4409448818897638,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 57,
+      "name": "A3",
+      "time": 0.019643,
+      "duration": 1.6071431250000003,
+      "velocity": 0.49606299212598426,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 67,
+      "name": "G4",
+      "time": 1.608929,
+      "duration": 3.530357731249996,
+      "velocity": 0.33858267716535434,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 59,
+      "name": "B3",
+      "time": 1.6125,
+      "duration": 3.5035720124999976,
+      "velocity": 0.3700787401574803,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 71,
+      "name": "B4",
+      "time": 1.6125,
+      "duration": 3.517857729166664,
+      "velocity": 0.3779527559055118,
+      "sustainedFromPrevious": false
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "id": "G_maj7_keys",
+  "key": "G",
+  "quality": "maj7",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 57,
+      "vel": 57,
+      "time": -0.0542,
+      "duration": 2.4042
+    },
+    {
+      "note": 59,
+      "vel": 55,
+      "time": -0.0354,
+      "duration": 2.3958
+    },
+    {
+      "note": 62,
+      "vel": 79,
+      "time": -0.0271,
+      "duration": 2.3708
+    },
+    {
+      "note": 43,
+      "vel": 73,
+      "time": -0.0187,
+      "duration": 2.3917
+    },
+    {
+      "note": 66,
+      "vel": 95,
+      "time": 0.0125,
+      "duration": 19.9583
+    }
+  ]
+}

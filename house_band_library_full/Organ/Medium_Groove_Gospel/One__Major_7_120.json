@@ -1,0 +1,93 @@
+{
+  "musician": "Paul Simmons",
+  "instrument": "Organ",
+  "style": "Medium Groove Gospel",
+  "mood": "Energetic / Lively",
+  "auxVoicing": null,
+  "originalKey": "Db",
+  "originalTempo": 69.99998833333528,
+  "degreeLabel": "One",
+  "quality": "Major 7",
+  "alterations": [],
+  "chordLabel": "One, Major 7",
+  "progressionName": "4over1-1",
+  "section": "D",
+  "sourceChord": "Dbmaj7",
+  "measureRange": "m14b1-m15b1",
+  "durationSeconds": 3.428572,
+  "noteCount": 9,
+  "notes": [
+    {
+      "midi": 80,
+      "name": "G#5",
+      "time": 0,
+      "duration": 7.698215568750001,
+      "velocity": 0.6929133858267716,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 70,
+      "name": "A#4",
+      "time": 0,
+      "duration": 3.466072006250002,
+      "velocity": 0.49606299212598426,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 85,
+      "name": "C#6",
+      "time": 0,
+      "duration": 6.866072572916671,
+      "velocity": 0.5511811023622047,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 82,
+      "name": "A#5",
+      "time": 0,
+      "duration": 3.4642862916666672,
+      "velocity": 0.49606299212598426,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 75,
+      "name": "D#5",
+      "time": 0,
+      "duration": 4.296429287499997,
+      "velocity": 0.6535433070866141,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 73,
+      "name": "C#5",
+      "time": 0,
+      "duration": 4.285714999999996,
+      "velocity": 0.5511811023622047,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 68,
+      "name": "G#4",
+      "time": 0,
+      "duration": 4.289286429166673,
+      "velocity": 0.4566929133858268,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 65,
+      "name": "F4",
+      "time": 0,
+      "duration": 3.4339291437499995,
+      "velocity": 0.6062992125984252,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 77,
+      "name": "F5",
+      "time": 0,
+      "duration": 3.4196434270833365,
+      "velocity": 0.5354330708661418,
+      "sustainedFromPrevious": true
+    }
+  ]
+}

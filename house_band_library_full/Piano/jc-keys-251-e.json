@@ -1,0 +1,119 @@
+{
+  "id": "jc-keys-251-e",
+  "slot": "keys",
+  "musician": "julian-cross",
+  "type": "progression",
+  "progression": "2-5-1",
+  "key": "E",
+  "two": "F#min7",
+  "five": "B7",
+  "one": "Emaj7",
+  "beats": 8,
+  "timeSig": "4/4",
+  "feel": "straight",
+  "events": [
+    {
+      "note": 64,
+      "vel": 90,
+      "time": 0.0,
+      "duration": 1.1875
+    },
+    {
+      "note": 71,
+      "vel": 95,
+      "time": 0.0,
+      "duration": 1.2125
+    },
+    {
+      "note": 52,
+      "vel": 57,
+      "time": 0.0,
+      "duration": 1.4354
+    },
+    {
+      "note": 61,
+      "vel": 71,
+      "time": 0.0,
+      "duration": 1.4958
+    },
+    {
+      "note": 56,
+      "vel": 66,
+      "time": 0.0,
+      "duration": 1.5083
+    },
+    {
+      "note": 57,
+      "vel": 70,
+      "time": 0.0,
+      "duration": 1.5625
+    },
+    {
+      "note": 57,
+      "vel": 75,
+      "time": 1.9625,
+      "duration": 1.3625
+    },
+    {
+      "note": 51,
+      "vel": 60,
+      "time": 1.9729,
+      "duration": 1.4021
+    },
+    {
+      "note": 63,
+      "vel": 85,
+      "time": 1.9771,
+      "duration": 0.5396
+    },
+    {
+      "note": 66,
+      "vel": 98,
+      "time": 1.9854,
+      "duration": 0.5354
+    },
+    {
+      "note": 71,
+      "vel": 106,
+      "time": 2.9667,
+      "duration": 0.3354
+    },
+    {
+      "note": 59,
+      "vel": 77,
+      "time": 3.9646,
+      "duration": 3.2188
+    },
+    {
+      "note": 68,
+      "vel": 106,
+      "time": 3.9646,
+      "duration": 3.2854
+    },
+    {
+      "note": 63,
+      "vel": 94,
+      "time": 3.9688,
+      "duration": 3.2354
+    },
+    {
+      "note": 54,
+      "vel": 63,
+      "time": 3.9688,
+      "duration": 3.2896
+    },
+    {
+      "note": 56,
+      "vel": 66,
+      "time": 3.9729,
+      "duration": 3.2667
+    }
+  ],
+  "energy": "medium-low",
+  "tempoRange": "slow-medium",
+  "styles": [
+    "slow-hymn",
+    "worship-ballad",
+    "medium-groove-gospel"
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "musician": "Larry Evans",
+  "instrument": "Aux Strings",
+  "style": "Worship Ballad",
+  "mood": "Calm / Worshipful",
+  "originalKey": "D",
+  "originalTempo": 69.99998833333528,
+  "degreeLabel": "One",
+  "quality": "Suspended 4, Flat 7",
+  "alterations": [],
+  "chordLabel": "One, Suspended 4, Flat 7",
+  "progressionName": "2-5sus-1-1sus-1dom",
+  "section": "B",
+  "sourceChord": "D7sus4",
+  "measureRange": "m8b1-m8b3",
+  "durationSeconds": 1.714286,
+  "noteCount": 2,
+  "notes": [
+    {
+      "midi": 55,
+      "name": "G3",
+      "time": 0,
+      "duration": 1.7857145833333306,
+      "velocity": 0.3700787401574803,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 67,
+      "name": "G4",
+      "time": 0,
+      "duration": 1.8142860166666672,
+      "velocity": 0.5118110236220472,
+      "sustainedFromPrevious": true
+    }
+  ]
+}

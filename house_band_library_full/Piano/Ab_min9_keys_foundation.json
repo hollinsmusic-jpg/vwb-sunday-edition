@@ -1,0 +1,39 @@
+{
+  "id": "Ab_min9_keys",
+  "key": "Ab",
+  "quality": "min9",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 59,
+      "vel": 93,
+      "time": 0.0146,
+      "duration": 2.4458
+    },
+    {
+      "note": 70,
+      "vel": 101,
+      "time": 0.0146,
+      "duration": 3.4729
+    },
+    {
+      "note": 44,
+      "vel": 76,
+      "time": 0.0167,
+      "duration": 1.7917
+    },
+    {
+      "note": 54,
+      "vel": 82,
+      "time": 0.0187,
+      "duration": 15.9083
+    },
+    {
+      "note": 63,
+      "vel": 94,
+      "time": 0.0187,
+      "duration": 2.4583
+    }
+  ]
+}

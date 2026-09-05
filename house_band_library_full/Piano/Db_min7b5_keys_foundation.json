@@ -1,0 +1,45 @@
+{
+  "id": "Db_min7b5_keys",
+  "key": "Db",
+  "quality": "min7b5",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 67,
+      "vel": 90,
+      "time": 0.0083,
+      "duration": 2.6271
+    },
+    {
+      "note": 49,
+      "vel": 76,
+      "time": 0.0083,
+      "duration": 2.5771
+    },
+    {
+      "note": 71,
+      "vel": 86,
+      "time": 0.0083,
+      "duration": 43.9896
+    },
+    {
+      "note": 59,
+      "vel": 75,
+      "time": 0.0104,
+      "duration": 43.9854
+    },
+    {
+      "note": 76,
+      "vel": 88,
+      "time": 0.0104,
+      "duration": 23.0479
+    },
+    {
+      "note": 55,
+      "vel": 77,
+      "time": 0.0146,
+      "duration": 34.7583
+    }
+  ]
+}

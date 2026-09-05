@@ -1,0 +1,57 @@
+{
+  "id": "Bb_maj7_keys",
+  "key": "Bb",
+  "quality": "maj7",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 65,
+      "vel": 73,
+      "time": -0.0563,
+      "duration": 3.2521
+    },
+    {
+      "note": 69,
+      "vel": 59,
+      "time": -0.0375,
+      "duration": 3.2479
+    },
+    {
+      "note": 72,
+      "vel": 73,
+      "time": -0.0312,
+      "duration": 3.2167
+    },
+    {
+      "note": 74,
+      "vel": 55,
+      "time": -0.0271,
+      "duration": 3.1938
+    },
+    {
+      "note": 53,
+      "vel": 51,
+      "time": -0.0229,
+      "duration": 3.2729
+    },
+    {
+      "note": 46,
+      "vel": 32,
+      "time": -0.0187,
+      "duration": 3.2437
+    },
+    {
+      "note": 50,
+      "vel": 59,
+      "time": -0.0125,
+      "duration": 3.1854
+    },
+    {
+      "note": 77,
+      "vel": 97,
+      "time": 0.0208,
+      "duration": 3.0938
+    }
+  ]
+}

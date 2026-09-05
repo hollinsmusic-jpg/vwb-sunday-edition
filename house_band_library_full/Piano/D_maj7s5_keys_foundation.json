@@ -1,0 +1,27 @@
+{
+  "id": "D_maj7#5_keys",
+  "key": "D",
+  "quality": "maj7#5",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 70,
+      "vel": 95,
+      "time": -0.0167,
+      "duration": 35.5063
+    },
+    {
+      "note": 66,
+      "vel": 93,
+      "time": -0.0146,
+      "duration": 35.5229
+    },
+    {
+      "note": 74,
+      "vel": 90,
+      "time": -0.0146,
+      "duration": 19.7396
+    }
+  ]
+}

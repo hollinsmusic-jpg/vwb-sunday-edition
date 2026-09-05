@@ -1,0 +1,116 @@
+{
+  "musician": "Paul Simmons",
+  "instrument": "Organ",
+  "style": "Worship Ballad",
+  "mood": "Calm / Worshipful",
+  "originalKey": "D",
+  "originalTempo": 69.99998833333528,
+  "degreeLabel": "Three",
+  "quality": "Minor 7",
+  "alterations": [],
+  "chordLabel": "Three, Minor 7",
+  "progressionName": "4-3-6-2-6-5over7",
+  "section": "C",
+  "sourceChord": "F#m7",
+  "measureRange": "m10b1-m10b3",
+  "durationSeconds": 1.714286,
+  "noteCount": 12,
+  "notes": [
+    {
+      "midi": 71,
+      "name": "B4",
+      "time": 0,
+      "duration": 3.5767863104166686,
+      "velocity": 0.5118110236220472,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 67,
+      "name": "G4",
+      "time": 0,
+      "duration": 3.5321434458333307,
+      "velocity": 0.33858267716535434,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 83,
+      "name": "B5",
+      "time": 0,
+      "duration": 3.4250005708333298,
+      "velocity": 0.5354330708661418,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 84,
+      "name": "C6",
+      "time": 0,
+      "duration": 0.18928574583333102,
+      "velocity": 0.5196850393700787,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 76,
+      "name": "E5",
+      "time": 0,
+      "duration": 1.6464288458333307,
+      "velocity": 0.13385826771653545,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 69,
+      "name": "A4",
+      "time": 0.007143,
+      "duration": 3.446429145833335,
+      "velocity": 0.3779527559055118,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 64,
+      "name": "E4",
+      "time": 0.021429,
+      "duration": 1.6892859958333304,
+      "velocity": 0.4094488188976378,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 73,
+      "name": "C#5",
+      "time": 0.026786,
+      "duration": 1.6928574249999997,
+      "velocity": 0.1732283464566929,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 85,
+      "name": "C#6",
+      "time": 0.117857,
+      "duration": 1.6625002770833355,
+      "velocity": 0.41732283464566927,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 66,
+      "name": "F#4",
+      "time": 1.705357,
+      "duration": 1.6660717062499941,
+      "velocity": 0.3779527559055118,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 78,
+      "name": "F#5",
+      "time": 1.707143,
+      "duration": 4.42142930833333,
+      "velocity": 0.3779527559055118,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 74,
+      "name": "D5",
+      "time": 1.710715,
+      "duration": 1.2410716354166738,
+      "velocity": 0.5118110236220472,
+      "sustainedFromPrevious": false
+    }
+  ]
+}

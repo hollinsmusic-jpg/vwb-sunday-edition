@@ -1,0 +1,63 @@
+{
+  "id": "Db_maj7_keys",
+  "key": "Db",
+  "quality": "maj7",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 63,
+      "vel": 66,
+      "time": -0.1917,
+      "duration": 31.2542
+    },
+    {
+      "note": 65,
+      "vel": 59,
+      "time": -0.0437,
+      "duration": 39.2396
+    },
+    {
+      "note": 68,
+      "vel": 60,
+      "time": -0.0292,
+      "duration": 34.7271
+    },
+    {
+      "note": 72,
+      "vel": 51,
+      "time": -0.025,
+      "duration": 39.2104
+    },
+    {
+      "note": 56,
+      "vel": 63,
+      "time": -0.0208,
+      "duration": 15.2333
+    },
+    {
+      "note": 60,
+      "vel": 53,
+      "time": -0.0208,
+      "duration": 31.0354
+    },
+    {
+      "note": 49,
+      "vel": 55,
+      "time": -0.0167,
+      "duration": 3.3333
+    },
+    {
+      "note": 53,
+      "vel": 68,
+      "time": -0.0167,
+      "duration": 39.2667
+    },
+    {
+      "note": 75,
+      "vel": 101,
+      "time": 0.0146,
+      "duration": 13.5083
+    }
+  ]
+}

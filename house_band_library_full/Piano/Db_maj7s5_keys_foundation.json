@@ -1,0 +1,27 @@
+{
+  "id": "Db_maj7#5_keys",
+  "key": "Db",
+  "quality": "maj7#5",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 73,
+      "vel": 90,
+      "time": 0.0146,
+      "duration": 19.8458
+    },
+    {
+      "note": 65,
+      "vel": 84,
+      "time": 0.0146,
+      "duration": 44.3583
+    },
+    {
+      "note": 69,
+      "vel": 90,
+      "time": 0.0146,
+      "duration": 44.3604
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "musician": "Diane Moore",
+  "instrument": "Congas",
+  "style": "Worship Ballad",
+  "mood": "Calm / Worshipful",
+  "originalKey": "D",
+  "originalTempo": 69.99998833333528,
+  "degreeLabel": "One",
+  "quality": "Dominant 7",
+  "alterations": [],
+  "chordLabel": "One, Dominant 7",
+  "progressionName": "2-5sus-1-1sus-1dom",
+  "section": "B",
+  "sourceChord": "D7",
+  "measureRange": "m8b3-m9b1",
+  "durationSeconds": 1.714286,
+  "noteCount": 5,
+  "notes": [
+    {
+      "midi": 64,
+      "name": "E4",
+      "time": 0,
+      "duration": 2.5714289999999984,
+      "velocity": 0.6377952755905512,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 70,
+      "name": "A#4",
+      "time": 0,
+      "duration": 1.157143050000002,
+      "velocity": 0.6929133858267716,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 69,
+      "name": "A4",
+      "time": 0.848214,
+      "duration": 0.30357147916666705,
+      "velocity": 0.6614173228346457,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 71,
+      "name": "B4",
+      "time": 1.278572,
+      "duration": 0.4910715104166634,
+      "velocity": 0.7322834645669292,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 62,
+      "name": "D4",
+      "time": 1.707143,
+      "duration": 0.6196429604166624,
+      "velocity": 0.6220472440944882,
+      "sustainedFromPrevious": false
+    }
+  ]
+}

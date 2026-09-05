@@ -1,0 +1,39 @@
+{
+  "id": "Db_dom7#5#9_keys",
+  "key": "Db",
+  "quality": "dom7#5#9",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 49,
+      "vel": 82,
+      "time": -0.0167,
+      "duration": 3.0021
+    },
+    {
+      "note": 53,
+      "vel": 84,
+      "time": -0.0125,
+      "duration": 27.1479
+    },
+    {
+      "note": 59,
+      "vel": 75,
+      "time": -0.0125,
+      "duration": 31.3083
+    },
+    {
+      "note": 64,
+      "vel": 105,
+      "time": -0.0063,
+      "duration": 31.3396
+    },
+    {
+      "note": 69,
+      "vel": 97,
+      "time": -0.0063,
+      "duration": 22.5688
+    }
+  ]
+}

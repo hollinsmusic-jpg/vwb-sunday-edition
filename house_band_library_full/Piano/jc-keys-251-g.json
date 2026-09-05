@@ -1,0 +1,125 @@
+{
+  "id": "jc-keys-251-g",
+  "slot": "keys",
+  "musician": "julian-cross",
+  "type": "progression",
+  "progression": "2-5-1",
+  "key": "G",
+  "two": "Amin7",
+  "five": "D7",
+  "one": "Gmaj7",
+  "beats": 8,
+  "timeSig": "4/4",
+  "feel": "straight",
+  "events": [
+    {
+      "note": 60,
+      "vel": 88,
+      "time": 0.0,
+      "duration": 0.6604
+    },
+    {
+      "note": 71,
+      "vel": 100,
+      "time": 0.0,
+      "duration": 0.7042
+    },
+    {
+      "note": 64,
+      "vel": 90,
+      "time": 0.0,
+      "duration": 0.7167
+    },
+    {
+      "note": 59,
+      "vel": 84,
+      "time": 0.0,
+      "duration": 1.325
+    },
+    {
+      "note": 55,
+      "vel": 73,
+      "time": 0.0,
+      "duration": 1.3417
+    },
+    {
+      "note": 67,
+      "vel": 111,
+      "time": 0.9854,
+      "duration": 0.4083
+    },
+    {
+      "note": 69,
+      "vel": 90,
+      "time": 1.9917,
+      "duration": 0.4854
+    },
+    {
+      "note": 54,
+      "vel": 66,
+      "time": 1.9917,
+      "duration": 1.175
+    },
+    {
+      "note": 57,
+      "vel": 70,
+      "time": 1.9937,
+      "duration": 1.1375
+    },
+    {
+      "note": 60,
+      "vel": 84,
+      "time": 2.0042,
+      "duration": 0.425
+    },
+    {
+      "note": 64,
+      "vel": 84,
+      "time": 2.0042,
+      "duration": 0.4396
+    },
+    {
+      "note": 74,
+      "vel": 108,
+      "time": 3.0208,
+      "duration": 0.2042
+    },
+    {
+      "note": 59,
+      "vel": 77,
+      "time": 4.0,
+      "duration": 0.9083
+    },
+    {
+      "note": 71,
+      "vel": 88,
+      "time": 4.0,
+      "duration": 3.1917
+    },
+    {
+      "note": 57,
+      "vel": 75,
+      "time": 4.0042,
+      "duration": 0.9208
+    },
+    {
+      "note": 66,
+      "vel": 101,
+      "time": 4.0042,
+      "duration": 3.1771
+    },
+    {
+      "note": 62,
+      "vel": 102,
+      "time": 4.0083,
+      "duration": 3.1521
+    }
+  ],
+  "energy": "medium-low",
+  "tempoRange": "slow-medium",
+  "styles": [
+    "slow-hymn",
+    "worship-ballad",
+    "medium-groove-gospel"
+  ]
+}

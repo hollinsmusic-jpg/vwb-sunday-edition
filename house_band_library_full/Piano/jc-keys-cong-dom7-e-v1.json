@@ -1,0 +1,117 @@
+{
+  "id": "jc-keys-cong-dom7-e-v1",
+  "slot": "keys",
+  "style": "congregational",
+  "quality": "dom7",
+  "key": "E",
+  "events": [
+    {
+      "note": 62,
+      "vel": 100,
+      "time": 0.0,
+      "duration": 0.3042
+    },
+    {
+      "note": 64,
+      "vel": 105,
+      "time": 0.0,
+      "duration": 0.3104
+    },
+    {
+      "note": 56,
+      "vel": 94,
+      "time": 0.0,
+      "duration": 0.3167
+    },
+    {
+      "note": 71,
+      "vel": 90,
+      "time": 0.0,
+      "duration": 0.3354
+    },
+    {
+      "note": 68,
+      "vel": 106,
+      "time": 0.0,
+      "duration": 0.3646
+    },
+    {
+      "note": 76,
+      "vel": 97,
+      "time": 0.0,
+      "duration": 0.3833
+    },
+    {
+      "note": 59,
+      "vel": 77,
+      "time": 0.0,
+      "duration": 0.4146
+    },
+    {
+      "note": 73,
+      "vel": 93,
+      "time": 0.9667,
+      "duration": 0.4208
+    },
+    {
+      "note": 64,
+      "vel": 110,
+      "time": 0.9667,
+      "duration": 0.4313
+    },
+    {
+      "note": 69,
+      "vel": 90,
+      "time": 0.9688,
+      "duration": 0.4271
+    },
+    {
+      "note": 76,
+      "vel": 100,
+      "time": 0.9688,
+      "duration": 0.4812
+    },
+    {
+      "note": 76,
+      "vel": 86,
+      "time": 1.6125,
+      "duration": 0.2583
+    },
+    {
+      "note": 71,
+      "vel": 97,
+      "time": 1.6125,
+      "duration": 0.2708
+    },
+    {
+      "note": 59,
+      "vel": 95,
+      "time": 1.6146,
+      "duration": 0.25
+    },
+    {
+      "note": 56,
+      "vel": 100,
+      "time": 1.6146,
+      "duration": 0.2792
+    },
+    {
+      "note": 62,
+      "vel": 95,
+      "time": 1.6167,
+      "duration": 0.2146
+    },
+    {
+      "note": 64,
+      "vel": 111,
+      "time": 1.6229,
+      "duration": 0.1792
+    },
+    {
+      "note": 68,
+      "vel": 103,
+      "time": 1.6229,
+      "duration": 0.2688
+    }
+  ]
+}

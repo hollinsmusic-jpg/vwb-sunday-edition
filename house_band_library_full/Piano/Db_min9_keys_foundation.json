@@ -1,0 +1,51 @@
+{
+  "id": "Db_min9_keys",
+  "key": "Db",
+  "quality": "min9",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 64,
+      "vel": 68,
+      "time": -0.2042,
+      "duration": 34.7292
+    },
+    {
+      "note": 56,
+      "vel": 63,
+      "time": -0.0396,
+      "duration": 39.1229
+    },
+    {
+      "note": 59,
+      "vel": 57,
+      "time": -0.0396,
+      "duration": 30.5
+    },
+    {
+      "note": 49,
+      "vel": 55,
+      "time": -0.0354,
+      "duration": 2.9208
+    },
+    {
+      "note": 75,
+      "vel": 109,
+      "time": 0.0021,
+      "duration": 1.5292
+    },
+    {
+      "note": 73,
+      "vel": 26,
+      "time": 0.0271,
+      "duration": 43.9125
+    },
+    {
+      "note": 68,
+      "vel": 85,
+      "time": 2.0271,
+      "duration": 17.2354
+    }
+  ]
+}

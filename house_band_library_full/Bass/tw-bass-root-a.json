@@ -1,0 +1,16 @@
+{
+  "id": "tw-bass-root-a",
+  "slot": "bass",
+  "musician": "terry-washington",
+  "style": "all",
+  "key": "A",
+  "quality": "root",
+  "events": [
+    {
+      "note": 45,
+      "vel": 90,
+      "time": 0.0,
+      "duration": 0.92
+    }
+  ]
+}

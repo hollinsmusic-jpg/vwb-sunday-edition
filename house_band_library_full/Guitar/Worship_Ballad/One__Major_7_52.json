@@ -1,0 +1,100 @@
+{
+  "musician": "Sanchez Rivera",
+  "instrument": "Guitar",
+  "style": "Worship Ballad",
+  "mood": "Calm / Worshipful",
+  "originalKey": "D",
+  "originalTempo": 69.99998833333528,
+  "degreeLabel": "One",
+  "quality": "Major 7",
+  "alterations": [],
+  "chordLabel": "One, Major 7",
+  "progressionName": "2-5sus-1-1sus-1dom",
+  "section": "B",
+  "sourceChord": "Dmaj7",
+  "measureRange": "m7b1-m8b1",
+  "durationSeconds": 3.428572,
+  "noteCount": 10,
+  "notes": [
+    {
+      "midi": 54,
+      "name": "F#3",
+      "time": 0,
+      "duration": 2.9892862125000015,
+      "velocity": 0.7007874015748031,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 57,
+      "name": "A3",
+      "time": 0.425,
+      "duration": 2.9321433458333352,
+      "velocity": 0.4881889763779528,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 62,
+      "name": "D4",
+      "time": 0.860714,
+      "duration": 0.48035722291666616,
+      "velocity": 0.5511811023622047,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 64,
+      "name": "E4",
+      "time": 1.2875,
+      "duration": 0.12857144999999903,
+      "velocity": 0.6062992125984252,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 64,
+      "name": "E4",
+      "time": 1.717857,
+      "duration": 0.12678573541666793,
+      "velocity": 0.7874015748031497,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 66,
+      "name": "F#4",
+      "time": 1.905357,
+      "duration": 1.0428573166666695,
+      "velocity": 0.5354330708661418,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 64,
+      "name": "E4",
+      "time": 2.983929,
+      "duration": 0.19642860416666608,
+      "velocity": 0.6771653543307087,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 62,
+      "name": "D4",
+      "time": 3.191072,
+      "duration": 0.24285718333333506,
+      "velocity": 0.5748031496062992,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 55,
+      "name": "G3",
+      "time": 3.408929,
+      "duration": 1.776786010416668,
+      "velocity": 0.6377952755905512,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 60,
+      "name": "C4",
+      "time": 3.408929,
+      "duration": 0.9428573,
+      "velocity": 0.7874015748031497,
+      "sustainedFromPrevious": false
+    }
+  ]
+}

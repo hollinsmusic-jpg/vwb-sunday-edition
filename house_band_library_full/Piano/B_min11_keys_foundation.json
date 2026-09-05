@@ -1,0 +1,51 @@
+{
+  "id": "B_min11_keys",
+  "key": "B",
+  "quality": "min11",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 73,
+      "vel": 93,
+      "time": -0.0083,
+      "duration": 3.9917
+    },
+    {
+      "note": 76,
+      "vel": 93,
+      "time": -0.0083,
+      "duration": 3.9875
+    },
+    {
+      "note": 66,
+      "vel": 73,
+      "time": -0.0083,
+      "duration": 3.9833
+    },
+    {
+      "note": 69,
+      "vel": 93,
+      "time": -0.0083,
+      "duration": 3.9771
+    },
+    {
+      "note": 57,
+      "vel": 57,
+      "time": -0.0063,
+      "duration": 3.975
+    },
+    {
+      "note": 61,
+      "vel": 74,
+      "time": -0.0042,
+      "duration": 3.9688
+    },
+    {
+      "note": 62,
+      "vel": 77,
+      "time": -0.0042,
+      "duration": 3.9729
+    }
+  ]
+}

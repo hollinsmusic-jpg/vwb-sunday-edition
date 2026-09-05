@@ -1,0 +1,101 @@
+{
+  "musician": "Larry Evans",
+  "instrument": "Aux Strings",
+  "style": "Medium Groove Gospel",
+  "mood": "Energetic / Lively",
+  "auxVoicing": "Brass Synth",
+  "originalKey": "Db",
+  "originalTempo": 69.99998833333528,
+  "degreeLabel": "One",
+  "quality": "Dominant 7",
+  "alterations": [],
+  "chordLabel": "One, Dominant 7",
+  "progressionName": "2-5sus-1-1sus-1dom",
+  "section": "B",
+  "sourceChord": "Db7",
+  "measureRange": "m8b3-m9b1",
+  "durationSeconds": 1.714286,
+  "noteCount": 10,
+  "notes": [
+    {
+      "midi": 73,
+      "name": "C#5",
+      "time": 0.830357,
+      "duration": 0.18928574583333457,
+      "velocity": 0.6692913385826772,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 61,
+      "name": "C#4",
+      "time": 0.832143,
+      "duration": 0.18571431666666527,
+      "velocity": 0.5590551181102362,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 75,
+      "name": "D#5",
+      "time": 1.060714,
+      "duration": 0.13392859374999944,
+      "velocity": 0.49606299212598426,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 63,
+      "name": "D#4",
+      "time": 1.071429,
+      "duration": 0.12678573541666438,
+      "velocity": 0.4094488188976378,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 77,
+      "name": "F5",
+      "time": 1.246429,
+      "duration": 0.10535716041666987,
+      "velocity": 0.6220472440944882,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 65,
+      "name": "F4",
+      "time": 1.251786,
+      "duration": 0.18392860208333417,
+      "velocity": 0.6220472440944882,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 68,
+      "name": "G#4",
+      "time": 1.491072,
+      "duration": 0.1464285958333349,
+      "velocity": 0.33858267716535434,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 80,
+      "name": "G#5",
+      "time": 1.5,
+      "duration": 0.11785716249999822,
+      "velocity": 0.5905511811023622,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 82,
+      "name": "A#5",
+      "time": 1.680357,
+      "duration": 0.7250001208333323,
+      "velocity": 0.8110236220472441,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 70,
+      "name": "A#4",
+      "time": 1.691072,
+      "duration": 0.726785835416667,
+      "velocity": 0.8110236220472441,
+      "sustainedFromPrevious": false
+    }
+  ]
+}

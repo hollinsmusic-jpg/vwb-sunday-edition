@@ -1,0 +1,51 @@
+{
+  "id": "F_min6_keys",
+  "key": "F",
+  "quality": "min6",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 60,
+      "vel": 66,
+      "time": 0.025,
+      "duration": 18.1833
+    },
+    {
+      "note": 56,
+      "vel": 60,
+      "time": 0.0312,
+      "duration": 14.8958
+    },
+    {
+      "note": 62,
+      "vel": 55,
+      "time": 0.0312,
+      "duration": 27.9229
+    },
+    {
+      "note": 53,
+      "vel": 48,
+      "time": 0.0312,
+      "duration": 2.5521
+    },
+    {
+      "note": 74,
+      "vel": 93,
+      "time": 0.0312,
+      "duration": 27.9375
+    },
+    {
+      "note": 68,
+      "vel": 98,
+      "time": 0.0333,
+      "duration": 27.9458
+    },
+    {
+      "note": 65,
+      "vel": 86,
+      "time": 0.0354,
+      "duration": 22.4563
+    }
+  ]
+}

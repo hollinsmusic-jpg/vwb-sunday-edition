@@ -1,0 +1,3278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VWB – Virtual Worship Band</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" onerror="">
+<style>
+:root {
+  --bg-primary:#0a0e14; --bg-secondary:#111820; --bg-tertiary:#1a2230; --bg-card:#151d28;
+  --accent:#40E0D0; --accent-dim:rgba(64,224,208,0.15); --accent-glow:rgba(64,224,208,0.4);
+  --text-primary:#e8ecf0; --text-secondary:#8899aa; --text-dim:#556677;
+  --red:#ff4466; --orange:#ff8844; --green:#44dd88; --gold:#f0c040; --purple:#aa66ff;
+  --border:rgba(64,224,208,0.1); --border-hover:rgba(64,224,208,0.3);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Outfit',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:var(--bg-primary);color:var(--text-primary);min-height:100vh;overflow-x:hidden;}
+
+/* SPLASH */
+#splash{position:fixed;inset:0;z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 40%,#0f1c2a,#070b10);cursor:pointer;transition:opacity .6s;}
+#splash.hidden{opacity:0;pointer-events:none;}
+#splash h1{font-size:7rem;font-weight:700;color:var(--accent);text-shadow:0 0 60px var(--accent-glow);letter-spacing:.15em;animation:breathe 3s ease-in-out infinite;}
+#splash h2{font-size:1.5rem;font-weight:300;letter-spacing:.4em;color:var(--text-secondary);text-transform:uppercase;}
+#splash .ver{font-size:.85rem;color:var(--text-dim);margin-top:.5rem;}
+#splash .tag{font-style:italic;color:var(--text-secondary);margin-top:2rem;font-size:1.1rem;opacity:.8;}
+#splash .hint{margin-top:3rem;font-size:.9rem;color:var(--text-dim);animation:pulse 2s ease-in-out infinite;}
+#splash footer{position:absolute;bottom:1.5rem;font-size:.75rem;color:var(--text-dim);}
+#licenseScreen{position:fixed;inset:0;z-index:999;display:none;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 40%,#0f1c2a,#070b10);padding:2rem;}
+#licenseScreen .ls-logo{font-size:4rem;font-weight:700;color:var(--accent);letter-spacing:.15em;margin-bottom:.5rem;}
+#licenseScreen .ls-title{font-size:1.1rem;color:var(--text-secondary);letter-spacing:.3em;text-transform:uppercase;margin-bottom:2rem;}
+#licenseScreen .ls-card{background:rgba(255,255,255,.04);border:1px solid rgba(64,224,208,.2);border-radius:16px;padding:2rem;width:100%;max-width:480px;}
+#licenseScreen .ls-card h3{font-size:1rem;color:var(--accent);font-weight:600;margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.1em;}
+#licenseScreen .ls-card p{font-size:.85rem;color:var(--text-dim);margin-bottom:1.25rem;line-height:1.6;}
+#licenseScreen .ls-input{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(64,224,208,.25);border-radius:8px;padding:.75rem 1rem;color:var(--text-primary);font-size:.95rem;font-family:'Space Mono',monospace;outline:none;margin-bottom:1rem;letter-spacing:.05em;}
+#licenseScreen .ls-input:focus{border-color:var(--accent);}
+#licenseScreen .ls-btn{width:100%;padding:.85rem;background:linear-gradient(135deg,rgba(64,224,208,.2),rgba(64,224,208,.08));border:1px solid var(--accent);border-radius:10px;color:var(--accent);font-size:1rem;font-weight:600;cursor:pointer;letter-spacing:.1em;transition:all .2s;}
+#licenseScreen .ls-btn:hover{background:rgba(64,224,208,.25);}
+#licenseScreen .ls-btn:disabled{opacity:.5;cursor:not-allowed;}
+#licenseScreen .ls-error{color:#ff4466;font-size:.82rem;margin-top:.5rem;min-height:1.2rem;text-align:center;}
+#licenseScreen .ls-success{color:#44dd88;font-size:.82rem;margin-top:.5rem;text-align:center;}
+#licenseScreen .ls-footer{margin-top:1.5rem;font-size:.75rem;color:var(--text-dim);text-align:center;}
+@keyframes breathe{0%,100%{text-shadow:0 0 60px var(--accent-glow)}50%{text-shadow:0 0 100px var(--accent-glow)}}
+@keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
+@keyframes flashGlow{
+  0%,100%{border-color:var(--accent);box-shadow:0 0 8px rgba(64,224,208,.1);}
+  50%{border-color:#5ff5e5;box-shadow:0 0 25px rgba(64,224,208,.4);}
+}
+
+/* SONG LIBRARY */
+.sl-song-card {
+  background:var(--bg-card);border:1px solid var(--border);border-radius:12px;
+  padding:1.1rem 1.25rem;transition:border-color .2s,box-shadow .2s;cursor:default;
+  display:flex;flex-direction:column;gap:.6rem;
+}
+.sl-song-card:hover { border-color:var(--border-hover); box-shadow:0 4px 20px rgba(64,224,208,.06); }
+.sl-song-title { font-size:.95rem;font-weight:600;color:var(--text-primary);line-height:1.3; }
+.sl-song-artist { font-size:.78rem;color:var(--text-dim);margin-top:.1rem; }
+.sl-song-meta { display:flex;flex-wrap:wrap;gap:.4rem;align-items:center; }
+.sl-pill {
+  font-size:.68rem;font-weight:600;padding:.2rem .55rem;border-radius:20px;
+  letter-spacing:.04em;white-space:nowrap;
+}
+.sl-pill-key   { background:rgba(64,224,208,.12);color:var(--accent);border:1px solid rgba(64,224,208,.25); }
+.sl-pill-style { background:rgba(170,102,255,.12);color:#aa66ff;border:1px solid rgba(170,102,255,.25); }
+.sl-pill-mood  { background:rgba(240,192,64,.1);color:var(--gold);border:1px solid rgba(240,192,64,.2); }
+.sl-pill-feel  { background:rgba(68,221,136,.1);color:var(--green);border:1px solid rgba(68,221,136,.2); }
+.sl-pill-tempo { background:rgba(255,136,68,.1);color:var(--orange);border:1px solid rgba(255,136,68,.2); }
+.sl-pill-engine { border:1px solid; }
+.sl-song-desc  { font-size:.78rem;color:var(--text-secondary);line-height:1.5; }
+.sl-card-footer { display:flex;align-items:center;justify-content:space-between;margin-top:.25rem; }
+.sl-launch-btn {
+  font-family:'Outfit',sans-serif;font-size:.82rem;font-weight:700;
+  padding:.4rem 1rem;border-radius:8px;cursor:pointer;transition:all .15s;
+  border:1.5px solid var(--accent);background:rgba(64,224,208,.12);color:var(--accent);
+  white-space:nowrap;
+}
+.sl-launch-btn:hover { background:rgba(64,224,208,.25); }
+.sl-key-picker {
+  font-family:'Outfit',sans-serif;font-size:.78rem;font-weight:600;
+  padding:.35rem .6rem;border-radius:8px;cursor:pointer;
+  border:1px solid var(--border);background:var(--bg-secondary);color:var(--text-secondary);
+  outline:none;
+}
+.sl-source-badge {
+  font-size:.65rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--text-dim);
+}
+
+/* NEWS PANEL */
+#newsTabBtn{position:relative;}
+#newsBellDot{display:none;position:absolute;top:4px;right:4px;width:8px;height:8px;border-radius:50%;background:#E87C2A;border:2px solid var(--bg-secondary);}
+#newsBellDot.active{display:block;animation:bellPulse 3s ease-in-out infinite;}
+@keyframes bellPulse{0%,100%{box-shadow:0 0 0 0 rgba(232,124,42,0);opacity:1;}50%{box-shadow:0 0 0 6px rgba(232,124,42,0.25),0 0 14px rgba(232,124,42,0.15);opacity:0.6;}}
+.news-panel{max-width:860px;margin:0 auto;}
+.news-featured{border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:1.25rem;background:var(--bg-card);}
+.news-featured-img{background:var(--bg-tertiary);padding:1.25rem 1.5rem;display:flex;align-items:center;gap:1rem;border-bottom:1px solid var(--border);position:relative;}
+.news-feat-icon{width:52px;height:52px;border-radius:10px;background:rgba(232,124,42,0.15);border:1px solid rgba(232,124,42,0.3);display:flex;align-items:center;justify-content:center;font-size:1.6rem;flex-shrink:0;}
+.news-feat-text{flex:1;}
+.news-feat-eyebrow{font-size:.7rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#E87C2A;margin-bottom:.2rem;}
+.news-feat-title{font-size:1.1rem;font-weight:600;color:var(--text-primary);}
+.news-feat-sub{font-size:.8rem;color:var(--text-secondary);margin-top:.15rem;}
+.news-new-pill{background:#E87C2A;color:#fff;font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:4px;flex-shrink:0;}
+.news-featured-body{padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+.news-featured-desc{font-size:.875rem;color:var(--text-secondary);line-height:1.55;flex:1;}
+.news-featured-desc strong{color:var(--text-primary);font-weight:500;}
+.news-cta-btn{flex-shrink:0;background:#E87C2A;color:#fff;border:none;border-radius:8px;padding:.6rem 1.25rem;font-size:.85rem;font-weight:600;cursor:pointer;transition:background .15s;white-space:nowrap;text-decoration:none;display:inline-block;}
+.news-cta-btn:hover{background:#f0922e;}
+.news-section-label{font-size:.7rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);padding-bottom:.6rem;border-bottom:1px solid var(--border);margin-bottom:.85rem;margin-top:.25rem;}
+.news-tips-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1.25rem;}
+.news-tip-card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:1rem 1.1rem;transition:border-color .15s;}
+.news-tip-card:hover{border-color:rgba(232,124,42,0.3);}
+.news-tip-icon{font-size:1.2rem;margin-bottom:.5rem;}
+.news-tip-title{font-size:.875rem;font-weight:600;color:var(--text-primary);margin-bottom:.3rem;}
+.news-tip-body{font-size:.8rem;color:var(--text-secondary);line-height:1.5;}
+.news-announce-card{background:var(--bg-card);border:1px solid var(--border);border-left:3px solid #E87C2A;border-radius:8px;padding:.85rem 1rem;display:flex;align-items:center;gap:.85rem;margin-bottom:.6rem;}
+.news-announce-icon{font-size:1.1rem;flex-shrink:0;opacity:.8;}
+.news-announce-title{font-size:.875rem;font-weight:600;color:var(--text-primary);margin-bottom:.15rem;}
+.news-announce-sub{font-size:.78rem;color:var(--text-secondary);}
+.news-announce-link{margin-left:auto;font-size:.78rem;color:#E87C2A;text-decoration:none;white-space:nowrap;flex-shrink:0;font-weight:500;}
+.news-announce-link:hover{text-decoration:underline;}
+.news-empty{text-align:center;padding:3rem 1rem;color:var(--text-dim);font-size:.9rem;}
+.news-loading{text-align:center;padding:3rem 1rem;color:var(--text-dim);font-size:.85rem;font-style:italic;}
+.news-updated{font-size:.72rem;color:var(--text-dim);text-align:right;margin-bottom:1rem;}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1.5rem;background:var(--bg-secondary);border-bottom:1px solid var(--border);}
+.topbar-brand{display:flex;align-items:center;gap:.75rem;}
+.topbar-brand h1{font-size:1.3rem;font-weight:600;color:var(--accent);letter-spacing:.1em;}
+.topbar-brand span{font-size:.8rem;color:var(--text-dim);}
+.master-vol{display:flex;align-items:center;gap:.5rem;}
+.master-vol label{font-size:.75rem;color:var(--text-dim);}
+.master-vol input[type="range"]{width:80px;-webkit-appearance:none;height:4px;border-radius:2px;background:var(--bg-tertiary);}
+.master-vol input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:var(--accent);cursor:pointer;}
+
+/* TABS */
+.nav-tabs{display:flex;background:var(--bg-secondary);border-bottom:1px solid var(--border);padding:0 1.5rem;}
+.nav-tab{padding:.6rem 1.5rem;font-size:.85rem;font-weight:500;color:var(--text-dim);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;transition:all .2s;}
+.nav-tab:hover{color:var(--text-secondary);}
+.nav-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.view{display:none;padding:1.5rem;}
+.view.active{display:block;}
+
+/* FORMS */
+select,input[type="number"],input[type="text"]{background:var(--bg-tertiary);border:1px solid var(--border);color:var(--text-primary);padding:.5rem .75rem;border-radius:6px;font-family:'Outfit',sans-serif;font-size:.9rem;outline:none;}
+select:focus,input:focus{border-color:var(--accent);}
+option{background:var(--bg-tertiary);}
+.form-row{display:flex;gap:1rem;margin-bottom:.75rem;align-items:center;}
+.form-group{display:flex;flex-direction:column;gap:.3rem;flex:1;}
+.form-group label{font-size:.75rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.05em;}
+.btn{padding:.6rem 1.5rem;border-radius:8px;font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:500;cursor:pointer;border:none;transition:all .2s;}
+.btn-primary{background:var(--accent);color:var(--bg-primary);}
+.btn-primary:hover{box-shadow:0 0 20px var(--accent-glow);}
+.btn-secondary{background:var(--bg-tertiary);color:var(--text-primary);border:1px solid var(--border);}
+.btn-secondary:hover{border-color:var(--border-hover);}
+.btn-small{padding:.4rem .8rem;font-size:.8rem;}
+
+/* SETUP */
+.setup-container{max-width:1100px;}
+.setup-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+.setup-card h3{font-size:.85rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:1rem;}
+
+/* STEMS */
+.stems-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem;} .drop-zone{transition:border-color .15s,background .15s;} .drop-zone.drag-over{border:2px dashed var(--accent)!important;background:rgba(64,224,208,.07)!important;border-radius:10px;} .stem-slot.drag-over{border-color:var(--accent)!important;background:rgba(64,224,208,.12)!important;transform:scale(1.03);} .drag-hint{font-size:.72rem;color:var(--text-dim);font-style:italic;margin-top:.35rem;opacity:.7;}
+.stem-slot{background:var(--bg-tertiary);border:1px dashed var(--border);border-radius:10px;padding:1rem;text-align:center;position:relative;min-height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem;transition:all .2s;}
+.stem-slot.loaded{border-style:solid;border-color:var(--accent);background:rgba(64,224,208,.05);}
+.stem-slot .s-icon{font-size:1.4rem;}
+.stem-slot .s-label{font-size:.85rem;font-weight:600;}
+.stem-slot .s-file{font-size:.7rem;color:var(--text-dim);max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.stem-slot .s-status{font-size:.7rem;color:var(--text-dim);font-style:italic;}
+.stem-slot .s-status.ok{color:var(--green);font-style:normal;}
+.stem-slot input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.stem-slot .s-rm{position:absolute;top:6px;right:8px;background:none;border:none;color:var(--red);cursor:pointer;font-size:.9rem;opacity:.5;display:none;}
+.stem-slot.loaded .s-rm{display:block;}
+
+/* SECTION EDITOR ROWS */
+.sec-hdr{display:grid;grid-template-columns:36px 140px 1fr 70px 70px 32px;gap:.5rem;padding:0 .75rem .4rem;font-size:.7rem;color:var(--text-dim);text-transform:uppercase;}
+.sec-row{display:grid;grid-template-columns:36px 140px 1fr 70px 70px 32px;gap:.5rem;align-items:center;background:var(--bg-tertiary);border:2px solid var(--border);border-radius:8px;padding:.5rem .75rem;margin-bottom:.4rem;transition:all .3s;}
+.sec-row.now-playing{border-color:var(--accent);background:rgba(64,224,208,.08);animation:flashGlow 1.5s ease-in-out infinite;}
+.sec-row .sec-n{font-family:'Space Mono',monospace;font-size:.85rem;color:var(--accent);font-weight:700;text-align:center;}
+.sec-row select,.sec-row input{font-size:.8rem;padding:.35rem .5rem;}
+.m-input{width:60px!important;font-family:'Space Mono',monospace!important;text-align:center;}
+.btn-add{display:flex;align-items:center;gap:.5rem;background:var(--accent-dim);border:1px dashed var(--accent);color:var(--accent);padding:.5rem 1rem;border-radius:8px;cursor:pointer;font-family:'Outfit',sans-serif;font-size:.85rem;margin-top:.5rem;}
+.btn-add:hover{background:rgba(64,224,208,.25);}
+.btn-rm{background:none;border:none;color:var(--red);cursor:pointer;font-size:1.1rem;opacity:.6;}
+.btn-rm:hover{opacity:1;}
+
+/* MINI TRANSPORT (setup page) */
+.mini-transport{display:flex;flex-direction:column;gap:.75rem;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:10px;padding:.75rem 1rem;margin-top:1rem;}
+.mt-row{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;}
+.mini-transport .mt-btn{width:40px;height:40px;border-radius:50%;border:2px solid var(--accent);background:var(--accent-dim);color:var(--accent);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
+.mini-transport .mt-btn:hover,.mini-transport .mt-btn.on{background:var(--accent);color:var(--bg-primary);box-shadow:0 0 15px var(--accent-glow);}
+.mini-transport .mt-btn.stp{border-color:var(--red);background:rgba(255,68,102,.1);color:var(--red);font-size:.9rem;}
+.mini-transport .mt-btn.stp:hover{background:var(--red);color:#fff;}
+.mini-transport .mt-btn.scrub{border-color:var(--gold);background:rgba(240,192,64,.1);color:var(--gold);font-size:.9rem;user-select:none;}
+.mini-transport .mt-btn.scrub:active{background:var(--gold);color:var(--bg-primary);}
+.mini-transport .mt-meas{font-family:'Space Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--accent);min-width:80px;}
+.mini-transport .mt-time{font-family:'Space Mono',monospace;font-size:.85rem;color:var(--text-dim);min-width:60px;}
+.mini-transport .mt-beat{display:flex;gap:3px;align-items:center;}
+.mt-bd{width:8px;height:8px;border-radius:50%;background:var(--bg-primary);border:1px solid var(--border);transition:all .1s;}
+.mt-bd.act{background:var(--accent);border-color:var(--accent);}
+.mt-bd.db{background:var(--gold);border-color:var(--gold);}
+/* Scrub progress bar */
+.mt-scrub-bar{position:relative;width:100%;height:28px;background:var(--bg-primary);border-radius:6px;overflow:hidden;cursor:pointer;border:1px solid var(--border);}
+.mt-scrub-prog{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,rgba(64,224,208,.4),rgba(64,224,208,.15));border-right:2px solid var(--accent);transition:width .1s linear;}
+.mt-scrub-secs{position:absolute;inset:0;display:flex;}
+.mt-scrub-sec{height:100%;border-right:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.6rem;color:var(--text-dim);overflow:hidden;}
+.mt-scrub-sec.on{background:rgba(64,224,208,.12);color:var(--accent);}
+
+/* PANIC BUTTON */
+.panic-btn{padding:.6rem 1.4rem;border-radius:8px;border:2px solid var(--red);background:rgba(255,68,102,.15);color:var(--red);font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.05em;}
+.panic-btn:hover{background:var(--red);color:#fff;box-shadow:0 0 20px rgba(255,68,102,.5);}
+.panic-btn.active{background:var(--red);color:#fff;box-shadow:0 0 25px rgba(255,68,102,.6);animation:pulse 1s ease-in-out infinite;}
+
+/* ROUTING */
+.rt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:.5rem;}
+.rt-row{display:flex;align-items:center;gap:.75rem;background:var(--bg-tertiary);border-radius:8px;padding:.6rem .75rem;}
+.rt-row .rt-nm{font-size:.85rem;font-weight:500;width:65px;}
+.rt-row select{flex:1;font-size:.8rem;}
+.rt-toggle{display:flex;gap:.5rem;margin-bottom:1rem;}
+.rt-btn{padding:.4rem 1rem;border-radius:6px;font-size:.8rem;border:1px solid var(--border);background:none;color:var(--text-dim);cursor:pointer;font-family:'Outfit',sans-serif;}
+.rt-btn.on{background:var(--accent-dim);border-color:var(--accent);color:var(--accent);}
+
+/* PERFORM LAYOUT */
+.perf-layout{display:grid;grid-template-columns:1fr 280px;grid-template-rows:auto auto 1fr auto;gap:1rem;height:calc(100vh - 120px);}
+.perf-hdr{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.5rem;}
+.perf-hdr .song-info h2{font-size:1.5rem;font-weight:600;}
+.perf-hdr .song-meta{display:flex;gap:1.5rem;margin-top:.25rem;font-size:.85rem;color:var(--text-secondary);}
+.perf-transport{display:flex;align-items:center;gap:1rem;}
+.m-disp{text-align:center;}
+.m-disp .m-num{font-family:'Space Mono',monospace;font-size:2rem;color:var(--accent);font-weight:700;}
+.m-disp .m-lbl{font-size:.65rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.1em;}
+.t-btn{width:56px;height:56px;border-radius:50%;border:2px solid var(--accent);background:var(--accent-dim);color:var(--accent);font-size:1.5rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.t-btn:hover,.t-btn.on{background:var(--accent);color:var(--bg-primary);box-shadow:0 0 25px var(--accent-glow);}
+.t-btn.stp{border-color:var(--red);background:rgba(255,68,102,.1);color:var(--red);}
+.t-btn.stp:hover{background:var(--red);color:#fff;}
+.beat-ind{display:flex;gap:.4rem;align-items:center;}
+.b-dot{width:10px;height:10px;border-radius:50%;background:var(--bg-tertiary);border:1px solid var(--border);transition:all .1s;}
+.b-dot.act{background:var(--accent);border-color:var(--accent);box-shadow:0 0 8px var(--accent-glow);}
+.b-dot.db{background:var(--gold);border-color:var(--gold);box-shadow:0 0 8px rgba(240,192,64,.5);}
+
+/* TIMELINE */
+.perf-tl{grid-column:1;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1rem;}
+.tl-bar{position:relative;width:100%;height:40px;background:var(--bg-tertiary);border-radius:6px;overflow:hidden;cursor:pointer;margin-bottom:.5rem;}
+.tl-prog{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,rgba(64,224,208,.3),rgba(64,224,208,.1));border-right:2px solid var(--accent);transition:width .1s linear;}
+.tl-secs{position:absolute;inset:0;display:flex;}
+.tl-sec{height:100%;border-right:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:.65rem;color:var(--text-secondary);overflow:hidden;transition:background .2s;}
+.tl-sec.on{background:rgba(64,224,208,.15);color:var(--accent);font-weight:600;}
+.tl-info{display:flex;justify-content:space-between;font-family:'Space Mono',monospace;font-size:.75rem;color:var(--text-dim);}
+
+/* PERFORM SECTIONS */
+.perf-secs{grid-column:1;display:flex;flex-direction:column;gap:.4rem;overflow-y:auto;}
+.p-sec{display:flex;align-items:center;gap:1rem;background:var(--bg-card);border:2px solid var(--border);border-radius:10px;padding:.8rem 1.25rem;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;}
+.p-sec::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--text-dim);transition:all .25s;}
+.p-sec:hover{border-color:var(--border-hover);}
+.p-sec.act{border-color:var(--accent);background:rgba(64,224,208,.07);animation:flashGlow 1.5s ease-in-out infinite;}
+.p-sec.act::before{background:var(--accent);box-shadow:0 0 8px var(--accent-glow);}
+.p-sec.q{border-color:var(--gold);}
+.p-sec.q::before{background:var(--gold);}
+.s-hk{font-family:'Space Mono',monospace;font-size:1.1rem;font-weight:700;color:var(--bg-primary);background:var(--text-dim);width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .25s;}
+.p-sec.act .s-hk{background:var(--accent);box-shadow:0 0 10px var(--accent-glow);}
+.p-sec.q .s-hk{background:var(--gold);animation:pulse 1s infinite;}
+.s-inf{flex:1;}
+.s-inf h4{font-size:.95rem;font-weight:500;}
+.s-meas{font-size:.75rem;color:var(--text-secondary);font-family:'Space Mono',monospace;}
+.s-qlbl{font-size:.7rem;color:var(--gold);font-weight:600;text-transform:uppercase;display:none;}
+.p-sec.q .s-qlbl{display:block;}
+
+/* MIXER */
+.perf-mix{grid-column:2;grid-row:2/5;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1rem;display:flex;flex-direction:column;gap:.5rem;overflow-y:auto;}
+.mix-title{font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:.5rem;}
+.mix-ch{display:flex;align-items:center;gap:.5rem;padding:.5rem;background:var(--bg-tertiary);border-radius:8px;margin-bottom:.3rem;}
+.mix-ch .cb{width:26px;height:26px;border-radius:5px;border:1px solid var(--border);background:none;color:var(--text-dim);font-size:.6rem;font-weight:700;cursor:pointer;font-family:'Space Mono',monospace;}
+.mix-ch .cb.mt{background:var(--red);color:#fff;border-color:var(--red);}
+.mix-ch .cb.sl{background:var(--gold);color:var(--bg-primary);border-color:var(--gold);}
+.mix-ch .cn{font-size:.78rem;font-weight:500;width:50px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mix-ch .cs{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:var(--bg-primary);outline:none;}
+.mix-ch .cs::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--accent);cursor:pointer;}
+.mix-ch .cl{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--text-dim);width:28px;text-align:right;}
+.mix-ch .co{font-size:.55rem;color:var(--text-dim);font-family:'Space Mono',monospace;width:30px;text-align:center;}
+
+/* HOTKEYS */
+.perf-hk{grid-column:1;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:.75rem 1.25rem;display:flex;align-items:center;gap:2rem;flex-wrap:wrap;}
+.hk-i{display:flex;align-items:center;gap:.4rem;font-size:.75rem;color:var(--text-dim);}
+.hk-k{font-family:'Space Mono',monospace;background:var(--bg-tertiary);border:1px solid var(--border);padding:.15rem .4rem;border-radius:4px;font-size:.7rem;color:var(--text-secondary);}
+
+/* SETLIST */
+.sl-container{max-width:800px;}
+.sl-item{display:flex;align-items:center;gap:1rem;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;margin-bottom:.5rem;cursor:pointer;transition:all .2s;}
+.sl-item:hover{border-color:var(--border-hover);}
+.sl-num{font-family:'Space Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--accent);width:30px;}
+.sl-info h4{font-size:1rem;}
+.sl-info p{font-size:.8rem;color:var(--text-secondary);}
+.sl-acts{margin-left:auto;display:flex;gap:.5rem;}
+
+/* BACKGROUND LOOP PLAYER */
+.loop-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+.loop-card h3{font-size:.85rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--purple);margin-bottom:1rem;}
+.loop-slot{display:flex;align-items:center;gap:1rem;background:var(--bg-tertiary);border:1px dashed var(--border);border-radius:10px;padding:.75rem 1rem;position:relative;transition:all .2s;}
+.loop-slot.loaded{border-style:solid;border-color:var(--purple);background:rgba(170,102,255,.05);}
+.loop-slot .loop-file-info{flex:1;}
+.loop-slot .loop-fn{font-size:.85rem;font-weight:500;color:var(--text-primary);}
+.loop-slot .loop-dur{font-size:.7rem;color:var(--text-dim);font-family:'Space Mono',monospace;}
+.loop-slot .loop-placeholder{font-size:.85rem;color:var(--text-dim);font-style:italic;}
+.loop-slot input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.loop-controls{display:flex;align-items:center;gap:.75rem;margin-top:.75rem;}
+.loop-play-btn{width:36px;height:36px;border-radius:50%;border:2px solid var(--purple);background:rgba(170,102,255,.15);color:var(--purple);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
+.loop-play-btn:hover,.loop-play-btn.on{background:var(--purple);color:var(--bg-primary);box-shadow:0 0 15px rgba(170,102,255,.4);}
+.loop-toggle{display:flex;align-items:center;gap:.4rem;cursor:pointer;user-select:none;}
+.loop-toggle input[type="checkbox"]{display:none;}
+.loop-toggle .loop-sw{width:36px;height:20px;border-radius:10px;background:var(--bg-primary);border:1px solid var(--border);position:relative;transition:all .2s;}
+.loop-toggle .loop-sw::after{content:'';position:absolute;left:2px;top:2px;width:14px;height:14px;border-radius:50%;background:var(--text-dim);transition:all .2s;}
+.loop-toggle input:checked+.loop-sw{background:var(--purple);border-color:var(--purple);}
+.loop-toggle input:checked+.loop-sw::after{left:18px;background:#fff;}
+.loop-toggle span{font-size:.8rem;color:var(--text-dim);}
+.loop-vol{display:flex;align-items:center;gap:.4rem;flex:1;}
+.loop-vol label{font-size:.7rem;color:var(--text-dim);}
+.loop-vol input[type="range"]{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:var(--bg-primary);}
+.loop-vol input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:var(--purple);cursor:pointer;}
+.loop-vol .lv-pct{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--text-dim);width:28px;text-align:right;}
+.loop-rm-btn{background:none;border:none;color:var(--red);cursor:pointer;font-size:.9rem;opacity:.6;}
+.loop-rm-btn:hover{opacity:1;}
+/* ─────────────────────────────────────────────
+   VWB MINI MPC — Compact inline percussion tool
+   ───────────────────────────────────────────── */
+.mini-mpc-wrap{
+  margin-top:.75rem;
+  background:rgba(170,102,255,.04);
+  border:1px solid rgba(170,102,255,.18);
+  border-radius:10px;
+  padding:.75rem;
+}
+.mini-mpc-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:.5rem;
+}
+.mini-mpc-title{
+  font-size:.68rem;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--purple);
+  display:flex;align-items:center;gap:.4rem;
+}
+.mini-mpc-tabs{display:flex;gap:3px;}
+.mini-mpc-tab{
+  font-size:.58rem;font-weight:700;letter-spacing:.06em;
+  padding:2px 8px;border-radius:3px;
+  border:1px solid rgba(170,102,255,.25);
+  background:transparent;color:var(--text-dim);cursor:pointer;
+  transition:all .1s;text-transform:uppercase;
+}
+.mini-mpc-tab.active{
+  background:rgba(170,102,255,.18);color:var(--purple);
+  border-color:var(--purple);
+}
+/* PAD GRID — truly small */
+.mini-pad-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:3px;
+  margin-bottom:.5rem;
+}
+.mini-pad{
+  height:38px;
+  border-radius:4px;
+  background:#1e1a2e;
+  border:1px solid #2e2845;
+  border-top-color:#3e3858;
+  box-shadow:0 2px 0 #0d0b14;
+  cursor:pointer;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  position:relative;
+  transition:all .05s;
+  user-select:none;
+  overflow:hidden;
+}
+.mini-pad:active,.mini-pad.flash{
+  transform:translateY(1px);
+  box-shadow:0 1px 0 #0d0b14;
+  background:#2e1a4e;
+}
+.mini-pad.flash{
+  background:#7744cc !important;
+  box-shadow:0 1px 0 #0d0b14,0 0 8px rgba(170,102,255,.5) !important;
+}
+.mini-pad.empty-pad{
+  background:#161422;
+  border:1px dashed rgba(170,102,255,.12);
+  cursor:pointer;opacity:.7;
+}
+.mini-pad.custom-pad{
+  border-color:rgba(64,224,208,.3);
+  background:#1a2230;
+}
+.mini-pad-num{
+  position:absolute;top:2px;left:3px;
+  font-size:5px;color:rgba(255,255,255,.18);
+  font-family:'Space Mono',monospace;
+}
+/* Keyboard key badge — bottom right of each pad */
+.mini-pad-key{
+  position:absolute;bottom:2px;right:3px;
+  font-size:5px;font-weight:700;
+  color:rgba(255,255,255,.25);
+  font-family:'Space Mono',monospace;
+  text-transform:uppercase;
+  background:rgba(255,255,255,.06);
+  border-radius:2px;padding:0px 2px;
+  line-height:1.4;
+}
+.mini-pad-name{
+  font-size:6px;font-weight:700;
+  color:rgba(255,255,255,.7);text-align:center;
+  line-height:1.1;padding:0 2px;
+  text-transform:uppercase;letter-spacing:.2px;
+}
+.mini-pad-plus{font-size:11px;color:rgba(170,102,255,.35);}
+.mini-pad-custom-lbl{
+  font-size:5.5px;font-weight:600;
+  color:rgba(64,224,208,.7);text-align:center;
+  padding:0 2px;text-transform:uppercase;
+  line-height:1.1;
+}
+.mini-pad-rm{
+  position:absolute;top:1px;right:2px;
+  font-size:7px;color:rgba(255,80,80,.5);
+  background:none;border:none;cursor:pointer;
+  display:none;line-height:1;
+}
+.mini-pad:hover .mini-pad-rm{display:block;}
+.mini-pad-rm:hover{color:var(--red);}
+
+/* MINI TRANSPORT — single compact row */
+.mini-mpc-transport{
+  display:flex;align-items:center;gap:4px;flex-wrap:wrap;
+  padding:.4rem 0;
+  border-top:1px solid rgba(170,102,255,.08);
+  margin-bottom:.4rem;
+}
+.mmpc-btn{
+  font-size:.58rem;font-weight:700;letter-spacing:.06em;
+  padding:3px 8px;border-radius:3px;
+  border:1px solid rgba(170,102,255,.25);
+  background:transparent;color:var(--text-dim);cursor:pointer;
+  transition:all .1s;text-transform:uppercase;white-space:nowrap;
+}
+.mmpc-btn.rec{border-color:rgba(255,68,102,.5);color:var(--red);}
+.mmpc-btn.rec.active{background:var(--red);color:#fff;border-color:var(--red);}
+.mmpc-btn.play{border-color:rgba(68,221,136,.5);color:var(--green);}
+.mmpc-btn.play.active{background:var(--green);color:#000;border-color:var(--green);}
+.mmpc-btn.stop{border-color:rgba(255,255,255,.15);}
+.mmpc-pos{
+  font-family:'Space Mono',monospace;font-size:.65rem;
+  font-weight:700;color:var(--accent);letter-spacing:.08em;
+  margin-left:auto;
+}
+.mmpc-bpm-wrap{display:flex;align-items:center;gap:3px;}
+.mmpc-bpm-lbl{font-size:.55rem;color:var(--text-dim);letter-spacing:.06em;text-transform:uppercase;}
+.mmpc-bpm-val{
+  font-family:'Space Mono',monospace;font-size:.72rem;
+  font-weight:700;color:var(--gold);min-width:26px;text-align:center;
+}
+.mmpc-bpm-btn{
+  width:16px;height:16px;border-radius:2px;
+  border:1px solid rgba(170,102,255,.2);
+  background:transparent;color:var(--text-dim);font-size:10px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;line-height:1;
+}
+.mmpc-bpm-btn:hover{background:rgba(170,102,255,.15);color:var(--purple);}
+.mmpc-bars-sel{
+  font-size:.58rem;background:var(--bg-card);border:1px solid rgba(170,102,255,.2);
+  border-radius:3px;color:var(--text-dim);padding:2px 4px;cursor:pointer;outline:none;
+}
+/* LOOP LIST */
+.mmpc-section-lbl{
+  font-size:.58rem;color:var(--text-dim);text-transform:uppercase;
+  letter-spacing:.1em;margin-bottom:.3rem;font-weight:700;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.mmpc-loop-list{
+  display:flex;flex-direction:column;gap:.25rem;
+  max-height:120px;overflow-y:auto;margin-bottom:.4rem;
+}
+.mmpc-loop-item{
+  display:flex;align-items:center;gap:.4rem;
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:5px;padding:.3rem .5rem;
+  transition:border-color .12s;
+}
+.mmpc-loop-item.active-loop{
+  border-color:var(--purple);background:rgba(170,102,255,.07);
+}
+.mmpc-loop-play{
+  width:20px;height:20px;border-radius:50%;
+  border:1px solid var(--purple);background:rgba(170,102,255,.12);
+  color:var(--purple);font-size:.55rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:all .12s;
+}
+.mmpc-loop-play:hover,.mmpc-loop-play.on{background:var(--purple);color:#fff;}
+.mmpc-loop-title{
+  font-size:.7rem;font-weight:500;color:var(--text-primary);flex:1;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.mmpc-loop-meta{
+  font-size:.6rem;color:var(--text-dim);
+  font-family:'Space Mono',monospace;white-space:nowrap;
+}
+.mmpc-loop-speed{
+  width:50px;height:3px;accent-color:var(--purple);cursor:pointer;
+}
+.mmpc-loop-rm{
+  background:none;border:none;color:var(--red);cursor:pointer;
+  font-size:.7rem;opacity:.4;flex-shrink:0;
+}
+.mmpc-loop-rm:hover{opacity:1;}
+.mmpc-import-btn{
+  font-size:.62rem;font-weight:600;letter-spacing:.06em;
+  padding:4px 10px;border-radius:4px;
+  border:1px dashed rgba(170,102,255,.3);
+  background:transparent;color:rgba(170,102,255,.7);cursor:pointer;
+  transition:all .12s;text-transform:uppercase;width:100%;
+}
+.mmpc-import-btn:hover{
+  background:rgba(170,102,255,.1);border-style:solid;color:var(--purple);
+}
+.mmpc-no-loops{
+  font-size:.65rem;color:var(--text-dim);font-style:italic;
+  text-align:center;padding:.4rem 0;
+}
+.mmpc-status-bar{
+  font-size:.58rem;color:var(--text-dim);
+  text-align:center;padding:.2rem 0;
+  font-style:italic;
+}
+/* ── LAYER SYSTEM ── */
+.mmpc-layers{display:flex;flex-direction:column;gap:3px;margin-bottom:.4rem;}
+.mmpc-layer{
+  display:flex;align-items:center;gap:4px;
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:5px;padding:3px 6px;
+}
+.mmpc-layer.armed{border-color:var(--red);background:rgba(255,68,102,.04);}
+.mmpc-layer.has-data{border-color:rgba(170,102,255,.25);}
+.mmpc-layer-arm{
+  width:14px;height:14px;border-radius:50%;
+  border:2px solid var(--red);background:transparent;
+  cursor:pointer;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .1s;
+}
+.mmpc-layer-arm.on{background:var(--red);box-shadow:0 0 5px rgba(255,68,102,.4);}
+.mmpc-layer-arm-dot{width:4px;height:4px;border-radius:50%;background:var(--red);}
+.mmpc-layer-arm.on .mmpc-layer-arm-dot{background:#fff;}
+.mmpc-layer-name{font-size:.65rem;color:var(--text-dim);min-width:44px;font-weight:500;}
+.mmpc-layer-name.on{color:var(--gold);}
+.mmpc-layer-vol{flex:1;height:3px;accent-color:var(--purple);cursor:pointer;min-width:0;}
+.mmpc-layer-pan{width:36px;height:3px;accent-color:var(--accent);cursor:pointer;}
+.mmpc-layer-mu{
+  font-size:.55rem;color:var(--text-dim);background:rgba(255,255,255,.04);
+  border:1px solid var(--border);border-radius:2px;
+  padding:1px 4px;cursor:pointer;letter-spacing:.05em;flex-shrink:0;
+}
+.mmpc-layer-mu.on{color:var(--red);border-color:var(--red);}
+.mmpc-layer-clr{
+  font-size:.62rem;color:var(--text-dim);background:none;
+  border:none;cursor:pointer;flex-shrink:0;opacity:.5;
+}
+.mmpc-layer-clr:hover{opacity:1;color:var(--red);}
+.mmpc-layer-cnt{
+  font-family:'Space Mono',monospace;font-size:.58rem;
+  color:var(--green);min-width:22px;text-align:right;flex-shrink:0;
+}
+/* ── VWB-Style Channel Strip ── */
+.mmpc-mixer-strip{
+  display:flex;gap:0;
+  padding:.4rem 0 .3rem;
+  border-top:1px solid rgba(170,102,255,.1);
+  border-bottom:1px solid rgba(170,102,255,.1);
+  margin-bottom:.4rem;
+  overflow-x:auto;
+  background:#12101a;
+  border-radius:6px;
+}
+.mmpc-channel{
+  display:flex;flex-direction:column;align-items:center;
+  min-width:48px;max-width:48px;
+  padding:5px 3px 4px;
+  border-right:1px solid rgba(255,255,255,.05);
+  gap:3px;flex-shrink:0;
+}
+.mmpc-channel:last-child{border-right:none;}
+
+/* Pan knob — rotary style */
+.mmpc-pan-knob{
+  width:22px;height:22px;border-radius:50%;
+  background:radial-gradient(circle at 38% 38%,#3a3050,#1a1425);
+  border:1px solid rgba(170,102,255,.35);
+  position:relative;cursor:pointer;
+  box-shadow:0 1px 4px rgba(0,0,0,.5);
+  flex-shrink:0;
+}
+.mmpc-pan-knob::after{
+  content:'';position:absolute;
+  width:2px;height:6px;border-radius:1px;
+  background:#aaaacc;
+  top:3px;left:50%;transform:translateX(-50%);
+}
+/* Pan slider hidden, knob is visual only — use range below */
+.mmpc-pan-range{
+  position:absolute;opacity:0;width:22px;height:22px;
+  cursor:pointer;
+}
+/* Fader + meter container */
+.mmpc-fader-meter{
+  display:flex;gap:2px;align-items:flex-end;
+  height:90px;
+}
+/* Fader track */
+.mmpc-fader-track{
+  position:relative;
+  width:16px;height:90px;
+  background:#0d0b14;
+  border-radius:2px;
+  border:1px solid rgba(255,255,255,.08);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+/* Center line on fader */
+.mmpc-fader-track::before{
+  content:'';position:absolute;
+  left:50%;top:10%;width:1px;height:80%;
+  background:rgba(170,102,255,.18);
+  transform:translateX(-50%);
+}
+.mmpc-fader-input{
+  writing-mode:vertical-lr;
+  direction:rtl;
+  -webkit-appearance:slider-vertical;
+  appearance:slider-vertical;
+  width:14px;height:82px;
+  background:transparent;
+  border:none;outline:none;
+  cursor:pointer;
+  accent-color:transparent;
+  opacity:0;
+  position:absolute;
+  z-index:3;
+  margin:0;padding:0;
+}
+/* Real fader cap overlay */
+.mmpc-fader-cap-wrap{
+  position:relative;
+  width:16px;height:90px;
+  background:#0d0b14;
+  border-radius:2px;
+  border:1px solid rgba(255,255,255,.08);
+  overflow:visible;
+  flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.mmpc-fader-rail{
+  position:absolute;left:50%;top:8px;bottom:8px;
+  width:2px;transform:translateX(-50%);
+  background:linear-gradient(to bottom,rgba(170,102,255,.35),rgba(100,60,200,.15));
+  border-radius:1px;
+  z-index:1;
+}
+.mmpc-fader-rail-mark{
+  position:absolute;left:50%;
+  width:6px;height:1px;
+  background:rgba(255,255,255,.12);
+  transform:translateX(-50%);
+}
+.mmpc-fader-cap{
+  position:absolute;left:50%;
+  transform:translate(-50%,-50%);
+  width:14px;height:10px;
+  background:linear-gradient(to bottom,#d4c8f0,#8870c8 40%,#6650b0);
+  border-radius:2px;
+  border-top:1px solid rgba(255,255,255,.55);
+  border-bottom:1px solid rgba(0,0,0,.5);
+  box-shadow:0 2px 4px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.2);
+  z-index:2;
+  pointer-events:none;
+}
+.mmpc-fader-cap::after{
+  content:'';position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:8px;height:1px;
+  background:rgba(255,255,255,.4);
+  border-radius:1px;
+}
+/* VU Meter */
+.mmpc-vu-wrap{
+  width:8px;height:90px;
+  background:#0d0b14;
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:2px;
+  position:relative;overflow:hidden;
+  flex-shrink:0;
+}
+.mmpc-vu-bar{
+  position:absolute;bottom:0;left:0;right:0;
+  height:0%;
+  background:linear-gradient(to top,#22cc66 0%,#88cc22 60%,#ffcc00 80%,#ff4400 100%);
+  border-radius:1px;
+  transition:height 0.04s ease-out;
+}
+/* Vol value */
+.mmpc-ch-val{
+  font-family:'Space Mono',monospace;font-size:.45rem;
+  color:rgba(240,160,32,.7);
+}
+/* Channel name */
+.mmpc-ch-name{
+  font-size:.46rem;font-weight:600;color:rgba(255,255,255,.5);
+  text-align:center;text-transform:uppercase;letter-spacing:.04em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  max-width:46px;width:100%;
+  margin-top:1px;
+}
+/* Reverb knob */
+.mmpc-ch-rev-wrap{
+  display:flex;flex-direction:column;align-items:center;gap:1px;
+  width:100%;justify-content:center;margin-top:1px;
+}
+.mmpc-ch-rev-lbl{font-size:.4rem;color:rgba(64,224,208,.55);letter-spacing:.05em;text-transform:uppercase;}
+.mmpc-rev-knob{
+  width:18px;height:18px;border-radius:50%;
+  background:radial-gradient(circle at 38% 32%,#2a3a48,#0d1820);
+  border:1px solid rgba(64,224,208,.3);
+  position:relative;cursor:ns-resize;
+  box-shadow:0 2px 5px rgba(0,0,0,.6),inset 0 1px 0 rgba(64,224,208,.08);
+  flex-shrink:0;user-select:none;
+}
+.mmpc-rev-knob-dot{
+  position:absolute;
+  width:2px;height:5px;border-radius:1px;
+  background:rgba(64,224,208,.85);
+  top:3px;left:50%;
+  transform-origin:50% calc(9px - 3px);
+  transform:translateX(-50%) rotate(0deg);
+  pointer-events:none;
+}
+/* Pan line indicator */
+.mmpc-pan-line{
+  width:30px;height:3px;
+  background:rgba(255,255,255,.06);
+  border-radius:2px;
+  position:relative;margin:0 auto;
+}
+.mmpc-pan-line::before{
+  content:'';position:absolute;
+  top:50%;left:50%;
+  width:1px;height:5px;
+  background:rgba(255,255,255,.2);
+  transform:translate(-50%,-50%);
+}
+.mmpc-pan-dot{
+  position:absolute;top:50%;
+  width:5px;height:5px;border-radius:50%;
+  background:#aaa;border:1px solid rgba(255,255,255,.3);
+  transform:translateY(-50%);
+  transition:left .05s;
+}
+.mmpc-pan-input{
+  width:36px;height:3px;
+  accent-color:#aaaacc;cursor:pointer;
+}
+/* Mixer sub-collapsible toggle */
+.mmpc-mixer-toggle{
+  display:flex;align-items:center;justify-content:space-between;
+  cursor:pointer;padding:4px 6px;margin-top:.4rem;
+  background:rgba(170,102,255,.05);
+  border:1px solid rgba(170,102,255,.12);
+  border-radius:5px;user-select:none;
+  transition:background .12s;
+}
+.mmpc-mixer-toggle:hover{background:rgba(170,102,255,.1);}
+.mmpc-mixer-toggle-title{
+  font-size:.58rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:rgba(170,102,255,.7);
+}
+.mmpc-mixer-toggle-arrow{
+  font-size:.6rem;color:rgba(170,102,255,.6);
+  transition:transform .18s;
+}
+.mmpc-mixer-toggle-arrow.open{transform:rotate(180deg);}
+.mmpc-mixer-body{display:none;margin-top:.3rem;}
+.mmpc-mixer-body.open{display:block;}
+/* Bank C open slot label */
+.mmpc-bankc-hint{
+  font-size:.58rem;color:var(--text-dim);
+  text-align:center;padding:.3rem 0 .1rem;
+  font-style:italic;
+}
+/* Collapsed toggle */
+.mini-mpc-toggle{
+  display:flex;align-items:center;justify-content:space-between;
+  cursor:pointer;padding:.5rem .75rem;
+  background:rgba(170,102,255,.06);
+  border:1px solid rgba(170,102,255,.18);
+  border-radius:10px;margin-top:.75rem;
+  transition:background .15s;
+  user-select:none;
+}
+.mini-mpc-toggle:hover{background:rgba(170,102,255,.1);}
+.mini-mpc-toggle-title{
+  font-size:.68rem;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--purple);
+  display:flex;align-items:center;gap:.4rem;
+}
+.mini-mpc-toggle-arrow{
+  font-size:.75rem;color:var(--purple);
+  transition:transform .2s;
+}
+.mini-mpc-toggle-arrow.open{transform:rotate(180deg);}
+.mini-mpc-body{display:none;margin-top:.5rem;}
+.mini-mpc-body.open{display:block;}
+/* Controls row */
+.mmpc-controls-row{
+  display:flex;align-items:center;gap:6px;
+  flex-wrap:wrap;padding:.35rem 0;
+  border-bottom:1px solid rgba(170,102,255,.08);
+  margin-bottom:.4rem;
+}
+.mmpc-ctrl-group{display:flex;align-items:center;gap:3px;}
+.mmpc-ctrl-lbl{
+  font-size:.55rem;color:var(--text-dim);
+  letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;
+}
+.mmpc-sel{
+  font-size:.58rem;background:var(--bg-card);
+  border:1px solid rgba(170,102,255,.2);
+  border-radius:3px;color:var(--text-primary);
+  padding:2px 4px;cursor:pointer;outline:none;
+}
+.mmpc-metro-btn{
+  font-size:.58rem;font-weight:700;letter-spacing:.06em;
+  padding:2px 8px;border-radius:3px;
+  border:1px solid rgba(170,102,255,.25);
+  background:transparent;color:var(--text-dim);cursor:pointer;
+  transition:all .1s;text-transform:uppercase;
+}
+.mmpc-metro-btn.active{
+  background:rgba(68,204,136,.2);
+  border-color:var(--green);color:var(--green);
+}
+/* Per-pad volume popup */
+/* ── Sample Trim Modal ── */
+.mmpc-trim-overlay{
+  position:fixed;inset:0;z-index:2000;
+  background:rgba(0,0,0,.75);
+  display:flex;align-items:center;justify-content:center;
+}
+.mmpc-trim-modal{
+  background:#1a1628;border:1px solid rgba(170,102,255,.35);
+  border-radius:12px;padding:1.2rem 1.4rem;
+  width:min(480px,92vw);box-shadow:0 8px 32px rgba(0,0,0,.7);
+}
+.mmpc-trim-title{
+  font-size:.8rem;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--purple);margin-bottom:.8rem;
+}
+.mmpc-trim-waveform{
+  width:100%;height:80px;background:#0d0b14;
+  border-radius:6px;border:1px solid rgba(255,255,255,.08);
+  position:relative;overflow:hidden;cursor:col-resize;
+  margin-bottom:.6rem;
+}
+.mmpc-trim-waveform canvas{
+  width:100%;height:100%;display:block;
+}
+.mmpc-trim-marker{
+  position:absolute;top:0;bottom:0;width:2px;
+  background:rgba(64,224,208,.9);
+  box-shadow:0 0 6px rgba(64,224,208,.6);
+  cursor:col-resize;z-index:2;pointer-events:none;
+}
+.mmpc-trim-shade{
+  position:absolute;top:0;bottom:0;left:0;
+  background:rgba(0,0,0,.55);z-index:1;pointer-events:none;
+}
+.mmpc-trim-row{
+  display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;
+  margin-bottom:.6rem;
+}
+.mmpc-trim-lbl{
+  font-size:.65rem;color:var(--text-dim);
+  letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;
+}
+.mmpc-trim-slider{
+  flex:1;min-width:120px;height:3px;
+  accent-color:rgba(64,224,208,.8);cursor:pointer;
+}
+.mmpc-trim-val{
+  font-size:.65rem;color:rgba(64,224,208,.8);
+  font-family:'Space Mono',monospace;min-width:42px;text-align:right;
+}
+.mmpc-trim-btns{
+  display:flex;gap:.5rem;justify-content:flex-end;margin-top:.4rem;
+}
+.mmpc-trim-btn{
+  font-size:.65rem;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;padding:5px 14px;border-radius:5px;
+  cursor:pointer;border:1px solid;transition:all .12s;
+}
+.mmpc-trim-btn.preview{
+  border-color:rgba(64,224,208,.4);color:rgba(64,224,208,.8);
+  background:rgba(64,224,208,.08);
+}
+.mmpc-trim-btn.preview:hover{background:rgba(64,224,208,.18);}
+.mmpc-trim-btn.confirm{
+  border-color:rgba(170,102,255,.5);color:var(--purple);
+  background:rgba(170,102,255,.12);
+}
+.mmpc-trim-btn.confirm:hover{background:rgba(170,102,255,.25);}
+.mmpc-trim-btn.cancel{
+  border-color:rgba(255,255,255,.15);color:rgba(255,255,255,.4);
+  background:transparent;
+}
+.mmpc-trim-btn.cancel:hover{background:rgba(255,255,255,.06);}
+
+.pad-vol-popup{
+  position:absolute;bottom:calc(100% + 4px);left:50%;
+  transform:translateX(-50%);
+  background:var(--bg-card);border:1px solid var(--purple);
+  border-radius:6px;padding:6px 8px;
+  z-index:100;white-space:nowrap;
+  box-shadow:0 4px 12px rgba(0,0,0,0.4);
+}
+.pad-vol-popup-lbl{
+  font-size:.6rem;color:var(--text-dim);
+  text-transform:uppercase;letter-spacing:.08em;
+  margin-bottom:3px;text-align:center;
+}
+.pad-vol-slider{
+  width:80px;height:3px;
+  accent-color:var(--purple);cursor:pointer;
+  display:block;
+}
+
+
+/* LOOP LIBRARY */
+.loop-library{display:flex;flex-direction:column;gap:.4rem;margin-top:.75rem;}
+.loop-lib-item{display:flex;align-items:center;gap:.6rem;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:8px;padding:.5rem .75rem;transition:all .2s;}
+.loop-lib-item.active-loop{border-color:var(--purple);background:rgba(170,102,255,.08);}
+.loop-lib-item .ll-play{width:28px;height:28px;border-radius:50%;border:1px solid var(--purple);background:rgba(170,102,255,.15);color:var(--purple);font-size:.75rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;}
+.loop-lib-item .ll-play:hover,.loop-lib-item .ll-play.on{background:var(--purple);color:var(--bg-primary);}
+.loop-lib-item .ll-name{font-size:.82rem;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.loop-lib-item .ll-dur{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--text-dim);flex-shrink:0;}
+.loop-lib-item .ll-rm{background:none;border:none;color:var(--red);cursor:pointer;font-size:.85rem;opacity:.5;flex-shrink:0;}
+.loop-lib-item .ll-rm:hover{opacity:1;}
+
+/* Compact loop bar for perform view */
+.loop-bar{display:flex;align-items:center;gap:.6rem;background:var(--bg-tertiary);border:1px solid rgba(170,102,255,.2);border-radius:8px;padding:.5rem .75rem;margin-top:.5rem;}
+.loop-bar.active{border-color:var(--purple);background:rgba(170,102,255,.08);}
+.loop-bar .lb-icon{font-size:.9rem;}
+.loop-bar .lb-name{font-size:.78rem;color:var(--text-primary);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.loop-bar .lb-status{font-size:.65rem;color:var(--text-dim);font-family:'Space Mono',monospace;}
+.loop-bar .lb-status.playing{color:var(--purple);}
+
+/* MIDI OUT PLAYER */
+.midi-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+.midi-card h3{font-size:.85rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--orange);margin-bottom:1rem;}
+.midi-slot{display:flex;align-items:center;gap:1rem;background:var(--bg-tertiary);border:1px dashed var(--border);border-radius:10px;padding:.75rem 1rem;position:relative;transition:all .2s;}
+.midi-slot.loaded{border-style:solid;border-color:var(--orange);background:rgba(255,136,68,.05);}
+.midi-slot .midi-file-info{flex:1;}
+.midi-slot .midi-fn{font-size:.85rem;font-weight:500;color:var(--text-primary);}
+.midi-slot .midi-detail{font-size:.7rem;color:var(--text-dim);font-family:'Space Mono',monospace;}
+.midi-slot .midi-placeholder{font-size:.85rem;color:var(--text-dim);font-style:italic;}
+.midi-slot input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.midi-slot .midi-rm{background:none;border:none;color:var(--red);cursor:pointer;font-size:.9rem;opacity:.6;display:none;}
+.midi-slot.loaded .midi-rm{display:block;}
+.midi-controls{display:flex;flex-wrap:wrap;align-items:center;gap:.75rem;margin-top:.75rem;}
+.midi-play-btn{width:36px;height:36px;border-radius:50%;border:2px solid var(--orange);background:rgba(255,136,68,.15);color:var(--orange);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
+.midi-play-btn:hover,.midi-play-btn.on{background:var(--orange);color:var(--bg-primary);box-shadow:0 0 15px rgba(255,136,68,.4);}
+.midi-port-select{background:var(--bg-primary);border:1px solid var(--border);color:var(--text-primary);padding:.35rem .5rem;border-radius:6px;font-family:'Outfit',sans-serif;font-size:.8rem;}
+.midi-ch-select{background:var(--bg-primary);border:1px solid var(--border);color:var(--text-primary);padding:.35rem .5rem;border-radius:6px;font-family:'Outfit',sans-serif;font-size:.8rem;width:55px;}
+.midi-status{font-size:.75rem;color:var(--text-dim);margin-top:.5rem;}
+.midi-status.connected{color:var(--green);}
+.midi-status.error{color:var(--red);}
+.midi-label{font-size:.7rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.05em;}
+.midi-loop-toggle{display:flex;align-items:center;gap:.4rem;cursor:pointer;user-select:none;}
+.midi-loop-toggle input[type="checkbox"]{display:none;}
+.midi-loop-toggle .ml-sw{width:36px;height:20px;border-radius:10px;background:var(--bg-primary);border:1px solid var(--border);position:relative;transition:all .2s;}
+.midi-loop-toggle .ml-sw::after{content:'';position:absolute;left:2px;top:2px;width:14px;height:14px;border-radius:50%;background:var(--text-dim);transition:all .2s;}
+.midi-loop-toggle input:checked+.ml-sw{background:var(--orange);border-color:var(--orange);}
+.midi-loop-toggle input:checked+.ml-sw::after{left:18px;background:#fff;}
+.midi-loop-toggle span{font-size:.8rem;color:var(--text-dim);}
+
+/* MIDI Progress Bar */
+.midi-progress-wrap{position:relative;height:6px;background:var(--bg-primary);border-radius:3px;cursor:pointer;margin:.5rem 0;}
+.midi-progress-fill{height:100%;background:var(--orange);border-radius:3px;width:0%;transition:width .1s linear;pointer-events:none;}
+.midi-time-display{font-size:.68rem;color:var(--text-dim);font-family:'Space Mono',monospace;}
+
+/* Compact MIDI bar for perform */
+.midi-bar{display:flex;align-items:center;gap:.6rem;background:var(--bg-tertiary);border:1px solid rgba(255,136,68,.2);border-radius:8px;padding:.5rem .75rem;margin-top:.5rem;}
+.midi-bar.active{border-color:var(--orange);background:rgba(255,136,68,.08);}
+.midi-bar .mb-name{font-size:.78rem;color:var(--text-primary);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.midi-bar .mb-status{font-size:.65rem;color:var(--text-dim);font-family:'Space Mono',monospace;}
+.midi-bar .mb-status.playing{color:var(--orange);}
+
+/* MIDI TIMELINE STRIP */
+.midi-tl-strip{position:relative;width:100%;height:20px;background:var(--bg-primary);border-radius:4px;overflow:hidden;margin-bottom:2px;}
+.midi-tl-sec{position:absolute;top:0;bottom:0;border-right:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.58rem;color:var(--text-dim);overflow:hidden;cursor:pointer;transition:background .15s;}
+.midi-tl-sec:hover{background:rgba(255,136,68,.15);color:var(--orange);}
+.midi-tl-sec.on{background:rgba(255,136,68,.2);color:var(--orange);font-weight:600;}
+.midi-sec-hdr{display:grid;grid-template-columns:28px 120px 1fr 80px 50px 62px 28px;gap:.4rem;padding:0 .5rem .3rem;font-size:.68rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.05em;}
+.midi-sec-row{display:grid;grid-template-columns:28px 120px 1fr 80px 50px 62px 28px;gap:.4rem;align-items:center;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:7px;padding:.4rem .5rem;margin-bottom:.3rem;}
+.midi-sec-row.now-playing{border-color:var(--orange);background:rgba(255,136,68,.08);}
+.midi-sec-n{font-family:'Space Mono',monospace;font-size:.8rem;color:var(--orange);font-weight:700;text-align:center;}
+.midi-sec-type{font-size:.78rem;padding:.3rem .4rem;}
+.midi-sec-label{font-size:.78rem;padding:.3rem .5rem;}
+.midi-sec-time{font-size:.78rem;padding:.3rem .4rem;width:100%;font-family:'Space Mono',monospace;text-align:center;}
+.midi-sec-timefmt{font-size:.68rem;color:var(--text-dim);font-family:'Space Mono',monospace;text-align:center;}
+
+/* MIDI SECTION PERFORM CARDS */
+.perf-midi-secs{display:flex;flex-direction:column;gap:.35rem;margin-top:.5rem;}
+.p-midi-sec{display:flex;align-items:center;gap:.75rem;background:var(--bg-card);border:2px solid var(--border);border-radius:9px;padding:.6rem 1rem;cursor:pointer;transition:all .2s;position:relative;}
+.p-midi-sec:hover{border-color:var(--border-hover);}
+.p-midi-sec.act{border-color:var(--orange);background:rgba(255,136,68,.07);animation:flashGlow 1.5s ease-in-out infinite;}
+.p-midi-sec.q{border-color:var(--gold);}
+.midi-sec-hk{font-family:'Space Mono',monospace;font-size:.95rem;font-weight:700;color:var(--bg-primary);background:var(--text-dim);width:26px;height:26px;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;}
+.p-midi-sec.act .midi-sec-hk{background:var(--orange);}
+.p-midi-sec.q .midi-sec-hk{background:var(--gold);animation:pulse 1s infinite;}
+.midi-sec-inf{flex:1;}
+.midi-sec-name{font-size:.88rem;font-weight:500;}
+.midi-sec-loop-badge{font-size:.7rem;color:var(--gold);font-weight:700;}
+
+/* SECTION LOOP TOGGLE */
+.sec-loop-btn{padding:.3rem .7rem;border-radius:6px;font-size:.75rem;font-weight:600;border:2px solid var(--border);background:none;color:var(--text-dim);cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s;display:flex;align-items:center;gap:.3rem;white-space:nowrap;}
+.sec-loop-btn:hover{border-color:var(--gold);color:var(--gold);}
+.sec-loop-btn.on{border-color:var(--gold);background:rgba(240,192,64,.15);color:var(--gold);}
+.sec-loop-indicator{font-size:.65rem;color:var(--gold);font-weight:600;text-transform:uppercase;letter-spacing:.05em;display:none;animation:pulse 1.5s ease-in-out infinite;}
+.sec-loop-indicator.on{display:inline;}
+
+/* STEM RELOAD PANEL */
+.reload-panel{background:var(--bg-tertiary);border:1px solid var(--border);border-radius:10px;padding:1rem;margin-top:.75rem;}
+.reload-panel h4{font-size:.8rem;font-weight:600;color:var(--accent);margin-bottom:.75rem;text-transform:uppercase;letter-spacing:.05em;}
+.reload-row{display:flex;align-items:center;gap:.75rem;padding:.4rem 0;border-bottom:1px solid var(--border);}
+.reload-row:last-child{border-bottom:none;}
+.reload-row .rl-name{font-size:.85rem;font-weight:500;width:60px;}
+.reload-row .rl-file{font-size:.75rem;color:var(--text-dim);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.reload-row .rl-status{font-size:.7rem;width:60px;text-align:center;}
+.reload-row .rl-status.loaded{color:var(--green);}
+.reload-row .rl-status.needed{color:var(--orange);}
+.reload-row input[type="file"]{width:0;height:0;overflow:hidden;position:absolute;}
+.reload-row .rl-btn{padding:.25rem .6rem;border-radius:5px;font-size:.7rem;border:1px solid var(--border);background:none;color:var(--text-secondary);cursor:pointer;font-family:'Outfit',sans-serif;}
+.reload-row .rl-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+/* MIDI REMOTE CONTROL */
+.mrc-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+.mrc-card h3{font-size:.85rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--green);margin-bottom:1rem;}
+.mrc-port-row{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;}
+.mrc-port-row select{flex:1;}
+.mrc-map-grid{display:grid;grid-template-columns:1fr 1fr;gap:.4rem;}
+.mrc-map-row{display:flex;align-items:center;gap:.5rem;background:var(--bg-tertiary);border:2px solid var(--border);border-radius:8px;padding:.5rem .75rem;cursor:pointer;transition:all .2s;user-select:none;}
+.mrc-map-row:hover{border-color:var(--border-hover);}
+.mrc-map-row.learning{border-color:var(--green);background:rgba(68,221,136,.1);animation:pulse 1s ease-in-out infinite;}
+.mrc-map-row .mrc-fn{font-size:.8rem;font-weight:500;flex:1;}
+.mrc-map-row .mrc-val{font-family:'Space Mono',monospace;font-size:.75rem;color:var(--green);min-width:70px;text-align:center;background:var(--bg-primary);border-radius:4px;padding:.2rem .4rem;}
+.mrc-map-row .mrc-val.empty{color:var(--text-dim);}
+.mrc-map-row .mrc-clr{background:none;border:none;color:var(--red);cursor:pointer;font-size:.8rem;opacity:.4;padding:0 .2rem;}
+.mrc-map-row .mrc-clr:hover{opacity:1;}
+.mrc-hint{font-size:.75rem;color:var(--text-dim);margin-top:.75rem;font-style:italic;}
+.mrc-activity{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--text-dim);margin-right:.5rem;transition:all .1s;}
+.mrc-activity.on{background:var(--green);box-shadow:0 0 8px rgba(68,221,136,.5);}
+
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+
+/* ── SERVICE FLOW ── */
+.svc-container{max-width:900px;}
+.svc-toolbar{display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;flex-wrap:wrap;}
+.svc-toolbar h2{font-size:1.3rem;flex:1;}
+.svc-live-bar{display:none;position:sticky;top:0;z-index:100;background:var(--red);color:#fff;border-radius:10px;padding:.75rem 1.25rem;margin-bottom:1rem;display:none;align-items:center;gap:1rem;flex-wrap:wrap;}
+.svc-live-bar.on{display:flex;}
+.svc-live-bar .lb-dot{width:10px;height:10px;border-radius:50%;background:#fff;animation:pulse 1s ease-in-out infinite;flex-shrink:0;}
+.svc-live-bar .lb-cur{font-weight:600;font-size:.95rem;flex:1;}
+.svc-live-bar .lb-next{font-size:.8rem;opacity:.8;}
+.svc-live-nav{display:flex;gap:.5rem;}
+.svc-live-nav button{padding:.4rem 1rem;border-radius:6px;border:2px solid rgba(255,255,255,.5);background:rgba(255,255,255,.15);color:#fff;font-family:'Outfit',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;}
+.svc-live-nav button:hover{background:rgba(255,255,255,.3);}
+.svc-cue-list{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1rem;}
+.svc-cue{display:flex;align-items:center;gap:.75rem;background:var(--bg-card);border:2px solid var(--border);border-radius:10px;padding:.75rem 1rem;cursor:default;transition:all .25s;position:relative;}
+.svc-cue.cue-done{opacity:.45;}
+.svc-cue.cue-active{border-color:var(--red);background:rgba(255,68,102,.07);box-shadow:0 0 0 3px rgba(255,68,102,.15);}
+.svc-cue.cue-next{border-color:var(--gold);background:rgba(240,192,64,.06);}
+.svc-cue .cue-drag{cursor:grab;color:var(--text-dim);font-size:1.1rem;padding:0 .25rem;user-select:none;}
+.svc-cue .cue-num{font-family:'Space Mono',monospace;font-size:.85rem;font-weight:700;color:var(--text-dim);width:22px;text-align:center;flex-shrink:0;}
+.svc-cue.cue-active .cue-num{color:var(--red);}
+.svc-cue.cue-next .cue-num{color:var(--gold);}
+.svc-cue .cue-icon{font-size:1.3rem;flex-shrink:0;}
+.svc-cue .cue-body{flex:1;min-width:0;}
+.svc-cue .cue-title{font-size:.95rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.svc-cue .cue-meta{font-size:.75rem;color:var(--text-secondary);}
+.svc-cue .cue-badge{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:.15rem .5rem;border-radius:4px;flex-shrink:0;}
+.svc-cue.cue-active .cue-badge{background:var(--red);color:#fff;}
+.svc-cue.cue-next .cue-badge{background:var(--gold);color:var(--bg-primary);}
+.svc-cue .cue-acts{display:flex;gap:.35rem;flex-shrink:0;}
+.svc-cue .cue-acts button{padding:.25rem .5rem;border-radius:5px;border:1px solid var(--border);background:none;color:var(--text-dim);cursor:pointer;font-size:.8rem;font-family:'Outfit',sans-serif;}
+.svc-cue .cue-acts button:hover{border-color:var(--border-hover);color:var(--text-primary);}
+.svc-add-row{display:flex;gap:.5rem;flex-wrap:wrap;padding:.5rem 0;}
+.svc-add-row .add-btn{display:flex;align-items:center;gap:.4rem;padding:.5rem 1rem;border-radius:8px;border:1px dashed var(--border);background:none;color:var(--text-dim);cursor:pointer;font-family:'Outfit',sans-serif;font-size:.85rem;transition:all .2s;}
+.svc-add-row .add-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);}
+.svc-empty{color:var(--text-dim);font-size:.9rem;padding:2rem;text-align:center;background:var(--bg-card);border:1px dashed var(--border);border-radius:10px;}
+.svc-go-live{background:var(--red)!important;color:#fff!important;border:none!important;font-weight:600;}
+.svc-go-live:hover{box-shadow:0 0 20px rgba(255,68,102,.4)!important;}
+.svc-end-live{background:var(--bg-tertiary)!important;border-color:var(--red)!important;color:var(--red)!important;}
+
+/* FILE MENU */
+.file-menu{position:relative;}
+.file-menu-btn{padding:.4rem .9rem;border-radius:6px;border:1px solid var(--border);background:none;color:var(--text-secondary);font-family:'Outfit',sans-serif;font-size:.85rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:.4rem;}
+.file-menu-btn:hover{border-color:var(--border-hover);color:var(--text-primary);}
+.file-menu-drop{position:absolute;top:calc(100% + 6px);left:0;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;min-width:180px;z-index:500;box-shadow:0 8px 32px rgba(0,0,0,.4);display:none;flex-direction:column;overflow:hidden;}
+.file-menu-drop.open{display:flex;}
+.file-menu-item{padding:.65rem 1rem;font-size:.88rem;color:var(--text-primary);cursor:pointer;display:flex;align-items:center;gap:.6rem;transition:background .15s;border:none;background:none;font-family:'Outfit',sans-serif;text-align:left;width:100%;}
+.file-menu-item:hover{background:var(--bg-tertiary);}
+.file-menu-item.danger{color:var(--red);}
+.file-menu-item .fm-icon{width:18px;text-align:center;font-size:.9rem;}
+.file-menu-divider{height:1px;background:var(--border);margin:.25rem 0;}
+/* SESSION PRELOADER */
+.preload-overlay{position:fixed;inset:0;background:rgba(10,14,20,.92);z-index:3000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1.5rem;}
+.preload-box{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:2rem 2.5rem;min-width:360px;max-width:480px;text-align:center;}
+.preload-box h3{font-size:1.1rem;font-weight:600;color:var(--accent);margin-bottom:.5rem;}
+.preload-box p{font-size:.85rem;color:var(--text-secondary);margin-bottom:1.25rem;}
+.preload-bar-wrap{background:var(--bg-tertiary);border-radius:6px;height:10px;overflow:hidden;margin-bottom:.75rem;}
+.preload-bar{height:100%;background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:6px;transition:width .3s ease;}
+.preload-status{font-size:.8rem;color:var(--text-dim);font-family:'Space Mono',monospace;}
+
+.session-name{font-family:'Space Mono',monospace;font-size:.7rem;color:var(--accent);max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+/* ── LIGHT MODE ── */
+body.light-mode {
+  --bg-primary:#f0f4f8; --bg-secondary:#e2e8f0; --bg-tertiary:#d0d8e4; --bg-card:#ffffff;
+  --accent:#0891b2; --accent-dim:rgba(8,145,178,0.12); --accent-glow:rgba(8,145,178,0.35);
+  --text-primary:#1a202c; --text-secondary:#4a5568; --text-dim:#718096;
+  --border:rgba(8,145,178,0.18); --border-hover:rgba(8,145,178,0.4);
+  --red:#e53e3e; --orange:#dd6b20; --green:#276749; --gold:#b7791f; --purple:#6b46c1;
+}
+body.light-mode #splash { background: radial-gradient(ellipse at 50% 40%,#e2f0f7,#c8dce8); }
+body.light-mode .topbar { box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+body.light-mode select, body.light-mode input[type="number"], body.light-mode input[type="text"] { background:var(--bg-secondary); }
+body.light-mode .midi-progress-wrap { background: var(--bg-tertiary); }
+body.light-mode .tl-bar { background: var(--bg-tertiary); }
+body.light-mode .mt-scrub-bar { background: var(--bg-secondary); }
+body.light-mode ::-webkit-scrollbar-thumb { background: #a0aec0; }
+
+/* ── SETTINGS VIEW ── */
+.settings-container { max-width: 780px; }
+.settings-section { background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1.25rem; }
+.settings-section h3 { font-size:.85rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:1.25rem; }
+.settings-row { display:flex;align-items:center;justify-content:space-between;padding:.65rem 0;border-bottom:1px solid var(--border); }
+.settings-row:last-child { border-bottom:none; }
+.settings-row-label { font-size:.9rem;font-weight:500; }
+.settings-row-sub { font-size:.75rem;color:var(--text-dim);margin-top:.15rem; }
+/* Toggle switch */
+.vwb-toggle { position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0; }
+.vwb-toggle input { opacity:0;width:0;height:0; }
+.vwb-toggle-slider { position:absolute;inset:0;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:all .25s; }
+.vwb-toggle-slider::before { content:'';position:absolute;width:18px;height:18px;left:2px;top:2px;background:var(--text-dim);border-radius:50%;transition:all .25s; }
+.vwb-toggle input:checked + .vwb-toggle-slider { background:var(--accent);border-color:var(--accent); }
+.vwb-toggle input:checked + .vwb-toggle-slider::before { transform:translateX(20px);background:#fff; }
+/* Appearance cards */
+.theme-cards { display:flex;gap:.75rem;margin-top:.5rem; }
+.theme-card { flex:1;padding:1rem;border-radius:10px;border:2px solid var(--border);cursor:pointer;transition:all .2s;text-align:center; }
+.theme-card:hover { border-color:var(--border-hover); }
+.theme-card.selected { border-color:var(--accent);background:var(--accent-dim); }
+.theme-card .tc-preview { width:100%;height:40px;border-radius:6px;margin-bottom:.5rem; }
+.theme-card .tc-label { font-size:.82rem;font-weight:600; }
+@keyframes abFlash { 0%,100%{opacity:1;} 50%{opacity:0.15;} }
+</style>
+</head>
+<body>
+
+<div id="splash" onclick="initApp()">
+  <h1>VWB</h1><h2>Virtual Worship Band</h2>
+  <p class="ver">v2.0</p>
+  <p class="tag">"Real Musicians. Real Worship. In Real Time."</p>
+  <p class="hint">Click anywhere to begin</p>
+  <footer>&copy; 2026 Hollins Musical Productions International</footer>
+</div>
+
+<!-- LICENSE SCREEN -->
+<div id="licenseScreen" style="display:none;position:fixed;inset:0;z-index:999;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 40%,#0f1c2a,#070b10);padding:2rem;">
+  <div class="ls-logo">VWB</div>
+  <div class="ls-title">Virtual Worship Band</div>
+  <div class="ls-card">
+    <h3>🔑 Activate Your License</h3>
+    <p>Enter the license key from your purchase email to activate VWB on this computer.</p>
+    <input type="text" class="ls-input" id="licenseKeyInput"
+      placeholder="Enter your license key..."
+      autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+    <button class="ls-btn" id="licenseActivateBtn" onclick="activateLicense()">
+      Activate VWB
+    </button>
+    <div class="ls-error" id="licenseError"></div>
+    <div class="ls-success" id="licenseSuccess"></div>
+  </div>
+  <div class="ls-footer">
+    Purchase VWB at hollinsmusic.com &nbsp;·&nbsp; Support: hollinsmusic@gmail.com
+  </div>
+</div>
+
+<div id="app" style="display:none;">
+  <div class="topbar">
+    <div class="topbar-brand"><h1>VWB</h1><span>Virtual Worship Band</span></div>
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <div class="file-menu" id="fileMenu">
+        <button class="file-menu-btn" onclick="toggleFileMenu()">📁 File <span style="font-size:.7rem;opacity:.6">▾</span></button>
+        <div class="file-menu-drop" id="fileMenuDrop">
+          <button class="file-menu-item" onclick="sessionNew()"><span class="fm-icon">🆕</span> New Session</button>
+          <div class="file-menu-divider"></div>
+          <button class="file-menu-item" onclick="sessionOpen()"><span class="fm-icon">📂</span> Open Session…</button>
+          <button class="file-menu-item" onclick="sessionSave()"><span class="fm-icon">💾</span> Save Session</button>
+          <button class="file-menu-item" onclick="sessionSaveAs()"><span class="fm-icon">💾</span> Save As…</button>
+          <div class="file-menu-divider"></div>
+          <button class="file-menu-item" onclick="closeFileMenu();openServicePack()"><span class="fm-icon">📂</span> Load Service Pack Folder…</button>
+          <button class="file-menu-item" onclick="closeFileMenu();vwbOpenBundle()"><span class="fm-icon">🎁</span> Open .vwbp Bundle…</button>
+          <div class="file-menu-divider"></div>
+          <button class="file-menu-item danger" onclick="sessionQuit()"><span class="fm-icon">✕</span> Quit VWB</button>
+        </div>
+      </div>
+      <span class="session-name" id="sessionNameDisplay">No session</span>
+      <div class="master-vol"><label>Master</label><input type="range" min="0" max="100" value="80" oninput="setMasterVol(this.value)"></div>
+    </div>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="goView('setup')">Song Setup</button>
+    <button class="nav-tab" onclick="goView('perform')">Perform</button>
+    <button class="nav-tab" onclick="goView('setlist')">Setlist</button>
+    <button class="nav-tab" onclick="goView('service')" id="svcNavTab">🗓 Service</button>
+    <button class="nav-tab" onclick="goView('myband')">🎸 My Band</button>
+    <button class="nav-tab" onclick="goView('library')" id="libraryNavTab">📚 Song Library</button>
+    <button class="nav-tab" onclick="goView('settings')" id="settingsNavTab">⚙️ Settings</button>
+    <button class="nav-tab" onclick="goView('news')" id="newsTabBtn" style="position:relative;margin-left:auto;">🔔 What's New<span id="newsBellDot"></span></button>
+  </div>
+
+  <!-- ==================== SETUP ==================== -->
+  <div class="view active" id="view-setup"><div class="setup-container">
+    <div class="setup-card"><h3>Song Info</h3>
+      <div class="form-row">
+        <div class="form-group" style="flex:3"><label>Song Title</label><input type="text" id="songTitle" placeholder="e.g. Total Praise"></div>
+        <div class="form-group"><label>Tempo (BPM)</label><input type="number" id="songTempo" value="72" min="40" max="200" oninput="if(typeof onSongTempoChange==='function')onSongTempoChange(this.value)"></div>
+        <div class="form-group"><label>Time Sig</label><select id="songTimeSig"><option selected>4/4</option><option>3/4</option><option>6/8</option><option>12/8</option></select></div>
+      </div>
+      <p style="font-size:.75rem;color:var(--text-dim);margin-top:.25rem" id="measureInfo"></p>
+    </div>
+
+    <!-- ENGINE SELECTOR — SETUP PAGE -->
+    <div class="setup-card" style="border-color:rgba(64,224,208,.3);background:rgba(64,224,208,.03);">
+      <h3>Engine</h3>
+      <p style="font-size:.8rem;color:var(--text-dim);margin-bottom:.85rem;">Choose how VWB plays music for this song. Audio uses WAV/MP3 stems. MIDI sends notes to a keyboard or sound module. Piano enables Rubato Mode for live voice-triggered accompaniment. Your choice saves with the song.</p>
+      <div style="display:flex;gap:.6rem;">
+        <button onclick="setVwbEngine('audio')" id="setupEngBtnAudio"
+          style="font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:600;
+                 padding:.55rem 1.5rem;border-radius:8px;cursor:pointer;transition:all .2s;
+                 border:2px solid var(--accent);background:rgba(64,224,208,.15);color:var(--accent);">
+          🎵 Audio Engine
+        </button>
+        <button onclick="setVwbEngine('midi')" id="setupEngBtnMidi"
+          style="font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:600;
+                 padding:.55rem 1.5rem;border-radius:8px;cursor:pointer;transition:all .2s;
+                 border:2px solid var(--border);background:none;color:var(--text-dim);">
+          🎸 Flex Engine
+        </button>
+        <button onclick="setVwbEngine('organ')" id="setupEngBtnOrgan"
+          style="font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:600;
+                 padding:.55rem 1.5rem;border-radius:8px;cursor:pointer;transition:all .2s;
+                 border:2px solid var(--border);background:none;color:var(--text-dim);">
+          🎹 Organ Engine
+        </button>
+        <button onclick="setVwbEngine('piano')" id="setupEngBtnPiano"
+          style="font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:600;
+                 padding:.55rem 1.5rem;border-radius:8px;cursor:pointer;transition:all .2s;
+                 border:2px solid var(--border);background:none;color:var(--text-dim);">
+          🎵 Piano Engine
+        </button>
+      </div>
+    </div>
+
+    <!-- ORGAN ENGINE CARD — shown only when Organ engine active -->
+    <div id="setupOrganCard" style="display:none;">
+      <div class="setup-card" style="border-color:rgba(139,94,60,.35);background:rgba(139,94,60,.04);padding-top:.6rem;">
+
+        <!-- Hammond Organ Banner -->
+        <div style="width:100%;border-radius:8px;overflow:hidden;margin-bottom:.85rem;position:relative;">
+          <svg viewBox="0 0 520 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;">
+            <defs>
+              <linearGradient id="hbg" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#2a1a0e"/>
+                <stop offset="100%" stop-color="#1a0f07"/>
+              </linearGradient>
+              <linearGradient id="hwood" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#8B5E3C"/>
+                <stop offset="60%" stop-color="#6B4423"/>
+                <stop offset="100%" stop-color="#4a2e14"/>
+              </linearGradient>
+              <linearGradient id="hwood2" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#9B6A44"/>
+                <stop offset="100%" stop-color="#7B4E2E"/>
+              </linearGradient>
+              <linearGradient id="hkey" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#f5f0e8"/>
+                <stop offset="100%" stop-color="#ddd8ce"/>
+              </linearGradient>
+              <radialGradient id="hspot" cx="50%" cy="30%" r="60%">
+                <stop offset="0%" stop-color="rgba(139,94,60,.25)"/>
+                <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+              </radialGradient>
+              <filter id="hglow">
+                <feGaussianBlur stdDeviation="2" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <!-- Clip keys to cabinet -->
+              <clipPath id="hcabClip">
+                <rect x="122" y="38" width="276" height="62"/>
+              </clipPath>
+            </defs>
+
+            <!-- Background -->
+            <rect width="520" height="120" fill="url(#hbg)"/>
+            <rect width="520" height="120" fill="url(#hspot)"/>
+
+            <!-- Floor -->
+            <rect x="0" y="100" width="520" height="20" fill="#1a0f07"/>
+            <rect x="0" y="99" width="520" height="2" fill="rgba(139,94,60,.2)"/>
+
+            <!-- Organ cabinet body -->
+            <rect x="110" y="38" width="300" height="62" rx="3" fill="url(#hwood)"/>
+            <!-- Cabinet highlight -->
+            <rect x="110" y="38" width="300" height="4" rx="2" fill="rgba(255,255,255,.08)"/>
+            <!-- Cabinet shadow line -->
+            <rect x="110" y="95" width="300" height="3" fill="rgba(0,0,0,.3)"/>
+
+            <!-- Music rack (top panel) -->
+            <rect x="130" y="18" width="260" height="22" rx="2" fill="url(#hwood2)"/>
+            <rect x="130" y="18" width="260" height="3" rx="1" fill="rgba(255,255,255,.1)"/>
+
+            <!-- Legs -->
+            <rect x="127" y="98" width="12" height="18" rx="2" fill="#4a2e14"/>
+            <rect x="381" y="98" width="12" height="18" rx="2" fill="#4a2e14"/>
+            <rect x="230" y="98" width="10" height="18" rx="1" fill="#3a2010"/>
+            <rect x="280" y="98" width="10" height="18" rx="1" fill="#3a2010"/>
+
+            <!-- Keys — clipped to cabinet -->
+            <g clip-path="url(#hcabClip)">
+            <!-- Upper manual -->
+            <rect x="122" y="52" width="276" height="20" rx="1" fill="#2a1a0e"/>
+            <!-- Upper keys - white -->
+            ${Array.from({length:24}, (_,i) => `<rect x="${124+i*11}" y="53" width="9" height="17" rx="1" fill="url(#hkey)" opacity=".95"/>`).join('')}
+            <!-- Upper keys - black -->
+            ${[0,1,3,4,5,7,8,10,11,12,14,15,17,18,19].map(i => `<rect x="${128+i*11}" y="53" width="6" height="11" rx="1" fill="#1a1208"/>`).join('')}
+
+            <!-- Lower manual -->
+            <rect x="122" y="74" width="276" height="22" rx="1" fill="#2a1a0e"/>
+            <!-- Lower keys - white -->
+            ${Array.from({length:24}, (_,i) => `<rect x="${124+i*11}" y="75" width="9" height="19" rx="1" fill="url(#hkey)" opacity=".9"/>`).join('')}
+            <!-- Lower keys - black -->
+            ${[0,1,3,4,5,7,8,10,11,12,14,15,17,18,19].map(i => `<rect x="${128+i*11}" y="75" width="6" height="12" rx="1" fill="#1a1208"/>`).join('')}
+
+            </g><!-- end keys clip -->
+            <!-- Drawbars area -->
+            <rect x="148" y="40" width="224" height="12" rx="2" fill="rgba(0,0,0,.4)"/>
+            ${Array.from({length:9}, (_,i) => `
+              <rect x="${158+i*24}" y="41" width="6" height="10" rx="1" fill="#222"/>
+              <rect x="${159+i*24}" y="${41+Math.round(Math.random()*6)}" width="4" height="4" rx="1" fill="${['#ff4444','#ff4444','#fff','#fff','#222','#fff','#fff','#222','#222'][i]}"/>
+            `).join('')}
+
+            <!-- Pedals hint -->
+            <ellipse cx="260" cy="115" rx="60" ry="4" fill="rgba(80,50,20,.4)"/>
+            ${Array.from({length:13}, (_,i) => `<rect x="${210+i*7}" y="110" width="5" height="6" rx="1" fill="#2a1a0e" opacity=".7"/>`).join('')}
+
+            <!-- Brand text -->
+            <text x="260" y="32" text-anchor="middle"
+              font-family="Georgia,serif" font-size="8" font-weight="bold"
+              fill="rgba(200,160,100,.7)" letter-spacing="3">HAMMOND VWB</text>
+
+            <!-- Warm glow overlay -->
+            <rect width="520" height="120" fill="rgba(139,94,60,.04)"/>
+
+            <!-- Title overlay -->
+            <rect x="0" y="0" width="520" height="120" fill="rgba(0,0,0,.18)"/>
+          </svg>
+          <!-- Text overlay on banner -->
+          <div style="position:absolute;bottom:.5rem;left:.75rem;right:.75rem;
+                      display:flex;align-items:flex-end;justify-content:space-between;">
+            <div>
+              <div style="font-size:.95rem;font-weight:700;color:#C8946A;letter-spacing:.04em;
+                          text-shadow:0 1px 4px rgba(0,0,0,.8);">The Organist</div>
+              <div style="font-size:.65rem;color:rgba(200,160,100,.7);letter-spacing:.06em;
+                          text-transform:uppercase;">Hammond A-102 · Real Samples</div>
+            </div>
+            <!-- Organist photo -->
+            <div id="abBannerPhoto" style="flex-shrink:0;">
+              <div style="width:48px;height:48px;border-radius:50%;
+                   background:rgba(139,94,60,.3);border:2px solid rgba(139,94,60,.4);
+                   display:flex;align-items:center;justify-content:center;font-size:1.2rem;">🎹</div>
+            </div>
+          </div>
+        </div>
+        <h3 style="color:#8B5E3C;margin-bottom:.5rem;">🎹 The Organist — Hammond Organ</h3>
+        <p style="font-size:.8rem;color:var(--text-dim);margin-bottom:.75rem;">
+          Real Hammond A-102 organ samples.
+          Load your sample folder and trigger preaching accompaniment live during service.
+        </p>
+        <div id="abSetupWrap">
+          <div style="text-align:center;padding:1rem;">
+            <button class="btn btn-primary" onclick="abSelectRootFolder()"
+              style="border-color:#8B5E3C;background:rgba(139,94,60,.15);color:#8B5E3C;">
+              📂 Load Hammond Samples
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AUDIO ENGINE CARDS — hidden when MIDI or Organ engine is active -->
+    <div id="setupAudioCards">
+      <div class="setup-card"><h3>Load Instrument Stems</h3>
+        <p style="font-size:.8rem;color:var(--text-dim);margin-bottom:1rem">Click to load WAV or MP3 files for each dedicated channel. All stems should be the same length. <span class="drag-hint">You can also drag &amp; drop audio files directly onto each slot.</span></p>
+        <div class="stems-grid" id="stemsGrid"></div>
+      </div>
+      <div class="setup-card" style="border-color:rgba(240,192,64,.2)"><h3 style="color:#f0c040">&#127926; Aux Stems (Ch 6-7)</h3>
+        <p style="font-size:.8rem;color:var(--text-dim);margin-bottom:.75rem">Load additional stems here — organ, strings, synth pads, background vocals, etc. All tracks are summed together and sent to stereo output (Ch 6-7 in multi-out mode). Each track gets its own volume control. <span class="drag-hint">Drag &amp; drop audio files here to add them.</span></p>
+        <div id="auxTracksList" class="drop-zone"></div>
+        <div style="display:flex;align-items:center;gap:.75rem;margin-top:.75rem">
+          <button class="btn-add" style="border-color:#f0c040;color:#f0c040;background:rgba(240,192,64,.1)" onclick="pickAndAddAuxTracks()">+ Add Aux Track</button>
+          <div style="display:flex;align-items:center;gap:.5rem">
+            <span style="font-size:.75rem;color:var(--text-dim)">Master Vol</span>
+            <input type="range" min="0" max="100" value="80" style="-webkit-appearance:none;width:80px;height:4px;border-radius:2px;background:var(--bg-tertiary)" oninput="setAuxMasterVolFn(this.value);document.getElementById('auxMasterPct').textContent=this.value+'%'" id="auxMasterSlider">
+            <span style="font-family:'Space Mono',monospace;font-size:.7rem;color:var(--text-dim)" id="auxMasterPct">80%</span>
+          </div>
+        </div>
+        <!-- Q/Click Monitor Bus — collapsible, hidden by default -->
+        <div style="margin-top:1rem;border-top:1px solid rgba(255,100,100,.2);padding-top:.75rem">
+          <div onclick="toggleMonitorPanel()" style="display:flex;align-items:center;gap:.5rem;cursor:pointer;user-select:none">
+            <span id="monitorToggleArrow" style="font-size:.75rem;color:#ff6464;transition:transform .2s">&#9654;</span>
+            <span style="font-size:.8rem;font-weight:600;color:#ff6464">Q / Click — Monitor Bus (Ch 8)</span>
+            <span style="font-size:.7rem;color:var(--text-dim);margin-left:auto">Not sent to house</span>
+          </div>
+          <div id="monitorBusPanel" style="display:none;margin-top:.75rem">
+            <p style="font-size:.75rem;color:var(--text-dim);margin-bottom:.6rem">Routed to <strong style="color:#ff6464">Ch 8 only</strong> — send to headphone amp or IEM pack for drummer/musicians.</p>
+            <div id="monitorBusList" class="drop-zone" style="min-height:32px"></div>
+            <div style="display:flex;gap:.5rem;margin-top:.6rem;flex-wrap:wrap;">
+              <button class="btn-add" style="border-color:#ff6464;color:#ff6464;background:rgba(255,100,100,.08);font-size:.75rem;padding:.3rem .6rem" onclick="pickMonitorSlot('cues')">+ Load Cues</button>
+              <button class="btn-add" style="border-color:#ff9944;color:#ff9944;background:rgba(255,153,68,.08);font-size:.75rem;padding:.3rem .6rem" onclick="pickMonitorSlot('click')">+ Load Click</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MIDI ENGINE CARD — hidden when Audio engine is active -->
+    <div id="setupMidiCard" style="display:none;">
+      <div class="midi-card">
+        <div onclick="toggleMidiPanel()" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;">
+          <h3 style="margin-bottom:0;">🎸 Flex File Player</h3>
+          <span style="display:flex;align-items:center;gap:.4rem;font-size:.75rem;color:var(--text-dim);">
+            <span id="midiPanelHint">Click to collapse</span>
+            <span id="midiToggleArrow" style="font-size:.75rem;color:var(--orange);transition:transform .2s;transform:rotate(90deg);">&#9654;</span>
+          </span>
+        </div>
+        <div id="midiPanelBody" style="display:block;margin-top:1rem;">
+          <p style="font-size:.8rem;color:var(--text-dim);margin-bottom:.75rem">Load up to 8 MIDI files and send them to an external keyboard or sound module via USB MIDI. Select a file, set your options, and hit Play. <span class="drag-hint">Drag &amp; drop .mid files here.</span></p>
+          <!-- Hidden selectors kept for JS compatibility — configured in Settings -->
+          <select class="midi-port-select" id="midiPortSelect" onchange="selectMidiPort(this.value)" style="display:none;">
+            <option value="">-- Select MIDI Output --</option>
+          </select>
+          <select class="midi-ch-select" id="midiChSelect" style="display:none;">
+            <option value="0">1</option><option value="1">2</option><option value="2">3</option><option value="3">4</option>
+            <option value="4">5</option><option value="5">6</option><option value="6">7</option><option value="7">8</option>
+            <option value="8">9</option><option value="9">10</option><option value="10">11</option><option value="11">12</option>
+            <option value="12">13</option><option value="13">14</option><option value="14">15</option><option value="15">16</option>
+          </select>
+          <div class="midi-controls" id="midiPlaylistControls" style="margin-bottom:.75rem;flex-wrap:wrap;gap:1.25rem;align-items:flex-end;">
+            <!-- Transpose — large, prominent -->
+            <div style="display:flex;flex-direction:column;gap:.35rem;align-items:center;">
+              <span style="font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim);font-weight:600;">Transpose</span>
+              <div style="display:flex;align-items:center;gap:.5rem;">
+                <button class="btn btn-secondary" onclick="adjustMidiTranspose(-1)" style="padding:.35rem .8rem;font-size:1.1rem;font-weight:700;min-width:38px;">−</button>
+                <span class="midi-transpose-val" style="font-family:'Space Mono',monospace;font-size:1.5rem;font-weight:700;color:var(--orange);min-width:46px;text-align:center;">0</span>
+                <button class="btn btn-secondary" onclick="adjustMidiTranspose(1)" style="padding:.35rem .8rem;font-size:1.1rem;font-weight:700;min-width:38px;">+</button>
+              </div>
+              <span style="font-size:.65rem;color:var(--text-dim);">half steps</span>
+            </div>
+            <!-- Tempo — large, prominent -->
+            <div style="display:flex;flex-direction:column;gap:.35rem;align-items:center;">
+              <span style="font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim);font-weight:600;">Tempo</span>
+              <div style="display:flex;align-items:center;gap:.4rem;">
+                <button class="btn btn-secondary" onclick="adjustMidiTempo(-5)" style="padding:.35rem .55rem;font-size:.8rem;font-weight:700;" title="−5 BPM">−−</button>
+                <button class="btn btn-secondary" onclick="adjustMidiTempo(-1)" style="padding:.35rem .75rem;font-size:1.1rem;font-weight:700;" title="−1 BPM">−</button>
+                <input id="midiTempoPct" type="number" min="30" max="300" step="1"
+                  style="font-family:'Space Mono',monospace;font-size:1.5rem;font-weight:700;color:var(--orange);
+                         width:76px;text-align:center;background:var(--bg-primary);
+                         border:1px solid var(--border);border-radius:6px;padding:.25rem .3rem;"
+                  title="Type a BPM value"
+                  onchange="setMidiTempoFromInput(this.value)"
+                  onkeydown="if(event.key==='Enter')setMidiTempoFromInput(this.value)">
+                <button class="btn btn-secondary" onclick="adjustMidiTempo(1)" style="padding:.35rem .75rem;font-size:1.1rem;font-weight:700;" title="+1 BPM">+</button>
+                <button class="btn btn-secondary" onclick="adjustMidiTempo(5)" style="padding:.35rem .55rem;font-size:.8rem;font-weight:700;" title="+5 BPM">++</button>
+              </div>
+              <span style="font-size:.65rem;color:var(--text-dim);">BPM</span>
+            </div>
+            <label class="midi-loop-toggle" style="align-self:center;margin-top:.5rem;"><input type="checkbox" id="midiLoopCheck" onchange="midiLoopEnabled=this.checked"><div class="ml-sw"></div><span>Loop</span></label>
+            <!-- Reset button -->
+            <div style="display:flex;flex-direction:column;align-items:center;gap:.35rem;align-self:center;margin-top:.5rem;">
+              <button class="btn btn-secondary" onclick="resetMidiTransposeAndTempo()"
+                style="padding:.35rem .9rem;font-size:.8rem;font-weight:600;color:var(--text-dim);border-color:var(--border);"
+                title="Reset transpose to 0 and tempo to original">↺ Reset</button>
+              <span style="font-size:.6rem;color:var(--text-dim);">key &amp; tempo</span>
+            </div>
+          </div>
+          <div class="midi-status" id="midiStatus">No MIDI output selected</div>
+          <div class="synth-mode-wrap" style="margin-bottom:.75rem;"></div>
+          <div id="midiPlaylist" style="margin-top:.75rem;display:flex;flex-direction:column;gap:.35rem;"></div>
+          <div style="margin-top:.6rem;">
+            <button class="btn-add" style="border-color:var(--orange);color:var(--orange);background:rgba(255,136,68,.08);font-size:.75rem;padding:.3rem .6rem;" onclick="vwbPickFlexFile()" id="midiAddBtn">+ Add Flex File</button>
+          </div>
+          <div style="margin-top:.75rem;padding-top:.75rem;border-top:1px solid var(--border);">
+            <p style="font-size:.75rem;color:var(--text-dim);">Use the <strong style="color:var(--accent);">Song Sections</strong> player below to play, scrub, and set section points for your MIDI file.</p>
+          </div>
+          <div style="margin-top:.6rem;padding-top:.6rem;border-top:1px solid var(--border);">
+            <div id="midiActiveName" style="font-size:.85rem;color:var(--text-primary);font-weight:500;margin-bottom:.25rem;">No file selected</div>
+            <div id="midiActiveDetail" style="font-size:.7rem;color:var(--text-dim);margin-bottom:.35rem;"></div>
+            <!-- Hidden elements kept for JS compatibility -->
+            <div style="display:none">
+              <div class="midi-tl-strip" id="midiTimelineStrip"></div>
+              <div class="midi-progress-wrap"><div class="midi-progress-fill" id="midiProgressFill"></div></div>
+              <span class="midi-time-display" id="midiTimeDisplay">0:00 / 0:00</span>
+            </div>
+            <div id="midiMixerSetup" style="margin-top:.5rem;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PIANO ENGINE CARD — shown only when Piano engine active -->
+    <div id="setupPianoCard" style="display:none;">
+      <div class="setup-card" style="border-color:rgba(99,179,237,.3);background:rgba(99,179,237,.03);padding-top:.6rem;">
+        <!-- Piano Engine Banner -->
+        <div style="width:100%;border-radius:8px;overflow:hidden;margin-bottom:.85rem;position:relative;
+                    background:linear-gradient(135deg,#0d1821 0%,#1a2a3a 50%,#0d1821 100%);
+                    padding:1.2rem 1.5rem;min-height:80px;display:flex;align-items:center;justify-content:space-between;">
+          <div>
+            <div style="font-size:1.1rem;font-weight:700;color:#63B3ED;letter-spacing:.04em;
+                        text-shadow:0 0 20px rgba(99,179,237,.4);">🎹 Piano Engine</div>
+            <div style="font-size:.65rem;color:rgba(99,179,237,.6);letter-spacing:.08em;
+                        text-transform:uppercase;margin-top:.2rem;">Rubato Mode · Voice-Triggered Accompaniment</div>
+          </div>
+          <div style="font-size:2.5rem;opacity:.15;">🎵</div>
+        </div>
+        <!-- Rubato Mode Card — lives exclusively under Piano Engine -->
+        <div class="midi-card" id="rubatoCard" style="border-color:rgba(99,179,237,.2);">
+          <div onclick="toggleRubatoCard()" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;">
+            <h3 style="margin-bottom:0;color:#63B3ED;">🎵 Rubato Mode</h3>
+            <span style="display:flex;align-items:center;gap:.4rem;font-size:.75rem;color:var(--text-dim);">
+              <span id="rubatoCardHint">Click to expand</span>
+              <span id="rubatoToggleArrow" style="font-size:.75rem;color:#63B3ED;transition:transform .2s;">&#9654;</span>
+            </span>
+          </div>
+          <div id="rubatoCardBody" style="display:none;margin-top:1rem;">
+            <p style="font-size:.8rem;color:var(--text-dim);margin-bottom:.75rem;">
+              Voice-triggered piano accompaniment. Load a .vwb song pack — VWB listens to the singer and plays the right phrase automatically in rubato style.
+            </p>
+            <div id="rbWrap"></div>
+          </div>
+        </div>
+
+        <!-- Piano Talk Music Player — always visible under Piano Engine -->
+        <div id="pianoTalkWrap" style="margin-top:.75rem;"></div>
+      </div>
+    </div>
+
+    <!-- Song Sections — hidden when Organ engine active -->
+    <div id="setupSectionCard">
+    <div class="setup-card"><h3>Song Sections (by Measure)</h3>
+      <p style="font-size:.8rem;color:var(--text-dim);margin-bottom:.75rem">Define sections by measure number. Use the player below to listen and find your bar points. The active section flashes while playing.</p>
+      <div class="sec-hdr"><span>#</span><span>Type</span><span>Label</span><span>Start Bar</span><span>End Bar</span><span></span></div>
+      <div id="secList"></div>
+      <button class="btn-add" onclick="addSec()">+ Add Section</button>
+      <div class="mini-transport">
+        <div id="mtTransportRow" class="mt-row">
+          <button class="mt-btn" id="mtPlay" onclick="togglePlay()">&#9654;</button>
+          <button class="mt-btn stp" onclick="doStop()">&#9632;</button>
+          <button class="mt-btn scrub" id="mtRew" title="Hold to rewind">&#9194;</button>
+          <button class="mt-btn scrub" id="mtFwd" title="Hold to fast forward">&#9193;</button>
+          <div class="mt-meas" id="mtMeas">Bar 1</div>
+          <div class="mt-beat" id="mtBeat"></div>
+          <div class="mt-time" id="mtTime">0:00</div>
+          <span style="font-size:.7rem;color:var(--text-dim);margin-left:auto">Hold ⏪⏩ to scrub · Space = Play/Pause</span>
+        </div>
+        <div id="mtScrubBarWrap">
+          <div class="mt-scrub-bar" id="mtScrubBar" onmousedown="mtScrubClick(event)">
+            <div class="mt-scrub-prog" id="mtScrubProg"></div>
+            <div class="mt-scrub-secs" id="mtScrubSecs"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div><!-- end setupSectionCard -->
+    <div class="loop-card" id="setupPadsLoopsCard"><h3>🎵 Pads and Loops</h3>
+      <p style="font-size:.8rem;color:var(--text-dim);margin-bottom:.75rem">Load multiple loops — organ pads, piano vamps, drum loops — and switch between them anytime. Click ▶ on any loop to make it the active one. <span class="drag-hint">Drag &amp; drop audio files here to add loops.</span></p>
+      <div class="loop-library drop-zone" id="loopLibrary"></div>
+      <div style="display:flex;align-items:center;gap:.75rem;margin-top:.75rem;flex-wrap:wrap">
+        <button class="btn-add" style="border-color:var(--purple);color:var(--purple);background:rgba(170,102,255,.1)" onclick="pickAndAddLoops()">+ Add Loop(s)</button>
+        <div id="loopMasterControls" style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
+          <label class="loop-toggle"><input type="checkbox" id="loopCheck" checked onchange="setLoopEnabled(this.checked)"><div class="loop-sw"></div><span>Loop</span></label>
+          <div class="loop-vol">
+            <label>Vol</label>
+            <input type="range" min="0" max="100" value="60" class="loop-vol-slider" oninput="setLoopVol(this.value)">
+            <span class="lv-pct" id="loopPct">60%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ VWB MINI MPC — collapsible ══ -->
+      <div class="mini-mpc-toggle" id="mmpcToggle" onclick="mmpcToggleOpen()">
+        <div class="mini-mpc-toggle-title">🥁 Percussion Center</div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span id="mmpcSampleStatus" style="color:rgba(64,224,208,.5);font-size:.6rem;"></span>
+          <span class="mini-mpc-toggle-arrow" id="mmpcArrow">▼</span>
+        </div>
+      </div>
+      <div class="mini-mpc-body" id="mmpcBody">
+        <div class="mini-mpc-wrap" style="margin-top:0;border-top-left-radius:0;border-top-right-radius:0;">
+
+          <!-- BANK TABS -->
+          <div class="mini-mpc-header">
+            <div class="mini-mpc-tabs">
+              <button class="mini-mpc-tab active" onclick="mmpcSetBank(0,this)">Bank A</button>
+              <button class="mini-mpc-tab" onclick="mmpcSetBank(1,this)">Bank B</button>
+              <button class="mini-mpc-tab" onclick="mmpcSetBank(2,this)">Bank C</button>
+            </div>
+            <div style="font-size:.6rem;color:var(--text-dim);">Right-click pad for volume</div>
+          </div>
+
+          <!-- PAD GRID -->
+          <div class="mini-pad-grid" id="mmpcPadGrid"></div>
+
+          <!-- PAD MIXER STRIP — sub-collapsible -->
+          <div class="mmpc-mixer-toggle" id="mmpcMixerToggle" onclick="mmpcToggleMixer()">
+            <span class="mmpc-mixer-toggle-title">🎚 Pad Mixer</span>
+            <span class="mmpc-mixer-toggle-arrow" id="mmpcMixerArrow">▼</span>
+          </div>
+          <div class="mmpc-mixer-body" id="mmpcMixerBody">
+            <div class="mmpc-mixer-strip" id="mmpcMixerStrip"></div>
+          </div>
+
+          <!-- CONTROLS ROW: Time Sig + Quantize + Metronome -->
+          <div class="mmpc-controls-row">
+            <div class="mmpc-ctrl-group">
+              <div class="mmpc-ctrl-lbl">Time</div>
+              <select class="mmpc-sel" id="mmpcTimeSig" onchange="mmpcSetTimeSig(this.value)">
+                <option value="4">4/4</option>
+                <option value="3">3/4</option>
+                <option value="6">6/8</option>
+              </select>
+            </div>
+            <div class="mmpc-ctrl-group">
+              <div class="mmpc-ctrl-lbl">Q</div>
+              <select class="mmpc-sel" id="mmpcQNote" onchange="mmpcOnQChange()">
+                <option value="0">Off</option>
+                <option value="4">♩ 1/4</option>
+                <option value="8" selected>♪ 1/8</option>
+                <option value="16">𝅘𝅥𝅯 1/16</option>
+                <option value="4t">♩3</option>
+                <option value="8t">♪3</option>
+                <option value="8sw">♪ Swing</option>
+              </select>
+              <input type="range" id="mmpcQStr" min="0" max="100" value="100"
+                style="width:40px;height:3px;accent-color:var(--purple);cursor:pointer;"
+                title="Quantize strength"
+                oninput="document.getElementById('mmpcQStrVal').textContent=this.value+'%'">
+              <div id="mmpcQStrVal" style="font-size:.58rem;color:var(--text-dim);min-width:22px;">100%</div>
+              <!-- Swing amount — only visible when Swing is selected -->
+              <div id="mmpcSwingWrap" style="display:none;align-items:center;gap:3px;">
+                <span style="font-size:.58rem;color:var(--text-dim);">Swg</span>
+                <input type="range" id="mmpcSwingAmt" min="50" max="75" value="62"
+                  style="width:44px;height:3px;accent-color:var(--gold);cursor:pointer;"
+                  title="Swing amount — 50%=straight, 62%=medium swing, 75%=heavy swing"
+                  oninput="document.getElementById('mmpcSwingAmtVal').textContent=this.value+'%'">
+                <div id="mmpcSwingAmtVal" style="font-size:.58rem;color:var(--gold);min-width:24px;">62%</div>
+              </div>
+            </div>
+            <div class="mmpc-ctrl-group">
+              <button class="mmpc-metro-btn" id="mmpcMetroBtn" onclick="mmpcToggleMetro()">Metro: Off</button>
+              <select class="mmpc-sel" id="mmpcMetroVol">
+                <option value="0.3">Low</option>
+                <option value="0.6" selected>Med</option>
+                <option value="1.0">High</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- LOOP LAYERS -->
+          <div class="mmpc-section-lbl">
+            <span>Loop Layers</span>
+            <button onclick="mmpcAddLayer()" style="font-size:.58rem;background:rgba(68,204,136,.15);border:1px solid rgba(68,204,136,.3);border-radius:3px;color:var(--green);padding:1px 7px;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;">+ Layer</button>
+          </div>
+          <div class="mmpc-layers" id="mmpcLayers"></div>
+
+          <!-- TRANSPORT -->
+          <div class="mini-mpc-transport">
+            <button class="mmpc-btn rec" id="mmpcRecBtn" onclick="mmpcToggleRec()">⏺ Rec</button>
+            <button class="mmpc-btn play" id="mmpcPlayBtn" onclick="mmpcTogglePlay()">▶ Play</button>
+            <button class="mmpc-btn" id="mmpcStopBtn" onclick="mmpcStop()"
+              style="border:2px solid rgba(200,200,200,.5);color:#ccc;font-weight:700;font-size:.7rem;
+              padding:3px 10px;border-radius:4px;background:rgba(255,255,255,.05);">
+              ⬛ STOP
+            </button>
+            <button class="mmpc-btn" style="border-color:rgba(255,100,100,.4);color:rgba(255,100,100,.8);" onclick="mmpcClearAll()">✕ Clear</button>
+            <div class="mmpc-bpm-wrap">
+              <div class="mmpc-bpm-lbl">BPM</div>
+              <button class="mmpc-bpm-btn" onclick="mmpcBpm(-1)">−</button>
+              <input type="number" id="mmpcBpmDisp" value="90" min="40" max="240"
+                style="width:44px;background:none;border:none;border-bottom:1px solid var(--border);
+                       color:var(--orange);font-size:.95rem;font-weight:700;font-family:'Space Mono',monospace;
+                       text-align:center;padding:0;-moz-appearance:textfield;"
+                oninput="this.value=this.value.replace(/[^0-9]/,'')"
+                onchange="mmpcBpmSet(parseInt(this.value))"
+                onkeydown="if(event.key==='Enter'){mmpcBpmSet(parseInt(this.value));this.blur();}">
+              <button class="mmpc-bpm-btn" onclick="mmpcBpm(+1)">+</button>
+            </div>
+            <select class="mmpc-bars-sel" id="mmpcBarsEl" onchange="mmpcSetBars(this.value)">
+              <option value="1">1 bar</option>
+              <option value="2" selected>2 bars</option>
+              <option value="4">4 bars</option>
+              <option value="8">8 bars</option>
+            </select>
+            <div class="mmpc-pos" id="mmpcPos">1.1</div>
+            <button class="mmpc-btn" style="border-color:rgba(240,192,64,.4);color:var(--gold);" onclick="mmpcExportMidi()">⬇ MIDI</button>
+          </div>
+
+          <!-- PERCUSSION LOOPS -->
+          <div>
+            <div class="mmpc-section-lbl"><span>Saved Loops</span></div>
+            <div class="mmpc-loop-list" id="mmpcLoopList">
+              <div class="mmpc-no-loops" id="mmpcNoLoops">No loops yet</div>
+            </div>
+            <button class="mmpc-import-btn" onclick="mmpcImportLoop()">+ Import Loop (.mid)</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="setup-card" style="border-color:rgba(64,224,208,.25)">
+      <div onclick="toggleRemotePanel()" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;">
+        <h3 style="margin-bottom:0;color:var(--teal)">📱 VWB Remote — Phone Control</h3>
+        <span style="display:flex;align-items:center;gap:.4rem;font-size:.75rem;color:var(--text-dim)">
+          <span id="remotePanelHint">Click to expand</span>
+          <span id="remoteToggleArrow" style="color:var(--teal);transition:transform .2s">&#9654;</span>
+        </span>
+      </div>
+      <div id="remotePanelBody" style="display:none;margin-top:1rem;">
+        <p style="font-size:.8rem;color:var(--text-dim);margin-bottom:.75rem">Control VWB from your iPhone or Android during a live service. No internet required — your phone connects directly to this laptop over a private WiFi network.</p>
+        <div id="remoteServerStatus" style="display:flex;align-items:center;gap:.6rem;margin-bottom:.75rem;padding:.6rem .8rem;border-radius:8px;background:rgba(64,224,208,.06);border:1px solid rgba(64,224,208,.15)">
+          <div id="remoteStatusDot" style="width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);flex-shrink:0"></div>
+          <span style="font-size:.8rem;color:var(--text-secondary)">Remote server running</span>
+          <span id="remoteConnCount" style="font-size:.75rem;color:var(--text-dim);margin-left:auto">0 connected</span>
+        </div>
+        <div style="background:var(--bg-tertiary);border-radius:10px;padding:.75rem;margin-bottom:.75rem">
+          <p style="font-size:.75rem;color:var(--text-dim);margin-bottom:.5rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em">How to connect your phone:</p>
+          <p style="font-size:.8rem;color:var(--text-secondary);line-height:1.6;margin-bottom:.4rem">1. On this laptop, go to <b>System Preferences → Sharing → Internet Sharing</b> and turn it on (share WiFi to WiFi). Name the network <b>VWB-Remote</b>.</p>
+          <p style="font-size:.8rem;color:var(--text-secondary);line-height:1.6;margin-bottom:.4rem">2. On your phone, connect to the <b>VWB-Remote</b> WiFi network.</p>
+          <p style="font-size:.8rem;color:var(--text-secondary);line-height:1.6;">3. Open your phone's camera and scan the QR code below — it will open VWB Remote in your browser instantly.</p>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap;">
+          <div id="remoteQrCode" style="background:white;padding:10px;border-radius:10px;flex-shrink:0">
+            <div style="width:150px;height:150px;display:flex;align-items:center;justify-content:center;">
+              <canvas id="qrCanvas" width="150" height="150"></canvas>
+            </div>
+          </div>
+          <div style="flex:1;min-width:160px;">
+            <p style="font-size:.75rem;color:var(--text-dim);margin-bottom:.4rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em">Or type this address:</p>
+            <div id="remoteUrl" style="font-family:'Space Mono',monospace;font-size:.85rem;color:var(--teal);background:var(--bg-primary);padding:.5rem .7rem;border-radius:6px;border:1px solid var(--border);word-break:break-all;margin-bottom:.75rem">Loading...</div>
+            <button class="btn btn-secondary btn-small" onclick="refreshRemoteInfo()" style="border-color:var(--teal);color:var(--teal)">↻ Refresh</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="setup-card" style="display:flex;justify-content:flex-end;gap:.75rem">
+      <button class="btn btn-secondary" onclick="saveSong()">Save Song</button>
+      <button class="btn btn-primary" onclick="goPerform()">&#9654; Go to Perform</button>
+    </div>
+  </div></div>
+
+
+  <!-- ==================== PERFORM ==================== -->
+  <div class="view" id="view-perform"><div class="perf-layout">
+
+    <!-- Song Info Header -->
+    <div class="perf-hdr">
+      <div class="song-info">
+        <h2 id="pTitle">—</h2>
+        <div class="song-meta">
+          <span id="pTempo">72 BPM</span>
+          <span id="pTS">4/4</span>
+          <span id="pStems">0 tracks</span>
+          <span id="pRoute">Stereo</span>
+        </div>
+      </div>
+
+      <!-- ENGINE DISPLAY (read-only — set in Song Setup) -->
+      <div id="uniEngineDisplay" style="display:flex;flex-direction:column;align-items:center;gap:.25rem;">
+        <span style="font-size:.62rem;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.1em;">Engine</span>
+        <div id="uniEngineLabel" style="font-size:.85rem;font-weight:700;padding:.35rem .9rem;
+             border-radius:7px;border:2px solid var(--accent);
+             background:rgba(64,224,208,.15);color:var(--accent);">🎵 Audio</div>
+      </div>
+
+      <!-- UNIFIED TRANSPORT — hidden when Organ engine active -->
+      <div id="uniTransportControls" style="display:flex;align-items:center;gap:.5rem;">
+        <div class="m-disp">
+          <div class="m-num" id="uniBarDisplay">1</div>
+          <div class="m-lbl">Bar</div>
+        </div>
+        <div class="beat-ind" id="beatInd"></div>
+        <button class="t-btn" id="uniPlayBtn" onclick="uniTogglePlay()" title="Play / Pause (Space)">&#9654;</button>
+        <button class="t-btn stp" onclick="uniStop()" title="Stop (Esc)">&#9632;</button>
+        <button class="sec-loop-btn" id="uniSecLoopBtn" onclick="uniToggleSecLoop()" title="Loop current section (R)">&#128257; Sec Loop</button>
+        <button id="uniFadeBtn" onclick="vwbFadeWithIndicator(this)" title="Fade out and stop"
+          style="font-family:'Outfit',sans-serif;font-size:.75rem;font-weight:600;
+                 padding:.35rem .75rem;border-radius:7px;cursor:pointer;transition:all .3s;
+                 border:1px solid var(--border);background:none;color:var(--text-dim);">↓ Fade</button>
+        <button class="panic-btn" id="panicBtn" onclick="togglePanic()" title="Panic — mutes melodic stems, Rhythm keeps playing">⚠ PANIC</button>
+      </div>
+
+      <!-- ORGAN ENGINE TRANSPORT — shown only when Organ engine active -->
+      <div id="uniOrganTransport" style="display:none;align-items:center;gap:.5rem;">
+        <button id="abDetectBtnPerf" onclick="abStartKeyDetection()"
+          style="font-family:'Outfit',sans-serif;font-size:.8rem;font-weight:600;
+                 padding:.35rem .9rem;border-radius:7px;cursor:pointer;transition:all .2s;
+                 border:1px solid rgba(139,94,60,.4);background:rgba(139,94,60,.08);
+                 color:#8B5E3C;">🎵 Detect Key</button>
+        <button class="t-btn stp" onclick="uniStop()" title="Stop organ (Esc)" style="border-color:#8B5E3C;">&#9632;</button>
+        <button onclick="vwbFadeWithIndicator(this)" title="Fade out and stop"
+          style="font-family:'Outfit',sans-serif;font-size:.75rem;font-weight:600;
+                 padding:.35rem .75rem;border-radius:7px;cursor:pointer;transition:all .3s;
+                 border:1px solid var(--border);background:none;color:var(--text-dim);">↓ Fade</button>
+        <button class="panic-btn" id="panicBtn2" onclick="togglePanic()">⚠ PANIC</button>
+      </div>
+    </div>
+
+    <!-- UNIFIED TIMELINE -->
+    <div class="perf-tl" id="uniTimelineWrap">
+      <div class="tl-bar" id="uniTlBar"
+           onclick="uniSeek((event.offsetX / this.offsetWidth) * 100)">
+        <div class="tl-prog" id="uniProgFill"></div>
+        <div class="tl-secs" id="uniTimeline"></div>
+      </div>
+      <div class="tl-info">
+        <span id="tlBar1">Bar 1</span>
+        <span id="uniTimeDisplay">0:00 / 0:00</span>
+        <span id="tlTotal">0:00</span>
+      </div>
+    </div>
+
+    <!-- UNIFIED SECTION CARDS -->
+    <div class="perf-secs" id="uniSecs"></div>
+
+    <!-- CHART MIXER — shown in left column when a chart is loaded -->
+    <!-- Hidden by default; _cpTogglePerfChartMode shows it for Flex Engine charts -->
+    <div id="cpPerfMixerWrap" style="display:none;">
+      <div style="font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+                  color:var(--text-dim);margin-bottom:.5rem;">Mixer</div>
+      <div id="midiMixer" style="margin-top:.35rem;"></div>
+    </div>
+
+    <!-- The Organist Perform Panel — primary when Organ engine active -->
+    <div id="abPerfPanel" style="display:none;padding:.75rem;border-radius:10px;
+         border:1px solid rgba(139,94,60,.3);background:rgba(139,94,60,.04);
+         grid-column:1;grid-row:2/5;overflow-y:auto;">
+
+        <!-- Hammond Organ Banner -->
+        <div style="width:100%;border-radius:8px;overflow:hidden;margin-bottom:.85rem;position:relative;">
+          <svg viewBox="0 0 520 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;">
+            <defs>
+              <linearGradient id="hbg" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#2a1a0e"/>
+                <stop offset="100%" stop-color="#1a0f07"/>
+              </linearGradient>
+              <linearGradient id="hwood" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#8B5E3C"/>
+                <stop offset="60%" stop-color="#6B4423"/>
+                <stop offset="100%" stop-color="#4a2e14"/>
+              </linearGradient>
+              <linearGradient id="hwood2" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#9B6A44"/>
+                <stop offset="100%" stop-color="#7B4E2E"/>
+              </linearGradient>
+              <linearGradient id="hkey" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#f5f0e8"/>
+                <stop offset="100%" stop-color="#ddd8ce"/>
+              </linearGradient>
+              <radialGradient id="hspot" cx="50%" cy="30%" r="60%">
+                <stop offset="0%" stop-color="rgba(139,94,60,.25)"/>
+                <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+              </radialGradient>
+              <filter id="hglow">
+                <feGaussianBlur stdDeviation="2" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <!-- Clip keys to cabinet -->
+              <clipPath id="hcabClip">
+                <rect x="122" y="38" width="276" height="62"/>
+              </clipPath>
+            </defs>
+
+            <!-- Background -->
+            <rect width="520" height="120" fill="url(#hbg)"/>
+            <rect width="520" height="120" fill="url(#hspot)"/>
+
+            <!-- Floor -->
+            <rect x="0" y="100" width="520" height="20" fill="#1a0f07"/>
+            <rect x="0" y="99" width="520" height="2" fill="rgba(139,94,60,.2)"/>
+
+            <!-- Organ cabinet body -->
+            <rect x="110" y="38" width="300" height="62" rx="3" fill="url(#hwood)"/>
+            <!-- Cabinet highlight -->
+            <rect x="110" y="38" width="300" height="4" rx="2" fill="rgba(255,255,255,.08)"/>
+            <!-- Cabinet shadow line -->
+            <rect x="110" y="95" width="300" height="3" fill="rgba(0,0,0,.3)"/>
+
+            <!-- Music rack (top panel) -->
+            <rect x="130" y="18" width="260" height="22" rx="2" fill="url(#hwood2)"/>
+            <rect x="130" y="18" width="260" height="3" rx="1" fill="rgba(255,255,255,.1)"/>
+
+            <!-- Legs -->
+            <rect x="127" y="98" width="12" height="18" rx="2" fill="#4a2e14"/>
+            <rect x="381" y="98" width="12" height="18" rx="2" fill="#4a2e14"/>
+            <rect x="230" y="98" width="10" height="18" rx="1" fill="#3a2010"/>
+            <rect x="280" y="98" width="10" height="18" rx="1" fill="#3a2010"/>
+
+            <!-- Keys — clipped to cabinet -->
+            <g clip-path="url(#hcabClip)">
+            <!-- Upper manual -->
+            <rect x="122" y="52" width="276" height="20" rx="1" fill="#2a1a0e"/>
+            <!-- Upper keys - white -->
+            ${Array.from({length:24}, (_,i) => `<rect x="${124+i*11}" y="53" width="9" height="17" rx="1" fill="url(#hkey)" opacity=".95"/>`).join('')}
+            <!-- Upper keys - black -->
+            ${[0,1,3,4,5,7,8,10,11,12,14,15,17,18,19].map(i => `<rect x="${128+i*11}" y="53" width="6" height="11" rx="1" fill="#1a1208"/>`).join('')}
+
+            <!-- Lower manual -->
+            <rect x="122" y="74" width="276" height="22" rx="1" fill="#2a1a0e"/>
+            <!-- Lower keys - white -->
+            ${Array.from({length:24}, (_,i) => `<rect x="${124+i*11}" y="75" width="9" height="19" rx="1" fill="url(#hkey)" opacity=".9"/>`).join('')}
+            <!-- Lower keys - black -->
+            ${[0,1,3,4,5,7,8,10,11,12,14,15,17,18,19].map(i => `<rect x="${128+i*11}" y="75" width="6" height="12" rx="1" fill="#1a1208"/>`).join('')}
+
+            </g><!-- end keys clip -->
+            <!-- Drawbars area -->
+            <rect x="148" y="40" width="224" height="12" rx="2" fill="rgba(0,0,0,.4)"/>
+            ${Array.from({length:9}, (_,i) => `
+              <rect x="${158+i*24}" y="41" width="6" height="10" rx="1" fill="#222"/>
+              <rect x="${159+i*24}" y="${41+Math.round(Math.random()*6)}" width="4" height="4" rx="1" fill="${['#ff4444','#ff4444','#fff','#fff','#222','#fff','#fff','#222','#222'][i]}"/>
+            `).join('')}
+
+            <!-- Pedals hint -->
+            <ellipse cx="260" cy="115" rx="60" ry="4" fill="rgba(80,50,20,.4)"/>
+            ${Array.from({length:13}, (_,i) => `<rect x="${210+i*7}" y="110" width="5" height="6" rx="1" fill="#2a1a0e" opacity=".7"/>`).join('')}
+
+            <!-- Brand text -->
+            <text x="260" y="32" text-anchor="middle"
+              font-family="Georgia,serif" font-size="8" font-weight="bold"
+              fill="rgba(200,160,100,.7)" letter-spacing="3">HAMMOND VWB</text>
+
+            <!-- Warm glow overlay -->
+            <rect width="520" height="120" fill="rgba(139,94,60,.04)"/>
+
+            <!-- Title overlay -->
+            <rect x="0" y="0" width="520" height="120" fill="rgba(0,0,0,.18)"/>
+          </svg>
+          <!-- Text overlay on banner -->
+          <div style="position:absolute;bottom:.5rem;left:.75rem;right:.75rem;
+                      display:flex;align-items:flex-end;justify-content:space-between;">
+            <div>
+              <div style="font-size:.95rem;font-weight:700;color:#C8946A;letter-spacing:.04em;
+                          text-shadow:0 1px 4px rgba(0,0,0,.8);">The Organist</div>
+              <div style="font-size:.65rem;color:rgba(200,160,100,.7);letter-spacing:.06em;
+                          text-transform:uppercase;">Hammond A-102 · Real Samples</div>
+            </div>
+            <!-- Organist photo -->
+            <div id="abBannerPhoto" style="flex-shrink:0;">
+              <div style="width:48px;height:48px;border-radius:50%;
+                   background:rgba(139,94,60,.3);border:2px solid rgba(139,94,60,.4);
+                   display:flex;align-items:center;justify-content:center;font-size:1.2rem;">🎹</div>
+            </div>
+          </div>
+        </div>
+      <div id="abPerfWrap">
+        <div style="font-size:.75rem;color:var(--text-dim);font-style:italic;">
+          Load Hammond samples in Song Setup to use The Organist.
+        </div>
+      </div>
+
+      <!-- Organist identity — photo and name shown on perform page -->
+      <div id="abPerfOrgIdentity" style="display:flex;align-items:center;gap:.75rem;
+           margin-top:.6rem;padding:.5rem .6rem;
+           background:rgba(139,94,60,.06);border-radius:8px;
+           border:1px solid rgba(139,94,60,.15);">
+        <div id="abPerfPhoto" style="flex-shrink:0;">
+          <div style="width:44px;height:44px;border-radius:50%;
+               background:rgba(139,94,60,.3);border:2px solid rgba(139,94,60,.4);
+               display:flex;align-items:center;justify-content:center;font-size:1.1rem;">🎹</div>
+        </div>
+        <div>
+          <div style="font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;
+                      color:rgba(200,160,100,.6);font-weight:700;">The Organist</div>
+          <div id="abPerfOrgName"
+               style="font-size:.88rem;font-weight:600;color:#C8946A;">
+            Kenneth Hollins
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hotkey reference -->
+    <div class="perf-hk" id="perfHotkeyPanel">
+      <div class="hk-i"><span class="hk-k">Space</span> Play/Pause</div>
+      <div class="hk-i"><span class="hk-k">5-9</span> Queue Section</div>
+      <div class="hk-i"><span class="hk-k">Esc</span> Stop</div>
+      <div class="hk-i"><span class="hk-k">N</span> Next</div>
+      <div class="hk-i"><span class="hk-k">B</span> Prev</div>
+      <div class="hk-i"><span class="hk-k">L</span> Loop On/Off</div>
+      <div class="hk-i"><span class="hk-k">R</span> Section Loop</div>
+      <div class="hk-i"><span class="hk-k">P</span> Panic</div>
+      <div class="hk-i"><span class="hk-k">1-4</span> AB Level</div>
+      <div class="hk-i"><span class="hk-k">`</span> AB Trigger</div>
+    </div>
+
+    <!-- Hidden legacy IDs — kept so existing JS references don't break -->
+    <div style="display:none">
+      <div id="curMeas"></div>
+      <div id="tlBar"></div><div id="tlProg"></div><div id="tlSecs"></div>
+      <div id="tlTime"></div>
+      <div id="pSecs"></div>
+      <div id="perfMidiBar"></div>
+      <div id="perfMidiBtn"></div>
+      <div id="perfMidiTime"></div>
+      <div id="midiSecLoopBtn"></div>
+      <div id="midiTimelineStripPerf" style="display:none"></div>
+      <div id="secLoopBtn"></div>
+      <div id="playBtn"></div>
+    </div>
+
+  </div>
+    <!-- MIXER + LOOP BAR + MIDI CONTROLS -->
+    <div class="perf-mix">
+      <div class="mix-title">Mixer</div>
+      <div id="mixCh"></div>
+
+      <!-- Loop bar (shown when a loop is active) -->
+      <div class="loop-bar" id="perfLoopBar" style="display:none">
+        <button class="loop-play-btn" style="width:28px;height:28px;font-size:.8rem" id="perfLoopBtn" onclick="toggleLoop()">&#9654;</button>
+        <span class="lb-icon">🔁</span>
+        <span class="lb-name" id="perfLoopName">—</span>
+        <span class="lb-status" id="perfLoopStatus">Stopped</span>
+        <div style="display:flex;align-items:center;gap:.3rem">
+          <input type="range" min="0" max="100" value="60" class="loop-vol-slider"
+                 style="width:50px;-webkit-appearance:none;height:3px;border-radius:2px;background:var(--bg-primary);"
+                 oninput="setLoopVol(this.value)">
+        </div>
+      </div>
+
+      <!-- MIDI Controls — shown only when a MIDI file is loaded -->
+      <div id="uniMidiControls" style="display:none;flex-direction:column;gap:.4rem;
+           margin-top:.5rem;padding:.6rem .75rem;border-radius:8px;
+           background:rgba(255,136,68,.06);border:1px solid rgba(255,136,68,.2);">
+        <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;">
+          <span style="font-size:.72rem;font-weight:700;color:var(--orange);
+                       text-transform:uppercase;letter-spacing:.06em;">🎸 FLEX</span>
+          <span class="mb-name" id="perfMidiName" style="font-size:.82rem;color:var(--text-primary);flex:1;
+                white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">—</span>
+          <span class="mb-status" id="perfMidiStatus"
+                style="font-size:.7rem;color:var(--text-dim);font-family:'Space Mono',monospace;">Stopped</span>
+        </div>
+
+        <!-- MIDI progress -->
+        <div class="midi-tl-strip" id="midiTimelineStripPerf"
+             style="cursor:pointer;" onclick="seekMidi((event.offsetX/this.offsetWidth)*100)"></div>
+        <div class="midi-progress-wrap"
+             onclick="seekMidi((event.offsetX/this.offsetWidth)*100)" style="width:100%;margin:0;">
+          <div class="midi-progress-fill" id="midiProgFillPerf"></div>
+        </div>
+
+        <!-- MIDI Transpose + Tempo controls -->
+        <div id="midiPerfControls" style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-top:.4rem;">
+          <!-- Transpose — large, easy to read -->
+          <div style="display:flex;flex-direction:column;align-items:center;gap:.2rem;">
+            <span style="font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim);font-weight:600;">Transpose</span>
+            <div style="display:flex;align-items:center;gap:.4rem;">
+              <button class="btn btn-secondary" onclick="adjustMidiTranspose(-1)"
+                      style="padding:.3rem .7rem;font-size:1rem;font-weight:700;min-width:34px;">−</button>
+              <span class="midi-transpose-val"
+                    style="font-family:'Space Mono',monospace;font-size:1.35rem;font-weight:700;color:var(--orange);
+                           min-width:44px;text-align:center;">0</span>
+              <button class="btn btn-secondary" onclick="adjustMidiTranspose(1)"
+                      style="padding:.3rem .7rem;font-size:1rem;font-weight:700;min-width:34px;">+</button>
+            </div>
+            <span style="font-size:.6rem;color:var(--text-dim);">half steps</span>
+          </div>
+          <!-- Tempo — large, easy to read -->
+          <div style="display:flex;flex-direction:column;align-items:center;gap:.2rem;">
+            <span style="font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim);font-weight:600;">Tempo</span>
+            <div style="display:flex;align-items:center;gap:.35rem;">
+              <button class="btn btn-secondary" onclick="adjustMidiTempo(-5)"
+                      style="padding:.3rem .5rem;font-size:.75rem;font-weight:700;" title="−5 BPM">−−</button>
+              <button class="btn btn-secondary" onclick="adjustMidiTempo(-1)"
+                      style="padding:.3rem .65rem;font-size:1rem;font-weight:700;" title="−1 BPM">−</button>
+              <input id="midiTempoPct" type="number" min="30" max="300" step="1"
+                     style="font-family:'Space Mono',monospace;font-size:1.35rem;font-weight:700;color:var(--orange);
+                            width:72px;text-align:center;background:var(--bg-primary);
+                            border:1px solid var(--border);border-radius:6px;padding:.2rem .3rem;"
+                     title="Type a BPM value"
+                     onchange="setMidiTempoFromInput(this.value)"
+                     onkeydown="if(event.key==='Enter')setMidiTempoFromInput(this.value)">
+              <button class="btn btn-secondary" onclick="adjustMidiTempo(1)"
+                      style="padding:.3rem .65rem;font-size:1rem;font-weight:700;" title="+1 BPM">+</button>
+              <button class="btn btn-secondary" onclick="adjustMidiTempo(5)"
+                      style="padding:.3rem .5rem;font-size:.75rem;font-weight:700;" title="+5 BPM">++</button>
+            </div>
+            <span style="font-size:.6rem;color:var(--text-dim);">BPM</span>
+          </div>
+          <button class="midi-disp-toggle" onclick="toggleMidiDisplayMode()"
+                  style="font-size:.6rem;padding:.18rem .5rem;border-radius:4px;
+                         border:1px solid var(--orange);background:none;color:var(--orange);
+                         cursor:pointer;font-family:'Outfit',sans-serif;margin-left:auto;align-self:flex-end;margin-bottom:.4rem;">🎵 Bars</button>
+          <button onclick="resetMidiTransposeAndTempo()"
+                  style="font-size:.6rem;padding:.22rem .6rem;border-radius:4px;
+                         border:1px solid var(--border);background:none;color:var(--text-dim);
+                         cursor:pointer;font-family:'Outfit',sans-serif;align-self:flex-end;margin-bottom:.4rem;"
+                  title="Reset transpose to 0 and tempo to original">↺ Reset</button>
+        </div>
+
+        <!-- ── House Band Chart Player — shown when a .vwbs chart is loaded ── -->
+        <div id="cpPerformPanel" style="display:none;margin-bottom:.75rem;
+             border-bottom:1px solid var(--border);padding-bottom:.75rem;">
+
+          <!-- Song bar -->
+          <div style="display:flex;align-items:center;justify-content:space-between;
+                      gap:.75rem;margin-bottom:.65rem;">
+            <div style="min-width:0;flex:1;">
+              <div id="cpSongTitle" style="font-size:.95rem;font-weight:700;
+                   color:var(--text-primary);margin-bottom:.1rem;white-space:nowrap;
+                   overflow:hidden;text-overflow:ellipsis;">—</div>
+              <div id="cpSongMeta" style="font-size:.72rem;color:var(--accent);
+                   font-weight:600;letter-spacing:.04em;"></div>
+            </div>
+            <button onclick="cpPickChartFile()"
+              style="flex-shrink:0;padding:.3rem .7rem;border-radius:7px;
+                     border:1px solid var(--border);background:none;
+                     color:var(--text-secondary);font-size:.72rem;cursor:pointer;
+                     font-family:'Outfit',sans-serif;white-space:nowrap;transition:all .15s;"
+              onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'"
+              onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-secondary)'">
+              ⇄ Chart</button>
+          </div>
+
+          <!-- Transport -->
+          <div style="display:flex;gap:.4rem;align-items:center;margin-bottom:.55rem;flex-wrap:wrap;">
+            <button id="cpPlayBtn" onclick="cpTogglePlay()"
+              style="display:flex;align-items:center;gap:.4rem;padding:.45rem 1.1rem;
+                     border-radius:8px;border:1px solid var(--accent);
+                     background:linear-gradient(135deg,rgba(64,224,208,.18),rgba(64,224,208,.06));
+                     color:var(--accent);font-size:.85rem;font-weight:700;cursor:pointer;
+                     font-family:'Outfit',sans-serif;transition:all .15s;">
+              <span id="cpPlayIcon">▶</span><span id="cpPlayLabel">Play</span>
+            </button>
+            <button onclick="cpStop()"
+              style="padding:.45rem .9rem;border-radius:8px;border:1px solid var(--border);
+                     background:none;color:var(--text-secondary);font-size:.82rem;
+                     font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .15s;"
+              onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'"
+              onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-secondary)'">
+              ⏹</button>
+            <button id="cpLoopBtn" onclick="cpToggleLoop()"
+              style="padding:.45rem .75rem;border-radius:8px;border:1px solid var(--border);
+                     background:none;color:var(--text-secondary);font-size:.78rem;
+                     font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .15s;">
+              🔁 Loop</button>
+          </div>
+
+          <!-- Key control -->
+          <div style="display:flex;align-items:center;gap:.4rem;margin-bottom:.4rem;
+                      padding:.4rem .6rem;background:rgba(255,255,255,.03);
+                      border-radius:6px;border:1px solid var(--border);overflow:hidden;">
+            <span style="font-size:.6rem;font-weight:700;text-transform:uppercase;
+                         letter-spacing:.1em;color:var(--text-dim);min-width:28px;">Key</span>
+            <button onclick="cpSetKeyOffset(_cp.keyOffset-1)"
+              style="background:var(--bg-tertiary);border:1px solid var(--border);
+                     color:var(--text-secondary);width:20px;height:20px;border-radius:4px;
+                     cursor:pointer;font-size:.75rem;display:flex;align-items:center;
+                     justify-content:center;flex-shrink:0;">▼</button>
+            <div id="cpKeyVal" style="font-size:.85rem;font-weight:700;color:var(--accent);
+                 min-width:26px;text-align:center;font-family:'Space Mono',monospace;">C</div>
+            <button onclick="cpSetKeyOffset(_cp.keyOffset+1)"
+              style="background:var(--bg-tertiary);border:1px solid var(--border);
+                     color:var(--text-secondary);width:20px;height:20px;border-radius:4px;
+                     cursor:pointer;font-size:.75rem;display:flex;align-items:center;
+                     justify-content:center;flex-shrink:0;">▲</button>
+            <input type="range" id="cpKeySlider" min="-11" max="11" value="0"
+              oninput="cpSetKeyOffset(this.value)"
+              style="width:80px;flex-shrink:0;accent-color:var(--accent);height:3px;cursor:pointer;">
+          </div>
+
+          <!-- Tempo control -->
+          <div style="display:flex;align-items:center;gap:.4rem;margin-bottom:.6rem;
+                      padding:.4rem .6rem;background:rgba(255,255,255,.03);
+                      border-radius:6px;border:1px solid var(--border);overflow:hidden;">
+            <span style="font-size:.6rem;font-weight:700;text-transform:uppercase;
+                         letter-spacing:.1em;color:var(--text-dim);min-width:28px;">BPM</span>
+            <button onclick="cpSetTempo(_cp.tempo-1)"
+              style="background:var(--bg-tertiary);border:1px solid var(--border);
+                     color:var(--text-secondary);width:20px;height:20px;border-radius:4px;
+                     cursor:pointer;font-size:.75rem;display:flex;align-items:center;
+                     justify-content:center;flex-shrink:0;">▼</button>
+            <div id="cpTempoVal" style="font-size:.85rem;font-weight:700;color:var(--accent);
+                 min-width:54px;text-align:center;font-family:'Space Mono',monospace;">70 BPM</div>
+            <button onclick="cpSetTempo(_cp.tempo+1)"
+              style="background:var(--bg-tertiary);border:1px solid var(--border);
+                     color:var(--text-secondary);width:20px;height:20px;border-radius:4px;
+                     cursor:pointer;font-size:.75rem;display:flex;align-items:center;
+                     justify-content:center;flex-shrink:0;">▲</button>
+            <input type="range" id="cpTempoSlider" min="20" max="300" value="70"
+              oninput="cpSetTempo(this.value)"
+              style="width:60px;flex-shrink:0;flex-grow:0;accent-color:var(--accent);height:3px;cursor:pointer;max-width:60px;min-width:0;">
+          </div>
+
+          <!-- Section jump buttons -->
+          <div style="font-size:.6rem;font-weight:700;letter-spacing:.1em;
+                      text-transform:uppercase;color:var(--text-dim);margin-bottom:.35rem;">
+            Sections — tap to jump</div>
+          <div id="cpSectionBtns" style="display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.6rem;"></div>
+
+          <!-- Measure grid -->
+          <div style="font-size:.6rem;font-weight:700;letter-spacing:.1em;
+                      text-transform:uppercase;color:var(--text-dim);margin-bottom:.35rem;"
+               id="cpMeasuresLabel">Measures</div>
+          <div id="cpMeasureGrid" style="display:flex;flex-wrap:wrap;gap:4px;
+               max-height:180px;overflow-y:auto;scrollbar-width:thin;
+               scrollbar-color:var(--border) transparent;"></div>
+        </div>
+
+        <!-- Load chart CTA — shown when no chart loaded but House Band engine is active -->
+        <div id="cpLoadCta" style="display:none;margin-bottom:.75rem;padding:.75rem 1rem;
+             border:2px dashed rgba(64,224,208,.2);border-radius:9px;text-align:center;
+             background:rgba(64,224,208,.03);cursor:pointer;" onclick="cpPickChartFile()">
+          <div style="font-size:1.1rem;margin-bottom:.25rem;">🎵</div>
+          <div style="font-size:.82rem;font-weight:600;color:var(--text-primary);
+                      margin-bottom:.15rem;">Load Song Chart</div>
+          <div style="font-size:.72rem;color:var(--text-secondary);">
+            Click to browse for a .vwbs chart file</div>
+        </div>
+
+        <!-- MIDI Channel Mixer — now rendered in left column via cpPerfMixerWrap -->
+        <div id="midiMixerPerf" style="margin-top:.35rem;display:none;"></div>
+
+        <!-- MIDI Section Cards (shown only when MIDI is primary engine) -->
+        <div class="perf-midi-secs" id="perfMidiSecs" style="display:none;"></div>
+      </div>
+    </div>
+
+</div>
+
+
+  <!-- ==================== SERVICE PACKS ==================== -->
+  <!-- ==================== SETLIST ==================== -->
+  <div class="view" id="view-setlist"><div class="sl-container">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem"><h2 style="font-size:1.3rem">Setlist</h2><button class="btn btn-secondary" onclick="goView('setup');newSong();">+ New Song</button></div>
+    <div id="slItems"></div><div id="reloadWrap"></div><p id="slEmpty" style="color:var(--text-dim);font-size:.9rem;margin-top:1rem">No songs yet.</p>
+  </div></div>
+
+  <!-- ==================== SERVICE FLOW ==================== -->
+  <div class="view" id="view-service"><div class="svc-container">
+
+    <!-- Live bar (shown only in live mode) -->
+    <div class="svc-live-bar" id="svcLiveBar">
+      <div class="lb-dot"></div>
+      <div style="display:flex;flex-direction:column;flex:1;min-width:0;">
+        <span class="lb-cur" id="svcLiveCur">—</span>
+        <span class="lb-next" id="svcLiveNext"></span>
+      </div>
+      <div class="svc-live-nav">
+        <button onclick="svcPrev()">⏮ Prev</button>
+        <button onclick="svcNext()">Next ⏭</button>
+      </div>
+      <button class="btn btn-secondary svc-end-live btn-small" onclick="svcEndLive()">End Service</button>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="svc-toolbar">
+      <h2>Order of Service</h2>
+      <button class="btn btn-secondary btn-small" onclick="svcClear()" title="Clear all cues">🗑 Clear</button>
+      <button class="btn btn-primary svc-go-live" id="svcGoLiveBtn" onclick="svcGoLive()">▶ Start Service</button>
+    </div>
+
+    <!-- Cue list -->
+    <div class="svc-cue-list" id="svcCueList"></div>
+
+    <!-- Add cue buttons -->
+    <div class="svc-add-row">
+      <button class="add-btn" onclick="svcAddSong()">🎵 + Song</button>
+      <button class="add-btn" onclick="svcAddLoop()">🔁 + Background Pad</button>
+      <button class="add-btn" onclick="svcAddMoment()">📋 + Moment / Note</button>
+    </div>
+
+    <p style="font-size:.75rem;color:var(--text-dim);margin-top:1rem">
+      Tip: Build your full service order here, then hit <strong style="color:var(--red)">Start Service</strong> when service begins. 
+      Use <strong>Next / Prev</strong> buttons (or your MIDI controller) to move through cues.
+    </p>
+  </div></div>
+
+  <!-- ==================== SETTINGS ==================== -->
+  <div class="view" id="view-settings"><div class="settings-container">
+    <h2 style="font-size:1.3rem;margin-bottom:1.25rem;">⚙️ Settings</h2>
+
+    <!-- Appearance -->
+    <div class="settings-section">
+      <h3>🎨 Appearance</h3>
+      <div class="settings-row">
+        <div>
+          <div class="settings-row-label">Theme</div>
+          <div class="settings-row-sub">Choose how VWB looks. Light mode is easier to read in bright rooms.</div>
+        </div>
+      </div>
+      <div class="theme-cards">
+        <div class="theme-card selected" id="themeCardDark" onclick="setTheme('dark')">
+          <div class="tc-preview" style="background:linear-gradient(135deg,#0a0e14,#111820);border:1px solid #1a2230;"></div>
+          <div class="tc-label">🌙 Dark Mode</div>
+          <div style="font-size:.72rem;color:var(--text-dim);margin-top:.2rem;">Default — easy on the eyes</div>
+        </div>
+        <div class="theme-card" id="themeCardLight" onclick="setTheme('light')">
+          <div class="tc-preview" style="background:linear-gradient(135deg,#f0f4f8,#e2e8f0);border:1px solid #d0d8e4;"></div>
+          <div class="tc-label">☀️ Light Mode</div>
+          <div style="font-size:.72rem;color:var(--text-dim);margin-top:.2rem;">Better in bright rooms</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Audio Output Routing -->
+    <div class="settings-section">
+      <h3>🔊 Audio Output Routing</h3>
+      <p style="font-size:.8rem;color:var(--text-dim);margin-bottom:.75rem;">
+        Set this once based on your audio interface. Stereo sends everything to one output.
+        Multi-Output uses a fixed 8-channel layout: Piano (Ch 1-2 stereo), Bass (Ch 3),
+        Guitar (Ch 4), Rhythm Loop (Ch 5), Aux Stems (Ch 6-7 stereo), Q/Click Monitor (Ch 8 — monitor only, not sent to house).
+      </p>
+      <div class="rt-toggle">
+        <button class="rt-btn on" id="rtStereo" onclick="setRoute('stereo')">Stereo Mix</button>
+        <button class="rt-btn" id="rtMulti" onclick="setRoute('multi')">Multi-Output</button>
+      </div>
+      <div id="rtPanel" style="margin-top:.75rem;"></div>
+    </div>
+
+    <!-- Fade Out Duration -->
+    <div class="settings-section">
+      <h3>↓ Fade Out</h3>
+      <p style="font-size:.8rem;color:var(--text-dim);margin-bottom:1rem;">
+        Controls how long the music takes to fade to silence when you press the Fade button on the Perform page. Works for all three engines — Audio, MIDI, and Organ.
+      </p>
+      <div class="settings-row">
+        <div>
+          <div class="settings-row-label">Fade Duration</div>
+          <div class="settings-row-sub">How many seconds the fade takes from full volume to silence.</div>
+        </div>
+        <select id="fadeDurationSel" onchange="setFadeDuration(this.value)" style="min-width:180px;">
+          <option value="2">2 seconds — Quick fade</option>
+          <option value="4" selected>4 seconds — Default</option>
+          <option value="6">6 seconds — Smooth</option>
+          <option value="8">8 seconds — Gradual</option>
+          <option value="10">10 seconds — Slow fade</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Section Jump Quantize -->
+    <div class="settings-section">
+      <h3>⏱ Section Jump Timing</h3>
+      <p style="font-size:.8rem;color:var(--text-dim);margin-bottom:1rem;">
+        Controls how quickly VWB responds when you press a section button during playback. Jumping on a downbeat sounds most natural. Choose based on how much lead time you need.
+      </p>
+      <div class="settings-row">
+        <div>
+          <div class="settings-row-label">Jump Quantize</div>
+          <div class="settings-row-sub">When to fire the section jump after you press the button.</div>
+        </div>
+        <select id="sectionJumpQuantizeSel" onchange="setSectionJumpQuantize(this.value)" style="min-width:220px;">
+          <option value="immediate">Immediate — jumps right away</option>
+          <option value="halfbar">½ Measure — next half bar</option>
+          <option value="1bar" selected>1 Measure — next downbeat (default)</option>
+          <option value="2bar">2 Measures — two bars ahead</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Song Crossfade -->
+    <div class="settings-section">
+      <h3>↔ Song Crossfade</h3>
+      <p style="font-size:.8rem;color:var(--text-dim);margin-bottom:1rem;">
+        Controls how VWB transitions between songs in the Service Flow. Set once and it applies to your whole service.
+      </p>
+      <div class="settings-row">
+        <div>
+          <div class="settings-row-label">Transition Mode</div>
+          <div class="settings-row-sub">How songs hand off to each other during a live service.</div>
+        </div>
+        <select id="xfadeMode" onchange="crossfadeMode=this.value;saveCrossfadeSettings();" style="min-width:180px;">
+          <option value="manual">Manual — I control it</option>
+          <option value="auto">Auto — advance on Next Cue</option>
+          <option value="autoadvance">Auto-Advance — plays through automatically</option>
+        </select>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-row-label">Fade Duration</div>
+          <div class="settings-row-sub">How long the crossfade takes in seconds.</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:.75rem;">
+          <input type="range" min="1" max="8" step="0.5" value="3" id="xfadeDur"
+            oninput="crossfadeDuration=parseFloat(this.value);saveCrossfadeSettings();document.getElementById('xfadeDurLabel').textContent=this.value+'s';"
+            style="width:120px;">
+          <span id="xfadeDurLabel" style="font-family:'Space Mono',monospace;font-size:.9rem;color:var(--accent);min-width:28px;">3s</span>
+        </div>
+      </div>
+      <div style="font-size:.78rem;color:var(--text-dim);line-height:1.7;margin-top:.5rem;padding:.6rem .75rem;background:var(--bg-tertiary);border-radius:8px;">
+        <strong style="color:var(--text-secondary);">Manual:</strong> song stops at end — you press Next when ready.&nbsp;
+        <strong style="color:var(--text-secondary);">Auto:</strong> crossfade triggers when you press Next Cue.&nbsp;
+        <strong style="color:var(--accent);">Auto-Advance:</strong> songs crossfade automatically when they end — fully hands-free.
+      </div>
+    </div>
+
+    <!-- MIDI Output Settings -->
+    <div class="settings-section">
+      <h3>🎹 MIDI Output</h3>
+      <p style="font-size:.8rem;color:var(--text-dim);margin-bottom:1rem;">
+        VWB automatically connects to your audio interface or MIDI device when it starts.
+        Use these settings to change the output or switch to Built-in Sounds if you don't have an external device.
+      </p>
+      <div class="settings-row" style="margin-bottom:1rem;">
+        <div>
+          <div class="settings-row-label">MIDI Output Device</div>
+          <div class="settings-row-sub">The device VWB sends MIDI data to. VWB auto-selects the best available device on startup.</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:.5rem;min-width:220px;">
+          <select class="midi-port-select" id="midiPortSelectSettings" onchange="selectMidiPort(this.value);document.getElementById('midiPortSelect').value=this.value;"
+            style="background:var(--bg-primary);border:1px solid var(--border);color:var(--text-primary);padding:.4rem .6rem;border-radius:6px;font-size:.85rem;">
+            <option value="">-- Select MIDI Output --</option>
+          </select>
+          <button class="btn btn-secondary btn-small" onclick="refreshMidiPorts()" style="font-size:.75rem;align-self:flex-start;">↺ Refresh Devices</button>
+        </div>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-row-label">Auto-Connect on Startup</div>
+          <div class="settings-row-sub">VWB remembers your last device and reconnects automatically each time you open it.</div>
+        </div>
+        <div id="midiAutoConnectStatus" style="font-size:.8rem;color:var(--green);font-weight:600;">✓ Enabled</div>
+      </div>
+      <div id="midiCurrentDeviceStatus" style="margin-top:.75rem;padding:.6rem .75rem;background:var(--bg-tertiary);border-radius:8px;font-size:.8rem;color:var(--text-dim);">
+        No device selected yet
+      </div>
+    </div>
+
+        <!-- MIDI Remote Control -->
+    <div class="settings-section">
+      <h3>🎛️ MIDI Remote Control</h3>
+      <p style="font-size:.8rem;color:var(--text-dim);margin-bottom:.75rem;">
+        Connect a physical MIDI controller or use your iPhone/iPad via Bluetooth MIDI to control VWB hands-free during a live service. Set it up once and leave it.
+      </p>
+      <div class="mrc-port-row">
+        <span class="mrc-activity" id="mrcActivity"></span>
+        <label style="font-size:.8rem;color:var(--text-dim)">MIDI Input:</label>
+        <select class="midi-port-select" id="mrcInputSelect" onchange="selectMrcInput(this.value)">
+          <option value="">-- Select MIDI Input --</option>
+        </select>
+        <button class="btn btn-secondary btn-small" onclick="refreshMrcInputs()">Refresh</button>
+      </div>
+      <div class="mrc-map-grid" id="mrcMapGrid" style="margin-top:.75rem;"></div>
+      <div style="margin-top:.75rem;display:flex;gap:.5rem;flex-wrap:wrap;">
+        <button class="btn btn-secondary btn-small" onclick="saveMrcMappings()">Save Mappings</button>
+        <button class="btn btn-secondary btn-small" onclick="loadMrcMappings()">Load Saved</button>
+        <button class="btn btn-secondary btn-small" style="color:var(--red)" onclick="clearAllMappings()">Clear All</button>
+      </div>
+      <p class="mrc-hint" id="mrcHint" style="margin-top:.75rem;">Click any function above, then press a key/button on your MIDI controller to assign it.</p>
+    </div>
+
+    <!-- About -->
+    <div class="settings-section">
+      <h3>ℹ️ About VWB</h3>
+      <div class="settings-row">
+        <div class="settings-row-label">Version</div>
+        <span style="font-family:'Space Mono',monospace;font-size:.85rem;color:var(--accent);">v2.0</span>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-label">Developer</div>
+        <span style="font-size:.85rem;color:var(--text-secondary);">Hollins Musical Productions International</span>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-label">Support</div>
+        <span style="font-size:.85rem;color:var(--text-secondary);">hollinsmusic@gmail.com</span>
+      </div>
+    </div>
+
+  </div></div>
+
+</div>
+
+  <!-- ==================== WHAT'S NEW ==================== -->
+  <div class="view" id="view-myband">
+    <div class="setup-container">
+      <div id="bandUiRoot"></div>
+
+      <!-- ── House Band Content Library Panel ── -->
+      <div id="hbContentPanel" style="
+        margin-top:1.5rem;border:1px solid var(--border);border-radius:12px;
+        background:var(--bg-card);padding:1.25rem 1.5rem;">
+
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;">
+          <div>
+            <div style="font-size:.7rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+                        color:#40E0D0;margin-bottom:.2rem;">House Band Content Library</div>
+            <div id="hbLibrarySummary" style="font-size:.8rem;color:var(--text-secondary);">
+              Loading library info...
+            </div>
+          </div>
+          <button id="hbCheckUpdatesBtn" onclick="hbRunUpdateCheck()"
+            style="font-family:'Outfit',sans-serif;font-size:.8rem;font-weight:600;
+                   padding:.45rem 1.1rem;border-radius:8px;cursor:pointer;
+                   border:1.5px solid #40E0D0;background:rgba(64,224,208,.1);
+                   color:#40E0D0;white-space:nowrap;">
+            🔄 Check for Updates
+          </button>
+        </div>
+
+        <div id="hbUpdateStatus" style="font-size:.8rem;color:var(--text-secondary);
+             margin-bottom:.5rem;min-height:1.2rem;"></div>
+
+        <div id="hbPackageList" style="display:flex;flex-direction:column;gap:.6rem;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SONG LIBRARY ==================== -->
+  <div class="view" id="view-library">
+    <div class="setup-container">
+
+      <!-- Header -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
+        <div>
+          <div style="font-size:.7rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:.25rem;">Song Library</div>
+          <div id="slSongCount" style="font-size:.85rem;color:var(--text-secondary);">Loading...</div>
+        </div>
+        <button onclick="slImportSong()" style="
+          font-family:'Outfit',sans-serif;font-size:.8rem;font-weight:600;
+          padding:.45rem 1.1rem;border-radius:8px;cursor:pointer;
+          border:1.5px solid var(--accent);background:rgba(64,224,208,.1);
+          color:var(--accent);white-space:nowrap;">
+          + Import Song
+        </button>
+      </div>
+
+      <!-- Search Bar -->
+      <div style="position:relative;margin-bottom:1rem;">
+        <span style="position:absolute;left:.85rem;top:50%;transform:translateY(-50%);color:var(--text-dim);font-size:1rem;pointer-events:none;">🔍</span>
+        <input type="text" id="slSearchInput" placeholder="Search by title, artist, or tag…"
+          oninput="slRender()"
+          style="width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;
+                 padding:.65rem 1rem .65rem 2.4rem;color:var(--text-primary);font-size:.9rem;
+                 font-family:'Outfit',sans-serif;outline:none;transition:border-color .2s;"
+          onfocus="this.style.borderColor='var(--accent)'"
+          onblur="this.style.borderColor='var(--border)'">
+      </div>
+
+      <!-- Filter Bar -->
+      <div id="slFilterBar" style="
+        background:var(--bg-card);border:1px solid var(--border);border-radius:12px;
+        padding:1rem 1.25rem;margin-bottom:1.25rem;">
+
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;">
+          <div style="font-size:.75rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);">Filter Songs</div>
+          <button onclick="slClearFilters()" id="slClearBtn" style="
+            font-family:'Outfit',sans-serif;font-size:.75rem;color:var(--text-dim);
+            background:none;border:none;cursor:pointer;padding:0;display:none;">
+            ✕ Clear All
+          </button>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.75rem;">
+
+          <!-- Style -->
+          <div>
+            <label style="font-size:.72rem;color:var(--text-dim);display:block;margin-bottom:.3rem;">Style</label>
+            <select id="slFilterStyle" onchange="slRender()" style="
+              width:100%;background:var(--bg-secondary);border:1px solid var(--border);
+              border-radius:8px;padding:.4rem .65rem;color:var(--text-primary);
+              font-family:'Outfit',sans-serif;font-size:.82rem;cursor:pointer;outline:none;">
+              <option value="">All Styles</option>
+            </select>
+          </div>
+
+          <!-- Feel -->
+          <div>
+            <label style="font-size:.72rem;color:var(--text-dim);display:block;margin-bottom:.3rem;">Feel</label>
+            <select id="slFilterFeel" onchange="slRender()" style="
+              width:100%;background:var(--bg-secondary);border:1px solid var(--border);
+              border-radius:8px;padding:.4rem .65rem;color:var(--text-primary);
+              font-family:'Outfit',sans-serif;font-size:.82rem;cursor:pointer;outline:none;">
+              <option value="">Any Feel</option>
+              <option value="Straight">Straight</option>
+              <option value="Swing">Swing</option>
+            </select>
+          </div>
+
+          <!-- Mood -->
+          <div>
+            <label style="font-size:.72rem;color:var(--text-dim);display:block;margin-bottom:.3rem;">Mood</label>
+            <select id="slFilterMood" onchange="slRender()" style="
+              width:100%;background:var(--bg-secondary);border:1px solid var(--border);
+              border-radius:8px;padding:.4rem .65rem;color:var(--text-primary);
+              font-family:'Outfit',sans-serif;font-size:.82rem;cursor:pointer;outline:none;">
+              <option value="">Any Mood</option>
+            </select>
+          </div>
+
+          <!-- Key -->
+          <div>
+            <label style="font-size:.72rem;color:var(--text-dim);display:block;margin-bottom:.3rem;">Key</label>
+            <select id="slFilterKey" onchange="slRender()" style="
+              width:100%;background:var(--bg-secondary);border:1px solid var(--border);
+              border-radius:8px;padding:.4rem .65rem;color:var(--text-primary);
+              font-family:'Outfit',sans-serif;font-size:.82rem;cursor:pointer;outline:none;">
+              <option value="">Any Key</option>
+            </select>
+          </div>
+
+          <!-- Tempo -->
+          <div>
+            <label style="font-size:.72rem;color:var(--text-dim);display:block;margin-bottom:.3rem;">Tempo</label>
+            <select id="slFilterTempo" onchange="slRender()" style="
+              width:100%;background:var(--bg-secondary);border:1px solid var(--border);
+              border-radius:8px;padding:.4rem .65rem;color:var(--text-primary);
+              font-family:'Outfit',sans-serif;font-size:.82rem;cursor:pointer;outline:none;">
+              <option value="">Any Tempo</option>
+            </select>
+          </div>
+
+          <!-- Engine -->
+          <div>
+            <label style="font-size:.72rem;color:var(--text-dim);display:block;margin-bottom:.3rem;">Played By</label>
+            <select id="slFilterEngine" onchange="slRender()" style="
+              width:100%;background:var(--bg-secondary);border:1px solid var(--border);
+              border-radius:8px;padding:.4rem .65rem;color:var(--text-primary);
+              font-family:'Outfit',sans-serif;font-size:.82rem;cursor:pointer;outline:none;">
+              <option value="">Any Engine</option>
+              <option value="house-band">🎵 House Band</option>
+              <option value="audio">🔊 Audio Stems</option>
+              <option value="rubato">🎹 Rubato Mode</option>
+              <option value="organ">🎹 Organ</option>
+            </select>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Active Filter Pills -->
+      <div id="slActivePills" style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem;min-height:0;"></div>
+
+      <!-- Song Grid -->
+      <div id="slSongGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1rem;">
+        <!-- Populated by slRender() -->
+      </div>
+
+      <!-- Empty State -->
+      <div id="slEmptyState" style="display:none;text-align:center;padding:3rem 1rem;color:var(--text-dim);">
+        <div style="font-size:2.5rem;margin-bottom:1rem;">🎵</div>
+        <div style="font-size:1rem;font-weight:600;margin-bottom:.5rem;color:var(--text-secondary);">No songs match your filters</div>
+        <div style="font-size:.85rem;">Try adjusting or clearing your filters.</div>
+        <button onclick="slClearFilters()" style="
+          margin-top:1.25rem;font-family:'Outfit',sans-serif;font-size:.85rem;font-weight:600;
+          padding:.5rem 1.25rem;border-radius:8px;cursor:pointer;
+          border:1.5px solid var(--accent);background:rgba(64,224,208,.1);color:var(--accent);">
+          Clear Filters
+        </button>
+      </div>
+
+      <!-- ── Service Pack Browser ─────────────────────────── -->
+      <div style="margin-top:2.5rem;border-top:1px solid var(--border);padding-top:2rem;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.75rem;">
+          <div>
+            <div style="font-size:.7rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:.25rem;">Service Pack</div>
+            <div style="font-size:.82rem;color:var(--text-dim);">Load a Service Pack folder or open a .vwbp bundle to populate all 12 worship categories at once.</div>
+          </div>
+          <div style="display:flex;gap:.6rem;flex-wrap:wrap;">
+            <button class="btn btn-secondary" onclick="openServicePack()" style="font-size:.8rem;">📂 Load Folder</button>
+            <button class="btn btn-primary" onclick="vwbOpenBundle()" style="font-size:.8rem;">🎁 Open .vwbp Bundle</button>
+          </div>
+        </div>
+        <div id="spBrowserWrap">
+          <div style="text-align:center;padding:2.5rem 2rem;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;">
+            <div style="font-size:2.5rem;margin-bottom:.75rem;">📦</div>
+            <div style="font-size:1rem;font-weight:600;color:var(--text-primary);margin-bottom:.4rem;">No Service Pack Loaded</div>
+            <div style="font-size:.82rem;color:var(--text-dim);margin-bottom:1.25rem;">
+              Use File → Load Service Pack Folder or File → Open .vwbp Bundle to populate your worship categories.
+            </div>
+            <button class="btn btn-primary" onclick="openServicePack()" style="font-size:.82rem;">📂 Load Service Pack</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="view" id="view-news">
+    <div class="news-panel">
+      <div id="newsContent">
+        <div class="news-loading">Checking for updates…</div>
+      </div>
+    </div>
+  </div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     Virtual Worship Band — Modular JS
+     Load order matters: state first, then engines, then UI
+     ═══════════════════════════════════════════════════════════ -->
+<script src="js/state.js"></script>
+<script src="js/audio-engine.js"></script>
+<script src="js/stems.js"></script>
+<script src="js/loop-library.js"></script>
+<script src="soundfont-player.js"></script>
+<script src="node_modules/tone/build/Tone.js"></script>n<script src="js/midi-synth.js"></script>
+<script src="js/midi-player.js"></script>
+<script src="js/vwb-arrangement.js"></script>
+<script src="js/midi-sections.js"></script>
+<script src="js/midi-remote.js"></script>
+<script src="js/service-flow.js"></script>
+<script src="js/session.js"></script>
+<script src="js/service-pack.js"></script>
+<script src="js/armor-bearer.js"></script>
+<!-- Vosk WebAssembly speech recognition — offline, no internet needed after first load -->
+<script src="https://cdn.jsdelivr.net/npm/vosk-browser@0.0.8/dist/vosk.js"></script>
+<script src="js/rubato.js"></script>
+<script src="js/piano-talk.js"></script>
+<script src="js/transport.js"></script>
+<script src="js/band-registry.js"></script>
+<script src="js/song-library.js"></script>
+<script src="js/chord-theory.js"></script>
+<script src="js/house-band-engine.js"></script>
+<script src="js/chart-player.js"></script>
+<script src="js/vwb-mpc-import.js"></script>
+<script src="js/hb-content-updater.js"></script>
+<script src="js/vwb-bundle.js"></script>
+<script src="js/band-ui.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/remote-bridge.js"></script>
+<script src="js/vwb-news.js"></script>
+<script>
+  // Load saved theme preference immediately after all modules are ready
+  document.addEventListener('DOMContentLoaded', () => {
+    if (typeof loadTheme === 'function') loadTheme();
+    if (typeof vwbNewsInit === 'function') vwbNewsInit();
+    if (typeof bandRegistryInit === 'function') bandRegistryInit();
+    // Song Library pre-warms in background so first open is instant
+    if (typeof songLibraryInit === 'function') songLibraryInit();
+
+    // closeFileMenu — closes File dropdown; delegates to ui.js if available
+    if (typeof window.closeFileMenu !== 'function') {
+      window.closeFileMenu = function() {
+        const drop = document.getElementById('fileMenuDrop');
+        if (drop) drop.classList.remove('open');
+      };
+    }
+  });
+
+  // ── Fade button visual indicator ──────────────────────────────
+  // Flashes the button amber while fading, restores when done
+  let _fadeIndicatorTimer = null;
+
+  function vwbFadeWithIndicator(btn) {
+    // Trigger the actual fade
+    if (typeof uniFadeOut === 'function') uniFadeOut();
+
+    // Visual: pulse button amber for the fade duration
+    const fadeSecs = (typeof vwbFadeDuration !== 'undefined' ? vwbFadeDuration : 4) * 1000;
+    const allFadeBtns = document.querySelectorAll('[onclick*="vwbFadeWithIndicator"]');
+
+    allFadeBtns.forEach(b => {
+      b.style.background   = 'rgba(255,180,50,.18)';
+      b.style.borderColor  = '#FFB432';
+      b.style.color        = '#FFB432';
+      b.style.animation    = 'vwbFadePulse 0.8s ease-in-out infinite';
+      b.textContent        = '↓ Fading…';
+    });
+
+    // Clear any previous timer
+    if (_fadeIndicatorTimer) clearTimeout(_fadeIndicatorTimer);
+
+    _fadeIndicatorTimer = setTimeout(() => {
+      allFadeBtns.forEach(b => {
+        b.style.background  = 'none';
+        b.style.borderColor = 'var(--border)';
+        b.style.color       = 'var(--text-dim)';
+        b.style.animation   = '';
+        b.textContent       = '↓ Fade';
+      });
+      _fadeIndicatorTimer = null;
+    }, fadeSecs + 300);
+  }
+</script>
+
+<style>
+@keyframes vwbFadePulse {
+  0%   { opacity: 1; }
+  50%  { opacity: 0.45; }
+  100% { opacity: 1; }
+}
+</style>
+
+<!-- ── Organ UI Helpers ──────────────────────────────────────── -->
+<script>
+(function() {
+  // ── Organ transport visibility fix ────────────────────────────
+  // When navigating to the Perform tab while already on organ engine,
+  // setVwbEngine does not re-run so uniOrganTransport stays hidden.
+  // This observer watches the perform panel becoming visible and refreshes.
+  (function() {
+    function refreshOrganTransport() {
+      const organTransport = document.getElementById('uniOrganTransport');
+      const uniTransport   = document.getElementById('uniTransportControls');
+      if (!organTransport) return;
+      const isOrgan = (typeof vwbActiveEngine !== 'undefined' && vwbActiveEngine === 'organ');
+      organTransport.style.display = isOrgan ? 'flex' : 'none';
+      if (uniTransport) uniTransport.style.display = isOrgan ? 'none' : 'flex';
+      if (isOrgan && typeof window._setOrganPerformUI === 'function') {
+        window._setOrganPerformUI(true);
+      }
+    }
+
+    // Watch for the perform view becoming visible
+    const perfView = document.getElementById('viewPerform') ||
+                     document.querySelector('[data-view="perform"]') ||
+                     document.querySelector('.view-perform');
+
+    if (perfView) {
+      const obs = new MutationObserver((mutations) => {
+        mutations.forEach(m => {
+          if (m.type === 'attributes' && m.attributeName === 'style') {
+            const el = m.target;
+            if (el.style.display !== 'none' && el.offsetParent !== null) {
+              refreshOrganTransport();
+            }
+          }
+        });
+      });
+      obs.observe(perfView, { attributes: true });
+    }
+
+    // Also patch goView if it exists to always refresh on perform nav
+    const _origGoView = window.goView;
+    window.goView = function(view) {
+      if (typeof _origGoView === 'function') _origGoView(view);
+      if (view === 'perform') {
+        setTimeout(refreshOrganTransport, 50);
+      }
+    };
+
+    // Run once on load in case we start on perform tab
+    window.addEventListener('DOMContentLoaded', () => setTimeout(refreshOrganTransport, 300));
+  })();
+    const tlWrap   = document.getElementById('uniTimelineWrap');
+    const hotkeyEl = document.getElementById('perfHotkeyPanel');
+    if (tlWrap)   tlWrap.style.display   = isOrgan ? 'none' : '';
+    if (hotkeyEl) hotkeyEl.style.display = isOrgan ? 'none' : '';
+    if (isOrgan) window._refreshOrganistIdentity();
+  };
+
+  // Strip RTF markup and return plain text
+  window._stripRtf = function(str) {
+    if (!str) return '';
+    if (str.indexOf('rtf') >= 0 || str.indexOf('{') >= 0) {
+      var cfIdx = str.lastIndexOf('cf0');
+      if (cfIdx >= 0) {
+        var after = str.slice(cfIdx + 3).replace(/[\\{}]/g, '').trim();
+        if (after.length > 0) return after;
+      }
+      return str
+        .replace(/\\[a-z0-9\-]+\s*/gi, ' ')
+        .replace(/[{}\\/]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+    return str.trim();
+  };
+
+  // Update organist photo and name on perform page
+  window._refreshOrganistIdentity = function() {
+    const nameEl  = document.getElementById('abPerfOrgName');
+    const photoEl = document.getElementById('abPerfPhoto');
+    if (!nameEl || !photoEl) return;
+    let rawName = (typeof abOrganistName !== 'undefined' && abOrganistName) ? abOrganistName : '';
+    let cleanName = window._stripRtf(rawName);
+    if (!cleanName) cleanName = 'The Organist';
+    const photo = (typeof abOrganistPhoto !== 'undefined' && abOrganistPhoto) ? abOrganistPhoto : null;
+    nameEl.textContent = cleanName;
+    if (photo) {
+      photoEl.innerHTML = '<img src="' + photo + '" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid rgba(200,160,100,.6);box-shadow:0 2px 8px rgba(0,0,0,.5);">';
+    } else {
+      photoEl.innerHTML = '<div style="width:44px;height:44px;border-radius:50%;background:rgba(139,94,60,.3);border:2px solid rgba(139,94,60,.4);display:flex;align-items:center;justify-content:center;font-size:1.1rem;">🎹</div>';
+    }
+  };
+})();
+</script>
+<!-- ── House Band Content Update Panel Logic ── -->
+<script>
+// ── House Band content panel — wired to unified What's New system ──
+// Downloads and library status are now managed through the What's New tab.
+// These functions bridge the My Band tab panel to the new system.
+
+async function hbRunUpdateCheck() {
+  const btn    = document.getElementById('hbCheckUpdatesBtn');
+  const status = document.getElementById('hbUpdateStatus');
+  const list   = document.getElementById('hbPackageList');
+  if (!btn || !status || !list) return;
+
+  btn.disabled    = true;
+  btn.textContent = '\uD83D\uDD04 Checking...';
+  status.textContent = '';
+  list.innerHTML  = '';
+
+  // Delegate to the unified content updater in vwb-news.js
+  if (typeof vwbNewsRefresh === 'function') {
+    await vwbNewsRefresh();
+  }
+
+  btn.disabled    = false;
+  btn.textContent = '\uD83D\uDD04 Check for Updates';
+
+  // Reflect result from the new system
+  const pending = (typeof hbPendingCount === 'function') ? hbPendingCount() : 0;
+  if (pending > 0) {
+    status.textContent = pending + ' update' + (pending > 1 ? 's' : '') +
+      ' available \u2014 see the What\'s New tab to download.';
+    if (typeof goView === 'function') goView('news');
+  } else {
+    status.textContent = '\u2705 Your House Band library is up to date.';
+  }
+
+  hbRefreshLibrarySummary();
+}
+
+function hbRefreshLibrarySummary() {
+  const el = document.getElementById('hbLibrarySummary');
+  if (!el) return;
+
+  const installed = (typeof hbGetInstalledPacks === 'function')
+    ? hbGetInstalledPacks() : [];
+  const pending = (typeof hbPendingCount === 'function') ? hbPendingCount() : 0;
+
+  if (installed.length === 0 && pending === 0) {
+    el.textContent = "No content installed yet. Check What's New for available downloads.";
+  } else if (pending > 0) {
+    el.textContent = installed.length + ' pack' + (installed.length !== 1 ? 's' : '') +
+      ' installed \u00B7 ' + pending + ' update' + (pending !== 1 ? 's' : '') +
+      " available in What's New";
+  } else {
+    el.textContent = installed.length + ' pack' + (installed.length !== 1 ? 's' : '') +
+      ' installed \u00B7 Library is current';
+  }
+}
+
+// Run summary after content updater has had time to initialize
+window.addEventListener('load', () => {
+  setTimeout(hbRefreshLibrarySummary, 4000);
+})
+</script>
+
+<!-- ── Song Library UI Controller ─────────────────────────── -->
+<script>
+(function() {
+
+  // ── State ──────────────────────────────────────────────────
+
+  // All filter dropdowns keyed by filterId → dom element id
+  const SL_FILTERS = {
+    style:       'slFilterStyle',
+    feel:        'slFilterFeel',
+    mood:        'slFilterMood',
+    key:         'slFilterKey',
+    tempoRange:  'slFilterTempo',
+    engine:      'slFilterEngine',
+  };
+
+  let _slInitialized = false;
+
+
+  // ── Init (called when Library tab is opened) ───────────────
+
+  window.slOnOpen = async function() {
+    if (!_slInitialized) {
+      if (typeof songLibraryInit === 'function') await songLibraryInit();
+      slPopulateFilterDropdowns();
+      _slInitialized = true;
+    }
+    slRender();
+  };
+
+
+  // ── Populate dynamic filter dropdowns ─────────────────────
+
+  function slPopulateFilterDropdowns() {
+    if (typeof songLibraryGetFilterOptions !== 'function') return;
+    const opts = songLibraryGetFilterOptions();
+
+    const styleEl = document.getElementById('slFilterStyle');
+    if (styleEl) {
+      opts.styles.forEach(s => {
+        const o = document.createElement('option');
+        o.value = s; o.textContent = s;
+        styleEl.appendChild(o);
+      });
+    }
+
+    const moodEl = document.getElementById('slFilterMood');
+    if (moodEl) {
+      opts.moods.forEach(m => {
+        const o = document.createElement('option');
+        o.value = m; o.textContent = m;
+        moodEl.appendChild(o);
+      });
+    }
+
+    const keyEl = document.getElementById('slFilterKey');
+    if (keyEl) {
+      opts.keys.forEach(k => {
+        const o = document.createElement('option');
+        o.value = k; o.textContent = 'Key of ' + k;
+        keyEl.appendChild(o);
+      });
+    }
+
+    const tempoEl = document.getElementById('slFilterTempo');
+    if (tempoEl) {
+      opts.tempoRanges.forEach(r => {
+        const o = document.createElement('option');
+        o.value = r; o.textContent = r;
+        tempoEl.appendChild(o);
+      });
+    }
+  }
+
+
+  // ── Build current filter object from DOM ───────────────────
+
+  function slGetActiveFilters() {
+    const f = {};
+    const search = document.getElementById('slSearchInput');
+    if (search && search.value.trim()) f.search = search.value.trim();
+    Object.entries(SL_FILTERS).forEach(([key, elId]) => {
+      const el = document.getElementById(elId);
+      if (el && el.value) f[key] = el.value;
+    });
+    return f;
+  }
+
+  function slHasActiveFilters(filters) {
+    return Object.keys(filters).length > 0;
+  }
+
+
+  // ── Render ─────────────────────────────────────────────────
+
+  window.slRender = function() {
+    if (typeof songLibraryQuery !== 'function') return;
+
+    const filters  = slGetActiveFilters();
+    const songs    = songLibraryQuery(filters);
+    const total    = typeof songLibraryCount === 'function' ? songLibraryCount() : 0;
+    const grid     = document.getElementById('slSongGrid');
+    const empty    = document.getElementById('slEmptyState');
+    const countEl  = document.getElementById('slSongCount');
+    const clearBtn = document.getElementById('slClearBtn');
+
+    if (!grid) return;
+
+    // Update count display
+    if (countEl) {
+      if (slHasActiveFilters(filters)) {
+        countEl.textContent = songs.length + ' of ' + total + ' songs';
+      } else {
+        countEl.textContent = total + ' song' + (total !== 1 ? 's' : '') + ' in your library';
+      }
+    }
+
+    // Clear button visibility
+    if (clearBtn) {
+      clearBtn.style.display = slHasActiveFilters(filters) ? 'block' : 'none';
+    }
+
+    // Active filter pills
+    slRenderPills(filters);
+
+    // Empty state
+    if (songs.length === 0) {
+      grid.style.display  = 'none';
+      empty.style.display = 'block';
+      return;
+    }
+    grid.style.display  = 'grid';
+    empty.style.display = 'none';
+
+    // Song cards
+    grid.innerHTML = songs.map(song => slBuildCard(song)).join('');
+  };
+
+
+  // ── Build a single song card ───────────────────────────────
+
+  function slBuildCard(song) {
+    const engineColor = typeof songLibraryEngineColor === 'function'
+      ? songLibraryEngineColor(song.engine) : '#40E0D0';
+    const engineLabel = typeof songLibraryEngineLabel === 'function'
+      ? songLibraryEngineLabel(song.engine) : song.engine;
+    const tempoLabel  = typeof songLibraryTempoLabel  === 'function'
+      ? songLibraryTempoLabel(song.tempo)  : song.tempo + ' BPM';
+
+    // Key picker — defaults to song's stored key
+    const keyOptions = ['C','Db','D','Eb','E','F','F#','G','Ab','A','Bb','B']
+      .map(k => `<option value="${k}"${k === song.key ? ' selected' : ''}>${k}</option>`)
+      .join('');
+
+    const sourceLabel = song.source === 'preloaded' ? '' :
+      `<span class="sl-source-badge">${song.source === 'bundle' ? '📦 Bundle' : '📥 Imported'}</span>`;
+
+    const removeBtn = song.source !== 'preloaded'
+      ? `<button onclick="slRemoveSong('${song.id}')" title="Remove from library" style="
+          font-family:'Outfit',sans-serif;font-size:.75rem;padding:.3rem .6rem;
+          border-radius:6px;cursor:pointer;border:1px solid rgba(255,68,102,.3);
+          background:rgba(255,68,102,.08);color:#ff4466;">✕</button>`
+      : '';
+
+    return `
+    <div class="sl-song-card">
+      <div>
+        <div class="sl-song-title">${_slEscape(song.title)}</div>
+        ${song.artist ? `<div class="sl-song-artist">${_slEscape(song.artist)}</div>` : ''}
+      </div>
+
+      <div class="sl-song-meta">
+        <span class="sl-pill sl-pill-key">Key of ${song.key}</span>
+        <span class="sl-pill sl-pill-style">${song.style}</span>
+        ${song.mood  ? `<span class="sl-pill sl-pill-mood">${song.mood}</span>`  : ''}
+        ${song.feel  ? `<span class="sl-pill sl-pill-feel">${song.feel}</span>`  : ''}
+        <span class="sl-pill sl-pill-tempo">${tempoLabel}</span>
+        <span class="sl-pill sl-pill-engine" style="color:${engineColor};border-color:${engineColor}33;background:${engineColor}15;">${engineLabel}</span>
+      </div>
+
+      ${song.description ? `<div class="sl-song-desc">${_slEscape(song.description)}</div>` : ''}
+
+      <div class="sl-card-footer">
+        <div style="display:flex;align-items:center;gap:.5rem;">
+          <label style="font-size:.72rem;color:var(--text-dim);">Play in:</label>
+          <select class="sl-key-picker" id="slKeyPicker_${song.id}">
+            ${keyOptions}
+          </select>
+        </div>
+        <div style="display:flex;align-items:center;gap:.5rem;">
+          ${sourceLabel}
+          ${removeBtn}
+          <button class="sl-launch-btn" onclick="slLaunch('${song.id}')">▶ Launch</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+
+  // ── Active filter pills ────────────────────────────────────
+
+  function slRenderPills(filters) {
+    const container = document.getElementById('slActivePills');
+    if (!container) return;
+    if (!slHasActiveFilters(filters)) {
+      container.innerHTML = '';
+      return;
+    }
+    const pills = Object.entries(filters).map(([key, val]) => {
+      if (!val) return '';
+      const label = key === 'search' ? `"${val}"` : val;
+      return `<span style="
+        display:inline-flex;align-items:center;gap:.35rem;
+        font-size:.72rem;font-weight:600;padding:.25rem .65rem;
+        border-radius:20px;background:rgba(64,224,208,.12);
+        color:var(--accent);border:1px solid rgba(64,224,208,.25);">
+        ${_slEscape(label)}
+        <button onclick="slClearOneFilter('${key}')" style="
+          background:none;border:none;cursor:pointer;color:var(--accent);
+          font-size:.8rem;padding:0;line-height:1;">✕</button>
+      </span>`;
+    }).join('');
+    container.innerHTML = pills;
+  }
+
+
+  // ── Filter helpers ─────────────────────────────────────────
+
+  window.slClearFilters = function() {
+    const search = document.getElementById('slSearchInput');
+    if (search) search.value = '';
+    Object.values(SL_FILTERS).forEach(elId => {
+      const el = document.getElementById(elId);
+      if (el) el.value = '';
+    });
+    slRender();
+  };
+
+  window.slClearOneFilter = function(filterKey) {
+    if (filterKey === 'search') {
+      const el = document.getElementById('slSearchInput');
+      if (el) el.value = '';
+    } else {
+      const elId = SL_FILTERS[filterKey];
+      const el = document.getElementById(elId);
+      if (el) el.value = '';
+    }
+    slRender();
+  };
+
+
+  // ── Launch ─────────────────────────────────────────────────
+
+  window.slLaunch = async function(songId) {
+    if (typeof songLibraryLaunch !== 'function') return;
+    const keyPickerEl = document.getElementById('slKeyPicker_' + songId);
+    const keyOverride = keyPickerEl ? keyPickerEl.value : null;
+    await songLibraryLaunch(songId, keyOverride ? { keyOverride } : {});
+  };
+
+
+  // ── Remove ─────────────────────────────────────────────────
+
+  window.slRemoveSong = async function(songId) {
+    if (typeof songLibraryRemoveSong !== 'function') return;
+    const ok = await songLibraryRemoveSong(songId);
+    if (ok) slRender();
+  };
+
+
+  // ── Import ─────────────────────────────────────────────────
+
+  window.slImportSong = function() {
+    // Future: open file picker for .vwbp bundles or manual song JSON
+    if (typeof showNotification === 'function') {
+      showNotification('📥 Import songs by opening a .vwbp bundle via Service Packs → Open Bundle');
+    }
+  };
+
+
+  // ── Utility ────────────────────────────────────────────────
+
+  function _slEscape(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+})();
+</script>
+
+
+
+<!-- Percussion Center (Mini MPC) — js/percussion-center.js -->
+<script src="js/percussion-center.js"></script>
+
+
+</body>
+</html>

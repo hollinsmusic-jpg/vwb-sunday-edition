@@ -1,0 +1,57 @@
+{
+  "id": "D_maj7_keys",
+  "key": "D",
+  "quality": "maj7",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 61,
+      "vel": 89,
+      "time": -0.0417,
+      "duration": 40.0479
+    },
+    {
+      "note": 64,
+      "vel": 59,
+      "time": -0.0187,
+      "duration": 30.6896
+    },
+    {
+      "note": 66,
+      "vel": 56,
+      "time": -0.0146,
+      "duration": 39.9854
+    },
+    {
+      "note": 50,
+      "vel": 53,
+      "time": -0.0125,
+      "duration": 35.1854
+    },
+    {
+      "note": 57,
+      "vel": 68,
+      "time": -0.0125,
+      "duration": 22.3625
+    },
+    {
+      "note": 54,
+      "vel": 63,
+      "time": -0.0104,
+      "duration": 39.9833
+    },
+    {
+      "note": 69,
+      "vel": 44,
+      "time": 0.0,
+      "duration": 35.2104
+    },
+    {
+      "note": 73,
+      "vel": 106,
+      "time": 0.0333,
+      "duration": 39.8958
+    }
+  ]
+}

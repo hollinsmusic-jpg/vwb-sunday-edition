@@ -1,0 +1,101 @@
+{
+  "musician": "Paul Simmons",
+  "instrument": "Organ",
+  "style": "Medium Groove Gospel",
+  "mood": "Energetic / Lively",
+  "auxVoicing": null,
+  "originalKey": "Db",
+  "originalTempo": 69.99998833333528,
+  "degreeLabel": "Three",
+  "quality": "Minor 7",
+  "alterations": [],
+  "chordLabel": "Three, Minor 7",
+  "progressionName": "4-3-6-2-6-5over7",
+  "section": "C",
+  "sourceChord": "Fm7",
+  "measureRange": "m10b1-m10b3",
+  "durationSeconds": 1.714286,
+  "noteCount": 10,
+  "notes": [
+    {
+      "midi": 90,
+      "name": "F#6",
+      "time": 0,
+      "duration": 1.3000002166666746,
+      "velocity": 0.6692913385826772,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 85,
+      "name": "C#6",
+      "time": 0,
+      "duration": 1.3607145125000066,
+      "velocity": 0.6535433070866141,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 82,
+      "name": "A#5",
+      "time": 0,
+      "duration": 1.2964287874999947,
+      "velocity": 0.6692913385826772,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 63,
+      "name": "D#4",
+      "time": 0,
+      "duration": 1.6553574187500004,
+      "velocity": 0.4330708661417323,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 72,
+      "name": "C5",
+      "time": 0,
+      "duration": 1.7321431458333336,
+      "velocity": 0.5196850393700787,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 87,
+      "name": "D#6",
+      "time": 0,
+      "duration": 1.742857433333338,
+      "velocity": 0.5748031496062992,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 80,
+      "name": "G#5",
+      "time": 0,
+      "duration": 2.4017861145833344,
+      "velocity": 0.7086614173228346,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 68,
+      "name": "G#4",
+      "time": 0.003571,
+      "duration": 1.3785716583333318,
+      "velocity": 0.5354330708661418,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 85,
+      "name": "C#6",
+      "time": 1.708929,
+      "duration": 1.4196430937499969,
+      "velocity": 0.6535433070866141,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 73,
+      "name": "C#5",
+      "time": 1.7125,
+      "duration": 1.442857383333326,
+      "velocity": 0.5118110236220472,
+      "sustainedFromPrevious": false
+    }
+  ]
+}

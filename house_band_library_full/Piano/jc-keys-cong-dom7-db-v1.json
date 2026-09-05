@@ -1,0 +1,129 @@
+{
+  "id": "jc-keys-cong-dom7-db-v1",
+  "slot": "keys",
+  "style": "congregational",
+  "quality": "dom7",
+  "key": "Db",
+  "events": [
+    {
+      "note": 73,
+      "vel": 95,
+      "time": 0.0,
+      "duration": 0.2812
+    },
+    {
+      "note": 61,
+      "vel": 100,
+      "time": 0.0,
+      "duration": 0.3021
+    },
+    {
+      "note": 65,
+      "vel": 88,
+      "time": 0.0,
+      "duration": 0.3042
+    },
+    {
+      "note": 53,
+      "vel": 75,
+      "time": 0.0,
+      "duration": 0.3042
+    },
+    {
+      "note": 68,
+      "vel": 90,
+      "time": 0.0,
+      "duration": 0.3167
+    },
+    {
+      "note": 59,
+      "vel": 90,
+      "time": 0.0,
+      "duration": 0.4896
+    },
+    {
+      "note": 58,
+      "vel": 89,
+      "time": 0.9646,
+      "duration": 0.4354
+    },
+    {
+      "note": 54,
+      "vel": 87,
+      "time": 0.9688,
+      "duration": 0.4854
+    },
+    {
+      "note": 66,
+      "vel": 88,
+      "time": 0.9813,
+      "duration": 0.3812
+    },
+    {
+      "note": 70,
+      "vel": 85,
+      "time": 0.9813,
+      "duration": 0.4521
+    },
+    {
+      "note": 61,
+      "vel": 103,
+      "time": 0.9854,
+      "duration": 0.4292
+    },
+    {
+      "note": 73,
+      "vel": 88,
+      "time": 0.9854,
+      "duration": 0.4542
+    },
+    {
+      "note": 53,
+      "vel": 84,
+      "time": 1.6437,
+      "duration": 0.2875
+    },
+    {
+      "note": 59,
+      "vel": 95,
+      "time": 1.6437,
+      "duration": 0.2875
+    },
+    {
+      "note": 73,
+      "vel": 103,
+      "time": 1.6458,
+      "duration": 0.2438
+    },
+    {
+      "note": 63,
+      "vel": 94,
+      "time": 1.6521,
+      "duration": 0.2042
+    },
+    {
+      "note": 68,
+      "vel": 95,
+      "time": 1.6521,
+      "duration": 0.2646
+    },
+    {
+      "note": 61,
+      "vel": 96,
+      "time": 2.6396,
+      "duration": 0.1583
+    },
+    {
+      "note": 73,
+      "vel": 103,
+      "time": 2.6396,
+      "duration": 0.1896
+    },
+    {
+      "note": 56,
+      "vel": 60,
+      "time": 3.6667,
+      "duration": 0.1625
+    }
+  ]
+}

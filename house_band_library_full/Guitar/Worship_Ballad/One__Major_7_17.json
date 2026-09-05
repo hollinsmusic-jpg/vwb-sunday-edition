@@ -1,0 +1,92 @@
+{
+  "musician": "Sanchez Rivera",
+  "instrument": "Guitar",
+  "style": "Worship Ballad",
+  "mood": "Calm / Worshipful",
+  "originalKey": "D",
+  "originalTempo": 69.99998833333528,
+  "degreeLabel": "One",
+  "quality": "Major 7",
+  "alterations": [],
+  "chordLabel": "One, Major 7",
+  "progressionName": "2-5-1-3-6",
+  "section": "A",
+  "sourceChord": "Dmaj7",
+  "measureRange": "m2b1-m3b1",
+  "durationSeconds": 3.428572,
+  "noteCount": 9,
+  "notes": [
+    {
+      "midi": 55,
+      "name": "G3",
+      "time": 0,
+      "duration": 1.7553574354166663,
+      "velocity": 0.6771653543307087,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 54,
+      "name": "F#3",
+      "time": 0,
+      "duration": 3.1928576749999995,
+      "velocity": 0.5354330708661418,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 57,
+      "name": "A3",
+      "time": 0.408929,
+      "duration": 2.9875004979166664,
+      "velocity": 0.4881889763779528,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 64,
+      "name": "E4",
+      "time": 0.848214,
+      "duration": 0.3946429229166677,
+      "velocity": 0.7322834645669292,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 62,
+      "name": "D4",
+      "time": 1.271429,
+      "duration": 1.316071647916666,
+      "velocity": 0.7480314960629921,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 64,
+      "name": "E4",
+      "time": 2.553572,
+      "duration": 0.16785717083333296,
+      "velocity": 0.7637795275590551,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 66,
+      "name": "F#4",
+      "time": 2.582143,
+      "duration": 0.48035722291666705,
+      "velocity": 0.4409448818897638,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 54,
+      "name": "F#3",
+      "time": 3.410715,
+      "duration": 3.1571433833333336,
+      "velocity": 0.5354330708661418,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 64,
+      "name": "E4",
+      "time": 3.416072,
+      "duration": 2.739286170833333,
+      "velocity": 0.7086614173228346,
+      "sustainedFromPrevious": false
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "id": "Db_sus4_keys",
+  "key": "Db",
+  "quality": "sus4",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 66,
+      "vel": 93,
+      "time": -0.0187,
+      "duration": 22.8521
+    },
+    {
+      "note": 73,
+      "vel": 88,
+      "time": -0.0187,
+      "duration": 29.4292
+    },
+    {
+      "note": 49,
+      "vel": 82,
+      "time": -0.0146,
+      "duration": 2.6125
+    },
+    {
+      "note": 68,
+      "vel": 98,
+      "time": -0.0125,
+      "duration": 31.2812
+    }
+  ]
+}

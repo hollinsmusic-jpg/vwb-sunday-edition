@@ -1,0 +1,51 @@
+{
+  "id": "Gb_maj_keys",
+  "key": "Gb",
+  "quality": "maj",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 73,
+      "vel": 58,
+      "time": -0.2083,
+      "duration": 15.4021
+    },
+    {
+      "note": 58,
+      "vel": 66,
+      "time": -0.0604,
+      "duration": 3.2563
+    },
+    {
+      "note": 61,
+      "vel": 55,
+      "time": -0.0604,
+      "duration": 15.1188
+    },
+    {
+      "note": 54,
+      "vel": 55,
+      "time": -0.0563,
+      "duration": 23.1812
+    },
+    {
+      "note": 82,
+      "vel": 98,
+      "time": -0.0167,
+      "duration": 1.2583
+    },
+    {
+      "note": 70,
+      "vel": 93,
+      "time": 1.9958,
+      "duration": 15.5479
+    },
+    {
+      "note": 78,
+      "vel": 90,
+      "time": 1.9958,
+      "duration": 1.0437
+    }
+  ]
+}

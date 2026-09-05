@@ -1,0 +1,45 @@
+{
+  "id": "C_dom7b9_keys",
+  "key": "C",
+  "quality": "dom7b9",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 55,
+      "vel": 68,
+      "time": 0.0,
+      "duration": 15.3354
+    },
+    {
+      "note": 52,
+      "vel": 53,
+      "time": 0.0,
+      "duration": 3.2854
+    },
+    {
+      "note": 58,
+      "vel": 66,
+      "time": 0.0,
+      "duration": 38.8354
+    },
+    {
+      "note": 61,
+      "vel": 103,
+      "time": 0.0,
+      "duration": 38.8146
+    },
+    {
+      "note": 70,
+      "vel": 98,
+      "time": 0.0,
+      "duration": 37.5125
+    },
+    {
+      "note": 64,
+      "vel": 90,
+      "time": 0.0,
+      "duration": 38.8
+    }
+  ]
+}

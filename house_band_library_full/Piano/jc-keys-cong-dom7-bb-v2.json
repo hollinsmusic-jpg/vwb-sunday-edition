@@ -1,0 +1,81 @@
+{
+  "id": "jc-keys-cong-dom7-bb-v2",
+  "slot": "keys",
+  "style": "congregational",
+  "quality": "dom7",
+  "key": "Bb",
+  "events": [
+    {
+      "note": 68,
+      "vel": 115,
+      "time": 0.0,
+      "duration": 0.1896
+    },
+    {
+      "note": 77,
+      "vel": 105,
+      "time": 0.0,
+      "duration": 0.2583
+    },
+    {
+      "note": 73,
+      "vel": 101,
+      "time": 0.0,
+      "duration": 0.2812
+    },
+    {
+      "note": 72,
+      "vel": 100,
+      "time": 1.0,
+      "duration": 0.3604
+    },
+    {
+      "note": 67,
+      "vel": 108,
+      "time": 1.0,
+      "duration": 0.3917
+    },
+    {
+      "note": 75,
+      "vel": 117,
+      "time": 1.0,
+      "duration": 0.4896
+    },
+    {
+      "note": 65,
+      "vel": 110,
+      "time": 1.6333,
+      "duration": 0.1333
+    },
+    {
+      "note": 70,
+      "vel": 111,
+      "time": 1.6333,
+      "duration": 0.1854
+    },
+    {
+      "note": 73,
+      "vel": 112,
+      "time": 1.6333,
+      "duration": 0.1979
+    },
+    {
+      "note": 70,
+      "vel": 112,
+      "time": 2.6333,
+      "duration": 0.1333
+    },
+    {
+      "note": 77,
+      "vel": 100,
+      "time": 2.6333,
+      "duration": 0.175
+    },
+    {
+      "note": 82,
+      "vel": 109,
+      "time": 2.6333,
+      "duration": 0.2104
+    }
+  ]
+}

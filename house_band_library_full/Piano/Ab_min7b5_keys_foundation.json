@@ -1,0 +1,57 @@
+{
+  "id": "Ab_min7b5_keys",
+  "key": "Ab",
+  "quality": "min7b5",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 74,
+      "vel": 93,
+      "time": 0.0396,
+      "duration": 15.9583
+    },
+    {
+      "note": 83,
+      "vel": 86,
+      "time": 0.0396,
+      "duration": 3.7563
+    },
+    {
+      "note": 62,
+      "vel": 81,
+      "time": 0.0396,
+      "duration": 15.9604
+    },
+    {
+      "note": 59,
+      "vel": 68,
+      "time": 0.0417,
+      "duration": 15.9542
+    },
+    {
+      "note": 80,
+      "vel": 83,
+      "time": 0.0417,
+      "duration": 3.7625
+    },
+    {
+      "note": 54,
+      "vel": 63,
+      "time": 0.0417,
+      "duration": 3.7542
+    },
+    {
+      "note": 78,
+      "vel": 90,
+      "time": 0.0417,
+      "duration": 3.7396
+    },
+    {
+      "note": 56,
+      "vel": 66,
+      "time": 0.0458,
+      "duration": 11.8313
+    }
+  ]
+}

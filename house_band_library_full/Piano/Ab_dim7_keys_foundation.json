@@ -1,0 +1,63 @@
+{
+  "id": "Ab_dim7_keys",
+  "key": "Ab",
+  "quality": "dim7",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 80,
+      "vel": 73,
+      "time": 0.0021,
+      "duration": 15.8979
+    },
+    {
+      "note": 71,
+      "vel": 77,
+      "time": 0.0042,
+      "duration": 15.8854
+    },
+    {
+      "note": 83,
+      "vel": 97,
+      "time": 0.0042,
+      "duration": 3.0083
+    },
+    {
+      "note": 65,
+      "vel": 70,
+      "time": 0.0042,
+      "duration": 15.8854
+    },
+    {
+      "note": 74,
+      "vel": 84,
+      "time": 0.0042,
+      "duration": 15.8708
+    },
+    {
+      "note": 56,
+      "vel": 74,
+      "time": 0.0063,
+      "duration": 2.9875
+    },
+    {
+      "note": 62,
+      "vel": 77,
+      "time": 0.0063,
+      "duration": 15.9
+    },
+    {
+      "note": 77,
+      "vel": 88,
+      "time": 0.0083,
+      "duration": 15.8708
+    },
+    {
+      "note": 59,
+      "vel": 64,
+      "time": 0.0125,
+      "duration": 15.875
+    }
+  ]
+}

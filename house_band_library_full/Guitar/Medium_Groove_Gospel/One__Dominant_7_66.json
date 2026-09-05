@@ -1,0 +1,85 @@
+{
+  "musician": "Sanchez Rivera",
+  "instrument": "Guitar",
+  "style": "Medium Groove Gospel",
+  "mood": "Energetic / Lively",
+  "auxVoicing": null,
+  "originalKey": "Db",
+  "originalTempo": 69.99998833333528,
+  "degreeLabel": "One",
+  "quality": "Dominant 7",
+  "alterations": [],
+  "chordLabel": "One, Dominant 7",
+  "progressionName": "2-5sus-1-1sus-1dom",
+  "section": "B",
+  "sourceChord": "Db7",
+  "measureRange": "m8b3-m9b1",
+  "durationSeconds": 1.714286,
+  "noteCount": 8,
+  "notes": [
+    {
+      "midi": 63,
+      "name": "D#4",
+      "time": 0,
+      "duration": 0.06428572500000129,
+      "velocity": 0.4566929133858268,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 61,
+      "name": "C#4",
+      "time": 0,
+      "duration": 1.010714454166667,
+      "velocity": 0.6456692913385826,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 64,
+      "name": "E4",
+      "time": 0,
+      "duration": 0.12142859166666753,
+      "velocity": 0.7874015748031497,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 65,
+      "name": "F4",
+      "time": 0.042857,
+      "duration": 1.010714454166667,
+      "velocity": 0.5511811023622047,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 61,
+      "name": "C#4",
+      "time": 1.248214,
+      "duration": 0.38571435000000065,
+      "velocity": 0.7007874015748031,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 56,
+      "name": "G#3",
+      "time": 1.255357,
+      "duration": 0.430357214583335,
+      "velocity": 0.6692913385826772,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 61,
+      "name": "C#4",
+      "time": 1.691072,
+      "duration": 2.014286049999999,
+      "velocity": 0.5826771653543307,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 58,
+      "name": "A#3",
+      "time": 1.692857,
+      "duration": 1.287500214583332,
+      "velocity": 0.7874015748031497,
+      "sustainedFromPrevious": false
+    }
+  ]
+}

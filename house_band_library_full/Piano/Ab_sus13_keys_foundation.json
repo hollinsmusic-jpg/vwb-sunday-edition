@@ -1,0 +1,33 @@
+{
+  "id": "Ab_sus13_keys",
+  "key": "Ab",
+  "quality": "sus13",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 73,
+      "vel": 88,
+      "time": -0.0167,
+      "duration": 3.4
+    },
+    {
+      "note": 66,
+      "vel": 95,
+      "time": -0.0167,
+      "duration": 3.4354
+    },
+    {
+      "note": 77,
+      "vel": 100,
+      "time": -0.0167,
+      "duration": 3.4167
+    },
+    {
+      "note": 70,
+      "vel": 98,
+      "time": -0.0167,
+      "duration": 3.3813
+    }
+  ]
+}

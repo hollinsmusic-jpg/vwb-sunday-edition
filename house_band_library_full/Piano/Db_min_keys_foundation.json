@@ -1,0 +1,45 @@
+{
+  "id": "Db_min_keys",
+  "key": "Db",
+  "quality": "min",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 64,
+      "vel": 77,
+      "time": -0.0271,
+      "duration": 35.0854
+    },
+    {
+      "note": 68,
+      "vel": 78,
+      "time": -0.025,
+      "duration": 31.3958
+    },
+    {
+      "note": 49,
+      "vel": 58,
+      "time": -0.0208,
+      "duration": 3.1146
+    },
+    {
+      "note": 76,
+      "vel": 84,
+      "time": -0.0208,
+      "duration": 35.1104
+    },
+    {
+      "note": 56,
+      "vel": 71,
+      "time": -0.0167,
+      "duration": 31.5125
+    },
+    {
+      "note": 73,
+      "vel": 65,
+      "time": 2.9833,
+      "duration": 36.4125
+    }
+  ]
+}

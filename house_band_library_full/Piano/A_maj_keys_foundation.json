@@ -1,0 +1,51 @@
+{
+  "id": "A_maj_keys",
+  "key": "A",
+  "quality": "maj",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 69,
+      "vel": 46,
+      "time": -0.2188,
+      "duration": 1.4
+    },
+    {
+      "note": 76,
+      "vel": 75,
+      "time": -0.0542,
+      "duration": 1.3354
+    },
+    {
+      "note": 61,
+      "vel": 60,
+      "time": -0.0375,
+      "duration": 3.0958
+    },
+    {
+      "note": 57,
+      "vel": 68,
+      "time": -0.0354,
+      "duration": 3.1104
+    },
+    {
+      "note": 81,
+      "vel": 107,
+      "time": 0.0063,
+      "duration": 1.2188
+    },
+    {
+      "note": 64,
+      "vel": 79,
+      "time": 1.9979,
+      "duration": 1.1917
+    },
+    {
+      "note": 73,
+      "vel": 90,
+      "time": 2.0021,
+      "duration": 1.1917
+    }
+  ]
+}

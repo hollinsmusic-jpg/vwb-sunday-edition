@@ -1,0 +1,85 @@
+{
+  "musician": "Paul Simmons",
+  "instrument": "Organ",
+  "style": "Medium Groove Gospel",
+  "mood": "Energetic / Lively",
+  "auxVoicing": null,
+  "originalKey": "Db",
+  "originalTempo": 69.99998833333528,
+  "degreeLabel": "Six",
+  "quality": "Minor 7",
+  "alterations": [],
+  "chordLabel": "Six, Minor 7",
+  "progressionName": "4-3-6-2-6-5over7",
+  "section": "C",
+  "sourceChord": "Bbm7",
+  "measureRange": "m12b1-m12b3",
+  "durationSeconds": 1.714286,
+  "noteCount": 8,
+  "notes": [
+    {
+      "midi": 68,
+      "name": "G#4",
+      "time": 0,
+      "duration": 1.5875002645833334,
+      "velocity": 0.4015748031496063,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 82,
+      "name": "A#5",
+      "time": 0,
+      "duration": 1.8196431604166747,
+      "velocity": 0.7086614173228346,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 70,
+      "name": "A#4",
+      "time": 0,
+      "duration": 1.7464288624999966,
+      "velocity": 0.5748031496062992,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 73,
+      "name": "C#5",
+      "time": 0.001786,
+      "duration": 1.4607145291666725,
+      "velocity": 0.7086614173228346,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 77,
+      "name": "F5",
+      "time": 0.008929,
+      "duration": 1.5375002562499986,
+      "velocity": 0.6220472440944882,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 75,
+      "name": "D#5",
+      "time": 1.689286,
+      "duration": 1.657143133333335,
+      "velocity": 0.47244094488188976,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 68,
+      "name": "G#4",
+      "time": 1.705357,
+      "duration": 1.7178574291666635,
+      "velocity": 0.5905511811023622,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 72,
+      "name": "C5",
+      "time": 1.705357,
+      "duration": 1.725000287499995,
+      "velocity": 0.4881889763779528,
+      "sustainedFromPrevious": false
+    }
+  ]
+}

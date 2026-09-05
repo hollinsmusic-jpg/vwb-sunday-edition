@@ -1,0 +1,92 @@
+{
+  "musician": "Sanchez Rivera",
+  "instrument": "Guitar",
+  "style": "Worship Ballad",
+  "mood": "Calm / Worshipful",
+  "originalKey": "D",
+  "originalTempo": 69.99998833333528,
+  "degreeLabel": "Two",
+  "quality": "Minor 9",
+  "alterations": [],
+  "chordLabel": "Two, Minor 9",
+  "progressionName": "4-3-6-2-6-5over7",
+  "section": "C",
+  "sourceChord": "Em9",
+  "measureRange": "m11b1-m12b1",
+  "durationSeconds": 3.428572,
+  "noteCount": 9,
+  "notes": [
+    {
+      "midi": 62,
+      "name": "D4",
+      "time": 0,
+      "duration": 5.003572262499993,
+      "velocity": 0.8346456692913385,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 67,
+      "name": "G4",
+      "time": 0,
+      "duration": 1.3571430833333409,
+      "velocity": 0.7480314960629921,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 55,
+      "name": "G3",
+      "time": 0,
+      "duration": 3.3946434229166726,
+      "velocity": 0.6220472440944882,
+      "sustainedFromPrevious": true
+    },
+    {
+      "midi": 59,
+      "name": "B3",
+      "time": 0.426786,
+      "duration": 0.3357143416666659,
+      "velocity": 0.5748031496062992,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 57,
+      "name": "A3",
+      "time": 0.860714,
+      "duration": 2.066071772916665,
+      "velocity": 0.5905511811023622,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 66,
+      "name": "F#4",
+      "time": 1.283929,
+      "duration": 1.958928897916664,
+      "velocity": 0.7322834645669292,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 59,
+      "name": "B3",
+      "time": 1.2875,
+      "duration": 2.0535717708333365,
+      "velocity": 0.5354330708661418,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 57,
+      "name": "A3",
+      "time": 3.421429,
+      "duration": 1.5410716854166608,
+      "velocity": 0.5354330708661418,
+      "sustainedFromPrevious": false
+    },
+    {
+      "midi": 62,
+      "name": "D4",
+      "time": 3.421429,
+      "duration": 1.312500218749996,
+      "velocity": 0.84251968503937,
+      "sustainedFromPrevious": false
+    }
+  ]
+}

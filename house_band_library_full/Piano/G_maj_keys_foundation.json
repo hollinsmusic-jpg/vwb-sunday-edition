@@ -1,0 +1,45 @@
+{
+  "id": "G_maj_keys",
+  "key": "G",
+  "quality": "maj",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 71,
+      "vel": 77,
+      "time": 0.0146,
+      "duration": 17.2458
+    },
+    {
+      "note": 74,
+      "vel": 86,
+      "time": 0.0146,
+      "duration": 13.4625
+    },
+    {
+      "note": 67,
+      "vel": 79,
+      "time": 0.0146,
+      "duration": 2.3125
+    },
+    {
+      "note": 55,
+      "vel": 68,
+      "time": 0.0229,
+      "duration": 3.3937
+    },
+    {
+      "note": 59,
+      "vel": 73,
+      "time": 2.4792,
+      "duration": 16.6313
+    },
+    {
+      "note": 62,
+      "vel": 86,
+      "time": 2.9896,
+      "duration": 11.9958
+    }
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "id": "jc-keys-251-a",
+  "slot": "keys",
+  "musician": "julian-cross",
+  "type": "progression",
+  "progression": "2-5-1",
+  "key": "A",
+  "two": "Bmin7",
+  "five": "E7",
+  "one": "Amaj7",
+  "beats": 8,
+  "timeSig": "4/4",
+  "feel": "straight",
+  "events": [
+    {
+      "note": 69,
+      "vel": 95,
+      "time": 0.0,
+      "duration": 1.25
+    },
+    {
+      "note": 78,
+      "vel": 111,
+      "time": 0.0,
+      "duration": 1.275
+    },
+    {
+      "note": 57,
+      "vel": 57,
+      "time": 0.0,
+      "duration": 1.5583
+    },
+    {
+      "note": 61,
+      "vel": 71,
+      "time": 0.0,
+      "duration": 1.6062
+    },
+    {
+      "note": 66,
+      "vel": 85,
+      "time": 0.0,
+      "duration": 1.6083
+    },
+    {
+      "note": 62,
+      "vel": 73,
+      "time": 0.0,
+      "duration": 1.6208
+    },
+    {
+      "note": 73,
+      "vel": 98,
+      "time": 1.9979,
+      "duration": 0.825
+    },
+    {
+      "note": 62,
+      "vel": 81,
+      "time": 1.9979,
+      "duration": 1.3188
+    },
+    {
+      "note": 78,
+      "vel": 103,
+      "time": 2.0,
+      "duration": 0.7875
+    },
+    {
+      "note": 68,
+      "vel": 101,
+      "time": 2.0,
+      "duration": 0.8104
+    },
+    {
+      "note": 56,
+      "vel": 71,
+      "time": 2.0063,
+      "duration": 1.325
+    },
+    {
+      "note": 76,
+      "vel": 105,
+      "time": 3.0479,
+      "duration": 0.3312
+    },
+    {
+      "note": 68,
+      "vel": 95,
+      "time": 4.0125,
+      "duration": 3.0417
+    },
+    {
+      "note": 59,
+      "vel": 68,
+      "time": 4.0125,
+      "duration": 3.0625
+    },
+    {
+      "note": 73,
+      "vel": 106,
+      "time": 4.0146,
+      "duration": 3.0312
+    },
+    {
+      "note": 64,
+      "vel": 66,
+      "time": 4.0146,
+      "duration": 3.0396
+    },
+    {
+      "note": 61,
+      "vel": 68,
+      "time": 4.0146,
+      "duration": 3.0458
+    },
+    {
+      "note": 56,
+      "vel": 71,
+      "time": 4.0146,
+      "duration": 3.1083
+    }
+  ],
+  "energy": "medium-low",
+  "tempoRange": "slow-medium",
+  "styles": [
+    "slow-hymn",
+    "worship-ballad",
+    "medium-groove-gospel"
+  ]
+}

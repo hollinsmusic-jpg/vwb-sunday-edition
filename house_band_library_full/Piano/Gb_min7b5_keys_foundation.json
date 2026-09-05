@@ -1,0 +1,57 @@
+{
+  "id": "Gb_min7b5_keys",
+  "key": "Gb",
+  "quality": "min7b5",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 60,
+      "vel": 62,
+      "time": 0.0146,
+      "duration": 14.7896
+    },
+    {
+      "note": 72,
+      "vel": 81,
+      "time": 0.0146,
+      "duration": 14.8479
+    },
+    {
+      "note": 78,
+      "vel": 78,
+      "time": 0.0167,
+      "duration": 11.7646
+    },
+    {
+      "note": 81,
+      "vel": 81,
+      "time": 0.0167,
+      "duration": 14.8354
+    },
+    {
+      "note": 76,
+      "vel": 84,
+      "time": 0.0167,
+      "duration": 3.0417
+    },
+    {
+      "note": 57,
+      "vel": 66,
+      "time": 0.0208,
+      "duration": 23.9688
+    },
+    {
+      "note": 64,
+      "vel": 66,
+      "time": 0.0208,
+      "duration": 19.8458
+    },
+    {
+      "note": 54,
+      "vel": 58,
+      "time": 0.025,
+      "duration": 11.7708
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "Eb_maj7#5_keys",
+  "key": "Eb",
+  "quality": "maj7#5",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 67,
+      "vel": 97,
+      "time": 0.0083,
+      "duration": 35.8521
+    },
+    {
+      "note": 71,
+      "vel": 86,
+      "time": 0.0104,
+      "duration": 35.8625
+    },
+    {
+      "note": 75,
+      "vel": 103,
+      "time": 0.0104,
+      "duration": 19.3917
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "id": "jc-keys-cong-dom7-db-v2",
+  "slot": "keys",
+  "style": "congregational",
+  "quality": "dom7",
+  "key": "Db",
+  "events": [
+    {
+      "note": 71,
+      "vel": 90,
+      "time": 0.0,
+      "duration": 0.1521
+    },
+    {
+      "note": 80,
+      "vel": 110,
+      "time": 0.0,
+      "duration": 0.2458
+    },
+    {
+      "note": 76,
+      "vel": 100,
+      "time": 0.0,
+      "duration": 0.2708
+    },
+    {
+      "note": 75,
+      "vel": 103,
+      "time": 1.0,
+      "duration": 0.3979
+    },
+    {
+      "note": 78,
+      "vel": 110,
+      "time": 1.0,
+      "duration": 0.4333
+    },
+    {
+      "note": 70,
+      "vel": 95,
+      "time": 1.0,
+      "duration": 0.4458
+    },
+    {
+      "note": 68,
+      "vel": 103,
+      "time": 1.6333,
+      "duration": 0.1021
+    },
+    {
+      "note": 76,
+      "vel": 84,
+      "time": 1.6333,
+      "duration": 0.1646
+    },
+    {
+      "note": 73,
+      "vel": 90,
+      "time": 1.6333,
+      "duration": 0.1958
+    },
+    {
+      "note": 73,
+      "vel": 110,
+      "time": 2.6333,
+      "duration": 0.1292
+    },
+    {
+      "note": 85,
+      "vel": 115,
+      "time": 2.6333,
+      "duration": 0.1813
+    }
+  ]
+}

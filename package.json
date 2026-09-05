@@ -1,7 +1,7 @@
 {
   "name": "vwb",
-  "version": "1.0.0",
-  "description": "VWB Virtual Worship Band Sunday Edition",
+  "version": "2.0.0",
+  "description": "VWB Virtual Worship Band v2.0",
   "main": "main.js",
   "author": "Hollins Musical Productions International",
   "license": "UNLICENSED",
@@ -18,14 +18,42 @@
   "build": {
     "appId": "com.hmpi.vwb",
     "productName": "VWB",
-    "files": ["main.js", "preload.js", "index.html"],
-    "directories": {"output": "dist"},
+    "files": [
+      "main.js",
+      "preload.js",
+      "index.html",
+      "remote.html",
+      "js/**/*",
+      "piano-talk/**/*",
+      "organ-samples/**/*",
+      "soundfont-player.js",
+      "download-drums.js"
+    ],
+    "directories": {
+      "output": "dist"
+    },
     "mac": {
       "category": "public.app-category.music",
-      "target": [{"target": "dmg", "arch": ["x64", "arm64"]}]
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ]
     },
     "win": {
       "target": "nsis"
     }
+  },
+  "dependencies": {
+    "@echogarden/rubberband-wasm": "^0.2.0",
+    "adm-zip": "^0.5.18",
+    "node-record-lpcm16": "^1.0.1",
+    "nodejs-whisper": "^0.3.0",
+    "rubberband-web": "^0.2.1",
+    "soundtouchjs": "^0.3.0"
   }
 }

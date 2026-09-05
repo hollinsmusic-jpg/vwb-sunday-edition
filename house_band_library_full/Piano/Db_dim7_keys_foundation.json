@@ -1,0 +1,51 @@
+{
+  "id": "Db_dim7_keys",
+  "key": "Db",
+  "quality": "dim7",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 58,
+      "vel": 68,
+      "time": -0.0083,
+      "duration": 39.2021
+    },
+    {
+      "note": 67,
+      "vel": 88,
+      "time": -0.0083,
+      "duration": 39.1479
+    },
+    {
+      "note": 64,
+      "vel": 86,
+      "time": -0.0063,
+      "duration": 39.1292
+    },
+    {
+      "note": 49,
+      "vel": 50,
+      "time": -0.0063,
+      "duration": 2.5521
+    },
+    {
+      "note": 76,
+      "vel": 95,
+      "time": -0.0063,
+      "duration": 14.7312
+    },
+    {
+      "note": 55,
+      "vel": 64,
+      "time": 0.0,
+      "duration": 26.3292
+    },
+    {
+      "note": 52,
+      "vel": 59,
+      "time": 0.0063,
+      "duration": 14.5979
+    }
+  ]
+}

@@ -1,0 +1,2301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>VWB Remote</title>
+<style>
+/* System font fallbacks - works without internet */
+@font-face { font-family: 'Rajdhani'; src: local('Arial Black'), local('Impact'); }
+@font-face { font-family: 'Space Mono'; src: local('Courier New'), local('Courier'); }
+@font-face { font-family: 'Inter'; src: local('Helvetica Neue'), local('Arial'); }
+</style>
+<style>
+  :root { /* VWB Remote Theme */
+    --teal:    #40E0D0;
+    --teal2:   #2ab8aa;
+    --dark:    #070b10;
+    --card:    #0d1520;
+    --card2:   #111d2a;
+    --border:  rgba(64,224,208,0.15);
+    --border2: rgba(64,224,208,0.08);
+    --text:    #e8eaf6;
+    --dim:     #6b7a94;
+    --orange:  #ff8844;
+    --green:   #44dd88;
+    --red:     #ff3355;
+    --gold:    #f0c040;
+    --purple:  #9966ff;
+    --panic:   #ff2244;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    background: #070b10;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  /* ── CONNECTION SCREEN ── */
+  #connectScreen {
+    position: fixed; inset: 0;
+    background: var(--dark);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    z-index: 100; gap: 20px; padding: 32px;
+  }
+  #connectScreen .logo {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 72px; font-weight: 700;
+    color: var(--teal);
+    letter-spacing: -2px;
+    text-shadow: 0 0 40px rgba(64,224,208,0.4);
+    line-height: 1;
+  }
+  #connectScreen .sub {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px; letter-spacing: 3px;
+    color: var(--dim); text-transform: uppercase;
+    margin-top: -8px;
+  }
+  #connectScreen .status-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--red);
+    box-shadow: 0 0 12px var(--red);
+    animation: pulse-red 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse-red {
+    0%,100% { opacity: 1; } 50% { opacity: 0.4; }
+  }
+  #connectScreen .status-dot.connected {
+    background: var(--green);
+    box-shadow: 0 0 12px var(--green);
+    animation: none;
+  }
+  #connectStatus {
+    font-size: 13px; color: var(--dim);
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* ── MAIN APP ── */
+  #app {
+    display: none;
+    flex-direction: column;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+  }
+  #app.visible { display: flex; }
+
+  /* ── HEADER ── */
+  .app-header {
+    background: rgba(13,21,32,0.98);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 16px 10px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0;
+    backdrop-filter: blur(20px);
+  }
+  .header-left { display: flex; flex-direction: column; gap: 2px; }
+  .song-title-display {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 20px; font-weight: 700;
+    color: var(--text); letter-spacing: 0.5px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    max-width: 200px;
+  }
+  .next-song-display {
+    font-size: 10px; color: var(--dim);
+    font-family: 'Space Mono', monospace;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    max-width: 200px;
+  }
+  .header-right { display: flex; align-items: center; gap: 8px; }
+  .conn-indicator {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+  }
+  .conn-label {
+    font-size: 9px; color: var(--dim);
+    font-family: 'Space Mono', monospace;
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-wrap {
+    flex-shrink: 0; position: relative;
+    background: rgba(255,255,255,0.04);
+    padding: 10px 14px 8px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .progress-wrap:active { background: rgba(255,255,255,0.07); }
+  .progress-track {
+    height: 6px; background: rgba(255,255,255,0.1);
+    border-radius: 3px; position: relative; overflow: hidden;
+    pointer-events: none;
+  }
+  .progress-bar {
+    height: 100%; background: linear-gradient(90deg, var(--teal), var(--teal2));
+    width: 0%; transition: width 0.25s linear;
+    box-shadow: 0 0 8px var(--teal);
+    border-radius: 3px;
+  }
+  .progress-thumb {
+    position: absolute; top: 50%; right: -6px;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--teal); transform: translateY(-50%);
+    box-shadow: 0 0 8px var(--teal);
+    pointer-events: none;
+  }
+  .progress-times {
+    display: flex; justify-content: space-between;
+    font-size: 11px; color: var(--dim);
+    font-family: 'Space Mono', monospace;
+    margin-top: 5px; pointer-events: none;
+  }
+  .scrub-hint {
+    text-align: center; font-size: 10px;
+    color: rgba(255,255,255,0.2);
+    margin-top: 2px; letter-spacing: 0.5px;
+    pointer-events: none;
+  }
+
+  /* ── TABS ── */
+  .tab-bar {
+    display: flex; background: var(--card);
+    border-bottom: 1px solid var(--border2);
+    flex-shrink: 0;
+  }
+  .tab-btn {
+    flex: 1; padding: 10px 4px 8px;
+    background: none; border: none; color: var(--dim);
+    font-family: 'Space Mono', monospace;
+    font-size: 9px; letter-spacing: 1px;
+    text-transform: uppercase; cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 3px;
+  }
+  .tab-btn .tab-icon { font-size: 16px; line-height: 1; }
+  .tab-btn.active {
+    color: var(--teal);
+    border-bottom-color: var(--teal);
+  }
+
+  /* ── TAB PANELS ── */
+  .tab-panels { flex: 1; overflow: hidden; position: relative; }
+  .tab-panel {
+    position: absolute; inset: 0;
+    overflow-y: auto; overflow-x: hidden;
+    padding: 12px;
+    display: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .tab-panel.active { display: block; }
+
+  /* ── PERFORM TAB ── */
+  /* Current section display */
+  .current-section-card {
+    background: linear-gradient(135deg, rgba(64,224,208,0.12), rgba(64,224,208,0.04));
+    border: 1px solid var(--border);
+    border-radius: 16px; padding: 16px;
+    margin-bottom: 12px; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .current-section-card::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--teal), transparent);
+  }
+  .section-label {
+    font-size: 10px; color: var(--dim);
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px;
+  }
+  .section-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 36px; font-weight: 700;
+    color: var(--teal); line-height: 1;
+    text-shadow: 0 0 20px rgba(64,224,208,0.3);
+  }
+  .section-progress {
+    font-size: 11px; color: var(--dim);
+    font-family: 'Space Mono', monospace;
+    margin-top: 6px;
+  }
+
+  /* Transport */
+  .transport-row {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px; margin-bottom: 12px;
+  }
+  .transport-btn {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 16px 8px;
+    color: var(--text); font-size: 24px;
+    cursor: pointer; text-align: center;
+    transition: all 0.15s; user-select: none;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 4px;
+    -webkit-user-select: none;
+  }
+  .transport-btn span.tlabel {
+    font-size: 9px; color: var(--dim);
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+  .transport-btn:active { transform: scale(0.94); opacity: 0.8; }
+  .transport-btn.play-btn {
+    background: linear-gradient(135deg, rgba(64,224,208,0.2), rgba(64,224,208,0.08));
+    border-color: var(--teal);
+    color: var(--teal);
+  }
+  .transport-btn.playing {
+    background: linear-gradient(135deg, rgba(68,221,136,0.2), rgba(68,221,136,0.08));
+    border-color: var(--green); color: var(--green);
+  }
+  .transport-btn.stop-btn { color: var(--dim); }
+  .transport-btn.next-song-btn {
+    background: linear-gradient(135deg, rgba(240,192,64,0.15), rgba(240,192,64,0.05));
+    border-color: rgba(240,192,64,0.4); color: var(--gold);
+  }
+
+  /* Section grid */
+  .sections-label {
+    font-size: 9px; color: var(--dim);
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 2px; text-transform: uppercase;
+    margin-bottom: 8px; margin-left: 2px;
+  }
+  .sections-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 7px; margin-bottom: 12px;
+  }
+  .sec-btn {
+    background: var(--card); border: 1px solid var(--border2);
+    border-radius: 12px; padding: 12px 6px;
+    color: var(--text); font-size: 11px; font-weight: 600;
+    cursor: pointer; text-align: center;
+    transition: all 0.15s; user-select: none;
+    -webkit-user-select: none;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    font-family: 'Inter', sans-serif;
+    line-height: 1.2;
+  }
+  .sec-btn .sec-type {
+    font-size: 8px; color: var(--dim);
+    font-family: 'Space Mono', monospace;
+    display: block; margin-bottom: 3px;
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+  .sec-btn:active { transform: scale(0.93); }
+  .sec-btn.active-sec {
+    border-color: var(--teal);
+    background: rgba(64,224,208,0.12);
+    color: var(--teal);
+    box-shadow: 0 0 12px rgba(64,224,208,0.15);
+  }
+
+  /* Sec loop toggle */
+  .sec-loop-row {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--card); border: 1px solid var(--border2);
+    border-radius: 12px; padding: 12px 16px;
+    margin-bottom: 12px;
+  }
+  .sec-loop-label {
+    font-size: 12px; font-weight: 500; color: var(--text);
+  }
+  .sec-loop-sub {
+    font-size: 10px; color: var(--dim); margin-top: 2px;
+  }
+
+  /* Volume control */
+  .vol-card {
+    background: var(--card); border: 1px solid var(--border2);
+    border-radius: 14px; padding: 14px 16px;
+    margin-bottom: 12px;
+  }
+  .vol-header {
+    display: flex; align-items: center;
+    justify-content: space-between; margin-bottom: 12px;
+  }
+  .vol-title {
+    font-size: 11px; color: var(--dim);
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 1.5px; text-transform: uppercase;
+  }
+  .vol-value {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px; color: var(--teal); font-weight: 700;
+  }
+  .vol-slider {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 4px;
+    background: rgba(255,255,255,0.1); border-radius: 2px; outline: none;
+  }
+  .vol-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--teal);
+    box-shadow: 0 0 10px rgba(64,224,208,0.5);
+    cursor: pointer;
+  }
+
+  /* PANIC */
+  .panic-btn {
+    width: 100%; padding: 18px;
+    background: linear-gradient(135deg, rgba(255,34,68,0.2), rgba(255,34,68,0.08));
+    border: 2px solid var(--panic);
+    border-radius: 16px; color: var(--panic);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 24px; font-weight: 700;
+    letter-spacing: 3px; cursor: pointer;
+    transition: all 0.15s; text-align: center;
+    margin-bottom: 12px;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    -webkit-user-select: none;
+  }
+  .panic-btn:active { transform: scale(0.97); }
+  .panic-btn.panic-active {
+    background: linear-gradient(135deg, rgba(255,34,68,0.4), rgba(255,34,68,0.2));
+    box-shadow: 0 0 24px rgba(255,34,68,0.4);
+    animation: panic-pulse 0.8s ease-in-out infinite;
+  }
+  @keyframes panic-pulse {
+    0%,100% { box-shadow: 0 0 24px rgba(255,34,68,0.4); }
+    50% { box-shadow: 0 0 40px rgba(255,34,68,0.7); }
+  }
+
+  /* ── LOOPS TAB ── */
+  .loop-card {
+    background: var(--card); border: 1px solid var(--border2);
+    border-radius: 14px; margin-bottom: 8px; overflow: hidden;
+  }
+  .loop-card.loop-active { border-color: var(--green); }
+  .loop-row {
+    display: flex; align-items: center; gap: 10px; padding: 12px 14px;
+  }
+  .loop-play-btn {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: rgba(255,255,255,0.06); border: 1px solid var(--border);
+    color: var(--dim); font-size: 14px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s; flex-shrink: 0;
+  }
+  .loop-play-btn.active {
+    background: rgba(68,221,136,0.2); border-color: var(--green);
+    color: var(--green); box-shadow: 0 0 12px rgba(68,221,136,0.3);
+  }
+  .loop-info { flex: 1; min-width: 0; }
+  .loop-name {
+    font-size: 13px; font-weight: 500; color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .loop-dur {
+    font-size: 10px; color: var(--dim);
+    font-family: 'Space Mono', monospace; margin-top: 2px;
+  }
+  .loop-vol-row {
+    padding: 0 14px 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .loop-vol-icon { font-size: 14px; color: var(--dim); }
+  .loop-vol-slider {
+    flex: 1; -webkit-appearance: none; appearance: none;
+    height: 3px; background: rgba(255,255,255,0.1);
+    border-radius: 2px; outline: none;
+  }
+  .loop-vol-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 18px; height: 18px;
+    border-radius: 50%; background: var(--green);
+    box-shadow: 0 0 8px rgba(68,221,136,0.4); cursor: pointer;
+  }
+
+  /* Master loop toggle */
+  .loop-master-row {
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(68,221,136,0.06); border: 1px solid rgba(68,221,136,0.2);
+    border-radius: 14px; padding: 14px 16px; margin-bottom: 12px;
+  }
+  .loop-master-label { font-size: 13px; font-weight: 600; color: var(--green); }
+  .loop-master-sub { font-size: 10px; color: var(--dim); margin-top: 2px; }
+
+  /* ── MIDI TAB ── */
+  .midi-file-card {
+    background: var(--card); border: 1px solid var(--border2);
+    border-radius: 14px; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .midi-file-card.active-midi {
+    border-color: var(--orange);
+    background: rgba(255,136,68,0.08);
+  }
+  .midi-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px; color: var(--dim); min-width: 18px;
+  }
+  .midi-info { flex: 1; min-width: 0; }
+  .midi-filename {
+    font-size: 13px; font-weight: 500; color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .midi-filename.active-midi-text { color: var(--orange); }
+  .midi-dur {
+    font-size: 10px; color: var(--dim);
+    font-family: 'Space Mono', monospace; margin-top: 2px;
+  }
+  .midi-play-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--orange); flex-shrink: 0;
+    box-shadow: 0 0 8px var(--orange);
+    display: none;
+  }
+  .midi-file-card.active-midi .midi-play-dot { display: block; }
+
+  .midi-transport {
+    background: var(--card); border: 1px solid var(--border2);
+    border-radius: 14px; padding: 14px 16px;
+    margin-bottom: 12px;
+  }
+  .midi-now-playing {
+    font-size: 12px; color: var(--orange);
+    font-family: 'Space Mono', monospace;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    margin-bottom: 12px; min-height: 16px;
+  }
+  .midi-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .midi-ctrl-btn {
+    background: rgba(255,136,68,0.1); border: 1px solid rgba(255,136,68,0.3);
+    border-radius: 12px; padding: 14px;
+    color: var(--orange); font-size: 20px;
+    cursor: pointer; text-align: center;
+    transition: all 0.15s;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .midi-ctrl-btn span { font-size: 9px; color: var(--dim); font-family: 'Space Mono', monospace; }
+  .midi-ctrl-btn:active { transform: scale(0.94); }
+
+  /* ── SETLIST TAB ── */
+  .setlist-item {
+    background: var(--card); border: 1px solid var(--border2);
+    border-radius: 14px; margin-bottom: 8px;
+    padding: 14px 16px; cursor: pointer;
+    transition: all 0.15s; display: flex; align-items: center; gap: 12px;
+  }
+  .setlist-item.active-song {
+    border-color: var(--teal);
+    background: rgba(64,224,208,0.08);
+  }
+  .setlist-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px; color: var(--dim); min-width: 20px;
+  }
+  .setlist-info { flex: 1; min-width: 0; }
+  .setlist-title {
+    font-size: 15px; font-weight: 600; color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .setlist-title.active-song-text { color: var(--teal); }
+  .setlist-meta {
+    font-size: 10px; color: var(--dim);
+    font-family: 'Space Mono', monospace; margin-top: 3px;
+  }
+  .setlist-arrow { color: var(--dim); font-size: 16px; }
+  .setlist-item.active-song .setlist-arrow { color: var(--teal); }
+
+  /* Confirm dialog */
+  .confirm-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+    display: flex; align-items: flex-end; justify-content: center;
+    z-index: 200; padding: 20px;
+    backdrop-filter: blur(8px);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .confirm-overlay.show { opacity: 1; pointer-events: all; }
+  .confirm-sheet {
+    background: var(--card2); border: 1px solid var(--border);
+    border-radius: 20px; padding: 24px; width: 100%;
+    max-width: 400px; transform: translateY(20px);
+    transition: transform 0.2s;
+  }
+  .confirm-overlay.show .confirm-sheet { transform: translateY(0); }
+  .confirm-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 20px; font-weight: 700; color: var(--text);
+    margin-bottom: 8px;
+  }
+  .confirm-sub { font-size: 13px; color: var(--dim); margin-bottom: 20px; line-height: 1.5; }
+  .confirm-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .confirm-yes {
+    background: linear-gradient(135deg, rgba(64,224,208,0.2), rgba(64,224,208,0.08));
+    border: 1px solid var(--teal); border-radius: 12px;
+    padding: 14px; color: var(--teal); font-weight: 600;
+    font-size: 15px; cursor: pointer;
+  }
+  .confirm-no {
+    background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px; color: var(--dim);
+    font-size: 15px; cursor: pointer;
+  }
+
+  /* Toggle switch */
+  .toggle-wrap {
+    position: relative; width: 48px; height: 26px; flex-shrink: 0;
+  }
+  .toggle-wrap input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider {
+    position: absolute; inset: 0; background: rgba(255,255,255,0.1);
+    border-radius: 26px; cursor: pointer; transition: 0.3s;
+    border: 1px solid var(--border);
+  }
+  .toggle-slider:before {
+    content: ''; position: absolute;
+    width: 18px; height: 18px; border-radius: 50%;
+    left: 3px; bottom: 3px;
+    background: var(--dim); transition: 0.3s;
+  }
+  input:checked + .toggle-slider { background: rgba(64,224,208,0.25); border-color: var(--teal); }
+  input:checked + .toggle-slider:before { transform: translateX(22px); background: var(--teal); box-shadow: 0 0 8px rgba(64,224,208,0.5); }
+
+  /* Green toggle variant */
+  .toggle-green input:checked + .toggle-slider { background: rgba(68,221,136,0.25); border-color: var(--green); }
+  .toggle-green input:checked + .toggle-slider:before { background: var(--green); box-shadow: 0 0 8px rgba(68,221,136,0.5); }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center; padding: 40px 20px; color: var(--dim);
+  }
+  .empty-state .empty-icon { font-size: 40px; margin-bottom: 12px; opacity: 0.5; }
+  .empty-state p { font-size: 13px; line-height: 1.6; }
+
+  /* Notification toast */
+  .toast {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: var(--card2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 10px 18px;
+    font-size: 13px; color: var(--text);
+    z-index: 300; transition: transform 0.3s ease;
+    white-space: nowrap;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* Section heading inside tabs */
+  .tab-section-hdr {
+    font-size: 9px; color: var(--dim);
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 2px; text-transform: uppercase;
+    margin: 14px 2px 8px; display: flex; align-items: center; gap: 8px;
+  }
+  .tab-section-hdr::after {
+    content: ''; flex: 1; height: 1px;
+    background: var(--border2);
+  }
+
+  /* Stem mutes row */
+  .stem-mutes {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 6px; margin-bottom: 12px;
+  }
+  .stem-mute-btn {
+    background: var(--card); border: 1px solid var(--border2);
+    border-radius: 10px; padding: 10px 4px;
+    cursor: pointer; text-align: center;
+    transition: all 0.15s; user-select: none;
+    -webkit-user-select: none;
+  }
+  .stem-mute-btn .stem-icon { font-size: 18px; display: block; margin-bottom: 3px; }
+  .stem-mute-btn .stem-lbl {
+    font-size: 8px; color: var(--dim);
+    font-family: 'Space Mono', monospace;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    display: block;
+  }
+  .stem-mute-btn.muted {
+    background: rgba(255,51,85,0.12);
+    border-color: rgba(255,51,85,0.4);
+    opacity: 0.7;
+  }
+  .stem-mute-btn.muted .stem-lbl { color: var(--red); }
+
+  /* Scrollbar hide */
+  .tab-panel::-webkit-scrollbar { display: none; }
+  .tab-panel { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* ── TABLET RESPONSIVE (768px+) ── */
+  @media (min-width: 768px) {
+    .tab-bar { padding: 0 8px; }
+    .tab-btn { font-size: 10px; padding: 12px 8px 10px; }
+    .tab-btn .tab-icon { font-size: 20px; }
+
+    .tab-panel { padding: 20px 24px; }
+
+    /* Two column layout for perform tab */
+    .perform-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+    .perform-col-full { grid-column: span 2; }
+
+    .current-section-card { padding: 24px; }
+    .section-name { font-size: 52px; }
+
+    .transport-btn { padding: 22px 12px; font-size: 30px; }
+    .panic-btn { font-size: 30px; padding: 22px; }
+
+    /* Wider section grid */
+    .sections-grid { grid-template-columns: repeat(4, 1fr); }
+    .sec-btn { padding: 16px 8px; font-size: 13px; }
+
+    /* Bigger stem mute buttons */
+    .stem-mutes { grid-template-columns: repeat(5, 1fr); gap: 8px; }
+    .stem-mute-btn { padding: 14px 6px; }
+    .stem-mute-btn .stem-icon { font-size: 24px; }
+    .stem-mute-btn .stem-lbl { font-size: 9px; }
+
+    /* Loop cards */
+    .loop-card { padding: 4px 0; }
+    .loop-row { padding: 16px 18px; }
+    .loop-name { font-size: 15px; }
+
+    /* Setlist */
+    .setlist-item { padding: 18px 20px; }
+    .setlist-title { font-size: 17px; }
+
+    /* MIDI */
+    .midi-file-card { padding: 18px; }
+    .midi-filename { font-size: 15px; }
+
+    /* Vol slider thumb bigger */
+    .vol-slider::-webkit-slider-thumb { width: 28px; height: 28px; }
+
+    /* Confirm sheet */
+    .confirm-sheet { max-width: 500px; padding: 32px; }
+    .confirm-title { font-size: 24px; }
+  }
+
+  /* Fade out button */
+  .fade-btn {
+    flex: 1; padding: 14px 8px;
+    background: linear-gradient(135deg, rgba(153,102,255,0.15), rgba(153,102,255,0.05));
+    border: 1px solid rgba(153,102,255,0.4);
+    border-radius: 14px; color: var(--purple);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px; font-weight: 700;
+    letter-spacing: 1px; cursor: pointer;
+    transition: all 0.15s; text-align: center;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 4px;
+    -webkit-user-select: none;
+  }
+  .fade-btn:active { transform: scale(0.94); opacity: 0.8; }
+  .fade-btn.fading {
+    background: linear-gradient(135deg, rgba(153,102,255,0.3), rgba(153,102,255,0.15));
+    box-shadow: 0 0 16px rgba(153,102,255,0.3);
+    animation: fade-pulse 0.6s ease-in-out infinite;
+  }
+  @keyframes fade-pulse {
+    0%,100% { opacity: 1; } 50% { opacity: 0.7; }
+  }
+  .fade-btn span.flabel { font-size: 9px; color: var(--dim); font-family: 'Space Mono', monospace; letter-spacing: 1px; text-transform: uppercase; }
+
+  /* ── PREACHER (ARMOR BEARER) TAB ── */
+  .ab-big-btn {
+    width: 100%; padding: 22px 16px;
+    border-radius: 18px; cursor: pointer;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 22px; font-weight: 700;
+    letter-spacing: 2px; text-align: center;
+    transition: all 0.15s; -webkit-user-select: none;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 5px;
+    border: 2px solid;
+    margin-bottom: 10px;
+  }
+  .ab-big-btn span.ab-sub { font-size: 10px; font-weight: 400; letter-spacing: 1px; font-family: 'Space Mono', monospace; }
+  .ab-big-btn:active { transform: scale(0.96); }
+  .ab-start-btn {
+    background: linear-gradient(135deg, rgba(64,224,208,0.18), rgba(64,224,208,0.06));
+    border-color: var(--teal); color: var(--teal);
+  }
+  .ab-start-btn.active {
+    background: linear-gradient(135deg, rgba(68,221,136,0.25), rgba(68,221,136,0.1));
+    border-color: var(--green); color: var(--green);
+    box-shadow: 0 0 24px rgba(68,221,136,0.25);
+    animation: ab-breathe 2s ease-in-out infinite;
+  }
+  @keyframes ab-breathe {
+    0%,100% { box-shadow: 0 0 18px rgba(68,221,136,0.2); }
+    50%      { box-shadow: 0 0 36px rgba(68,221,136,0.45); }
+  }
+  .ab-trigger-btn {
+    background: linear-gradient(135deg, rgba(240,192,64,0.18), rgba(240,192,64,0.06));
+    border-color: var(--gold); color: var(--gold);
+  }
+  .ab-trigger-btn:active {
+    background: rgba(240,192,64,0.3);
+    box-shadow: 0 0 20px rgba(240,192,64,0.4);
+  }
+  .ab-alloff-btn {
+    background: linear-gradient(135deg, rgba(255,51,85,0.15), rgba(255,51,85,0.05));
+    border-color: rgba(255,51,85,0.5); color: var(--red);
+    padding: 14px; font-size: 14px; letter-spacing: 1px;
+  }
+  .ab-status-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 14px 16px; margin-bottom: 10px;
+  }
+  .ab-status-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .ab-status-row:last-child { margin-bottom: 0; }
+  .ab-status-label {
+    font-size: 10px; color: var(--dim);
+    font-family: 'Space Mono', monospace;
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+  .ab-status-val {
+    font-size: 14px; font-weight: 700; color: var(--teal);
+    font-family: 'Rajdhani', sans-serif; letter-spacing: 1px;
+  }
+  .ab-level-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 7px; margin-bottom: 10px;
+  }
+  .ab-level-btn {
+    background: var(--card); border: 1px solid var(--border2);
+    border-radius: 12px; padding: 12px 6px;
+    text-align: center; cursor: pointer;
+    transition: all 0.15s; -webkit-user-select: none;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .ab-level-btn .lv-num {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 22px; font-weight: 700; color: var(--text); line-height: 1;
+  }
+  .ab-level-btn .lv-name {
+    font-size: 8px; color: var(--dim);
+    font-family: 'Space Mono', monospace;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .ab-level-btn.active-lv {
+    border-color: var(--gold);
+    background: rgba(240,192,64,0.12);
+  }
+  .ab-level-btn.active-lv .lv-num { color: var(--gold); }
+  .ab-level-btn:active { transform: scale(0.93); }
+  .ab-vad-row {
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(64,224,208,0.05); border: 1px solid var(--border2);
+    border-radius: 12px; padding: 12px 16px; margin-bottom: 10px;
+  }
+  .ab-vad-label { font-size: 12px; font-weight: 600; color: var(--text); }
+  .ab-vad-sub { font-size: 10px; color: var(--dim); margin-top: 2px; }
+  .ab-key-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 6px; margin-bottom: 10px;
+  }
+  .ab-key-btn {
+    background: var(--card); border: 1px solid var(--border2);
+    border-radius: 10px; padding: 10px 4px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px; font-weight: 700;
+    color: var(--dim); text-align: center;
+    cursor: pointer; transition: all 0.15s;
+    -webkit-user-select: none;
+  }
+  .ab-key-btn.active-key {
+    border-color: var(--teal);
+    background: rgba(64,224,208,0.12);
+    color: var(--teal);
+    box-shadow: 0 0 10px rgba(64,224,208,0.15);
+  }
+  .ab-key-btn:active { transform: scale(0.9); }
+
+  /* ── BAND MIXER TAB ── */
+  .band-member-card {
+    background: var(--card); border: 1px solid var(--border2);
+    border-radius: 14px; margin-bottom: 8px; overflow: hidden;
+  }
+  .band-member-card.member-muted { opacity: 0.5; }
+  .band-member-card.member-solo { border-color: var(--gold); background: rgba(240,192,64,0.06); }
+  .bm-top {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 14px 8px;
+  }
+  .bm-icon { font-size: 20px; flex-shrink: 0; }
+  .bm-info { flex: 1; min-width: 0; }
+  .bm-name {
+    font-size: 13px; font-weight: 600; color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .bm-slot {
+    font-size: 9px; color: var(--dim);
+    font-family: 'Space Mono', monospace;
+    text-transform: uppercase; letter-spacing: 1px; margin-top: 1px;
+  }
+  .bm-buttons { display: flex; gap: 6px; flex-shrink: 0; }
+  .bm-mute-btn, .bm-solo-btn {
+    width: 36px; height: 36px; border-radius: 8px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.05);
+    font-size: 10px; font-weight: 700;
+    font-family: 'Space Mono', monospace;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    color: var(--dim); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s; -webkit-user-select: none;
+  }
+  .bm-mute-btn.muted {
+    background: rgba(255,51,85,0.2);
+    border-color: var(--red); color: var(--red);
+  }
+  .bm-solo-btn.soloed {
+    background: rgba(240,192,64,0.2);
+    border-color: var(--gold); color: var(--gold);
+  }
+  .bm-vol-row {
+    padding: 0 14px 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .bm-vol-pct {
+    font-size: 10px; color: var(--dim);
+    font-family: 'Space Mono', monospace;
+    min-width: 32px; text-align: right;
+  }
+  .bm-vol-slider {
+    flex: 1; -webkit-appearance: none; appearance: none;
+    height: 3px; background: rgba(255,255,255,0.1);
+    border-radius: 2px; outline: none;
+  }
+  .bm-vol-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 20px; height: 20px;
+    border-radius: 50%; background: var(--teal);
+    box-shadow: 0 0 8px rgba(64,224,208,0.4); cursor: pointer;
+  }
+  .bm-vol-slider.muted-slider::-webkit-slider-thumb { background: var(--dim); box-shadow: none; }
+  .band-unsolo-row {
+    display: flex; gap: 8px; margin-bottom: 10px;
+  }
+  .band-unsolo-btn {
+    flex: 1; padding: 12px;
+    background: rgba(240,192,64,0.08); border: 1px solid rgba(240,192,64,0.3);
+    border-radius: 12px; color: var(--gold);
+    font-size: 11px; font-weight: 700;
+    font-family: 'Space Mono', monospace;
+    text-transform: uppercase; letter-spacing: 1px;
+    cursor: pointer; text-align: center;
+    transition: all 0.15s;
+  }
+  .band-unmute-btn {
+    flex: 1; padding: 12px;
+    background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+    border-radius: 12px; color: var(--dim);
+    font-size: 11px; font-weight: 700;
+    font-family: 'Space Mono', monospace;
+    text-transform: uppercase; letter-spacing: 1px;
+    cursor: pointer; text-align: center;
+    transition: all 0.15s;
+  }
+
+  /* ── RUBATO SECTION (inside MIDI tab) ── */
+  .rubato-section {
+    background: rgba(99,179,237,0.06);
+    border: 1px solid rgba(99,179,237,0.2);
+    border-radius: 14px; padding: 14px; margin-bottom: 12px;
+  }
+  .rubato-hdr {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .rubato-title {
+    font-size: 11px; color: #63B3ED;
+    font-family: 'Space Mono', monospace;
+    text-transform: uppercase; letter-spacing: 1.5px;
+  }
+  .rubato-playing-badge {
+    font-size: 9px; color: var(--green);
+    font-family: 'Space Mono', monospace;
+    background: rgba(68,221,136,0.12);
+    border: 1px solid rgba(68,221,136,0.3);
+    border-radius: 6px; padding: 3px 8px;
+    display: none;
+  }
+  .rubato-playing-badge.active { display: block; }
+  .rubato-chunk-btn {
+    width: 100%; padding: 13px 14px;
+    background: var(--card); border: 1px solid var(--border2);
+    border-radius: 10px; margin-bottom: 6px;
+    display: flex; align-items: center; gap: 10px;
+    cursor: pointer; transition: all 0.15s;
+    -webkit-user-select: none;
+  }
+  .rubato-chunk-btn.active-chunk {
+    border-color: #63B3ED;
+    background: rgba(99,179,237,0.1);
+  }
+  .rubato-chunk-btn:active { transform: scale(0.98); }
+  .rc-play-icon { font-size: 14px; color: var(--dim); flex-shrink: 0; }
+  .rubato-chunk-btn.active-chunk .rc-play-icon { color: #63B3ED; }
+  .rc-label {
+    font-size: 13px; font-weight: 500; color: var(--text);
+    flex: 1; text-align: left;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .rubato-stop-btn {
+    width: 100%; padding: 12px;
+    background: rgba(255,51,85,0.08); border: 1px solid rgba(255,51,85,0.3);
+    border-radius: 10px; color: var(--red);
+    font-size: 11px; font-weight: 700;
+    font-family: 'Space Mono', monospace;
+    cursor: pointer; text-align: center;
+    margin-top: 4px; letter-spacing: 1px;
+    transition: all 0.15s;
+  }
+  .rubato-stop-btn:active { transform: scale(0.97); }
+
+  /* ── TABLET: wider styles for new tabs ── */
+  @media (min-width: 768px) {
+    .ab-level-grid { gap: 10px; }
+    .ab-level-btn { padding: 16px 8px; }
+    .ab-level-btn .lv-num { font-size: 28px; }
+    .ab-key-grid { grid-template-columns: repeat(6, 1fr); gap: 8px; }
+    .band-member-card { margin-bottom: 10px; }
+    .bm-name { font-size: 15px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- CONNECTION SCREEN -->
+<div id="connectScreen">
+  <div class="logo">VWB</div>
+  <div class="sub">Remote Control</div>
+  <div style="display:flex;align-items:center;gap:10px;margin-top:8px;">
+    <div class="status-dot" id="connDot"></div>
+    <span id="connectStatus" class="conn-label">Connecting...</span>
+  </div>
+  <div style="font-size:11px;color:var(--dim);text-align:center;max-width:260px;line-height:1.6;margin-top:8px;">
+    Make sure your phone is connected to the <span style="color:var(--teal);font-weight:600;">VWB-Remote</span> network from the laptop
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+  <!-- Header -->
+  <div class="app-header">
+    <div class="header-left">
+      <div class="song-title-display" id="hSongTitle">No Song Loaded</div>
+      <div class="next-song-display" id="hNextSong">—</div>
+    </div>
+    <div class="header-right">
+      <div class="conn-indicator" id="appConnDot"></div>
+      <span class="conn-label">LIVE</span>
+    </div>
+  </div>
+
+  <!-- Progress bar -->
+  <div class="progress-wrap" id="scrubWrap">
+    <div class="progress-track">
+      <div class="progress-bar" id="progressBar">
+        <div class="progress-thumb"></div>
+      </div>
+    </div>
+    <div class="progress-times">
+      <span id="scrubCurTime">0:00</span>
+      <span id="scrubLabel">⟵ tap or drag to seek ⟶</span>
+      <span id="scrubTotalTime">0:00</span>
+    </div>
+  </div>
+
+  <!-- Tab bar -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('perform')" id="tab-perform">
+      <span class="tab-icon">▶</span>Perform
+    </button>
+    <button class="tab-btn" onclick="switchTab('sections')" id="tab-sections">
+      <span class="tab-icon">⊞</span>Sections
+    </button>
+    <button class="tab-btn" onclick="switchTab('loops')" id="tab-loops">
+      <span class="tab-icon">↺</span>Loops
+    </button>
+    <button class="tab-btn" onclick="switchTab('midi')" id="tab-midi">
+      <span class="tab-icon">🎹</span>MIDI
+    </button>
+    <button class="tab-btn" onclick="switchTab('setlist')" id="tab-setlist">
+      <span class="tab-icon">♪</span>Songs
+    </button>
+    <button class="tab-btn" onclick="switchTab('preacher')" id="tab-preacher">
+      <span class="tab-icon">🎹</span>Organ
+    </button>
+    <button class="tab-btn" onclick="switchTab('band')" id="tab-band">
+      <span class="tab-icon">🎛</span>Band
+    </button>
+    <button class="tab-btn" onclick="switchTab('flex')" id="tab-flex">
+      <span class="tab-icon">🎸</span>Flex
+    </button>
+    <button class="tab-btn" onclick="switchTab('pianotalk')" id="tab-pianotalk">
+      <span class="tab-icon">🎹</span>Talk
+    </button>
+  </div>
+
+  <!-- Tab panels -->
+  <div class="tab-panels">
+
+    <!-- PERFORM TAB -->
+    <div class="tab-panel active" id="panel-perform">
+      <div class="perform-grid">
+      <!-- Current section -->
+      <div class="perform-col-full">
+      <div class="current-section-card">
+        <div class="section-label">Current Section</div>
+        <div class="section-name" id="curSecName">—</div>
+        <div class="section-progress" id="curSecProgress"></div>
+      </div>
+
+      <!-- Transport -->
+      <div class="transport-row">
+        <button class="transport-btn stop-btn" onclick="send('stop')">
+          ⏹<span class="tlabel">Stop</span>
+        </button>
+        <button class="transport-btn play-btn" id="playPauseBtn" onclick="send('playPause')">
+          ▶<span class="tlabel">Play</span>
+        </button>
+        <button class="transport-btn next-song-btn" onclick="nextSongConfirm()">
+          ⏭<span class="tlabel">Next Song</span>
+        </button>
+      </div>
+
+      </div><!-- /perform-col-full current-section -->
+
+      <!-- Transport + Panic + Fade col -->
+      <div class="perform-col-full">
+      <!-- Panic button -->
+      <button class="panic-btn" id="panicBtn" onclick="send('panic')" style="margin-bottom:8px;">
+        ⚡ PANIC
+      </button>
+      <!-- Fade Out button - full width so label is always visible -->
+      <button class="fade-btn" id="fadeBtn" onclick="send('fadeOut')" style="width:100%;margin-bottom:12px;flex-direction:row;justify-content:center;gap:8px;padding:14px 16px;">
+        <span style="font-size:18px;">▼</span>
+        <span style="font-size:14px;font-weight:700;letter-spacing:2px;">FADE OUT</span>
+        <span id="fadingLabel" style="font-size:10px;color:var(--dim);font-family:'Space Mono',monospace;"></span>
+      </button>
+      </div><!-- /transport col -->
+
+      <!-- Stem mutes -->
+      <div class="tab-section-hdr">Stems</div>
+      <div class="stem-mutes" id="stemMutes">
+        <div class="stem-mute-btn" onclick="toggleStemMute('piano')" id="mute-piano" data-stem="piano">
+          <span class="stem-icon">🎹</span>
+          <span class="stem-lbl">Piano</span>
+        </div>
+        <div class="stem-mute-btn" onclick="toggleStemMute('bass')" id="mute-bass" data-stem="bass">
+          <span class="stem-icon">🎸</span>
+          <span class="stem-lbl">Bass</span>
+        </div>
+        <div class="stem-mute-btn" onclick="toggleStemMute('guitar')" id="mute-guitar" data-stem="guitar">
+          <span class="stem-icon">🎸</span>
+          <span class="stem-lbl">Guitar</span>
+        </div>
+        <div class="stem-mute-btn" onclick="toggleStemMute('rhythm')" id="mute-rhythm" data-stem="rhythm">
+          <span class="stem-icon">🥁</span>
+          <span class="stem-lbl">Rhythm</span>
+        </div>
+        <div class="stem-mute-btn" onclick="toggleAuxMute()" id="mute-aux">
+          <span class="stem-icon">🎶</span>
+          <span class="stem-lbl">Aux</span>
+        </div>
+      </div>
+
+      <!-- Master volume -->
+      <div class="tab-section-hdr">Master Volume</div>
+      <div class="vol-card">
+        <div class="vol-header">
+          <span class="vol-title">Master</span>
+          <span class="vol-value" id="masterVolVal">80%</span>
+        </div>
+        <input type="range" class="vol-slider" min="0" max="100" value="80"
+          id="masterVolSlider"
+          oninput="sendVol('master', this.value)">
+      </div>
+
+      <!-- Section loop toggle -->
+      <div class="sec-loop-row">
+        <div>
+          <div class="sec-loop-label">Section Loop</div>
+          <div class="sec-loop-sub">Loop the current section</div>
+        </div>
+        <label class="toggle-wrap">
+          <input type="checkbox" id="secLoopToggle" onchange="send('secLoop')">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div><!-- /perform-grid -->
+    </div>
+
+    <!-- SECTIONS TAB -->
+    <div class="tab-panel" id="panel-sections">
+      <div class="current-section-card" style="margin-bottom:14px;">
+        <div class="section-label">Now Playing</div>
+        <div class="section-name" id="secTabCurName">—</div>
+        <div class="section-progress" id="secTabProgress"></div>
+      </div>
+      <div class="tab-section-hdr">Jump To Section</div>
+      <div class="sections-grid" id="sectionsGrid">
+        <div class="empty-state" style="grid-column:span 3">
+          <div class="empty-icon">⊞</div>
+          <p>No sections loaded yet.<br>Set up your song on the laptop first.</p>
+        </div>
+      </div>
+      <div class="tab-section-hdr">Section Controls</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+        <button class="transport-btn" style="border-color:rgba(100,100,200,0.3);color:var(--purple)" onclick="send('prevSec')">
+          ⏮<span class="tlabel">Prev Sec</span>
+        </button>
+        <button class="transport-btn" style="border-color:rgba(100,100,200,0.3);color:var(--purple)" onclick="send('nextSec')">
+          ⏭<span class="tlabel">Next Sec</span>
+        </button>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:12px;">
+        <button class="transport-btn play-btn" id="secTabPlayBtn" onclick="send('playPause')" style="flex:2">
+          ▶<span class="tlabel">Play / Stop</span>
+        </button>
+        <button class="fade-btn" onclick="send('fadeOut')" style="flex:1">
+          ▼<span class="flabel">Fade Out</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- LOOPS TAB -->
+    <div class="tab-panel" id="panel-loops">
+      <!-- Master loop toggle -->
+      <div class="loop-master-row" style="margin-bottom:8px;">
+        <div>
+          <div class="loop-master-label" id="loopMasterStatus">Loop: Off</div>
+          <div class="loop-master-sub">Use ▶ on each loop to play/stop</div>
+        </div>
+        <label class="toggle-wrap toggle-green">
+          <input type="checkbox" id="loopMasterToggle" onchange="send('loopToggle')">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="tab-section-hdr">Loop Library</div>
+      <div id="loopsList">
+        <div class="empty-state">
+          <div class="empty-icon">↺</div>
+          <p>No loops loaded yet.<br>Add loops in Song Setup on the laptop.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- MIDI TAB -->
+    <div class="tab-panel" id="panel-midi">
+      <!-- Now playing display + controls -->
+      <div class="midi-transport">
+        <div class="midi-now-playing" id="midiNowPlaying">No file selected</div>
+        <div class="midi-btns">
+          <button class="midi-ctrl-btn" onclick="send('midiPlay')">
+            ▶<span>Play / Stop</span>
+          </button>
+          <button class="midi-ctrl-btn" onclick="send('midiNext')" style="border-color:rgba(255,136,68,0.2)">
+            ⏭<span>Next File</span>
+          </button>
+        </div>
+      </div>
+      <div class="tab-section-hdr">MIDI Playlist</div>
+      <div id="midiPlaylist">
+        <div class="empty-state">
+          <div class="empty-icon">🎹</div>
+          <p>No MIDI files loaded yet.<br>Add files in Song Setup on the laptop.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETLIST TAB -->
+    <div class="tab-panel" id="panel-setlist">
+      <div class="tab-section-hdr">Song Library</div>
+      <div id="setlistItems">
+        <div class="empty-state">
+          <div class="empty-icon">♪</div>
+          <p>No songs in setlist yet.<br>Add songs on the laptop first.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PREACHER TAB (Armor Bearer / Organ) -->
+    <div class="tab-panel" id="panel-preacher">
+
+      <!-- Main on/off -->
+      <button class="ab-big-btn ab-start-btn" id="abToggleBtn" onclick="send('abToggle')">
+        <span id="abToggleLabel">START ORGAN</span>
+        <span class="ab-sub" id="abToggleSub">Tap to activate the Armor Bearer</span>
+      </button>
+
+      <!-- Manual trigger -->
+      <button class="ab-big-btn ab-trigger-btn" onclick="send('abManualTrigger')">
+        <span>▶ TRIGGER</span>
+        <span class="ab-sub">Play next run / chord hit now</span>
+      </button>
+
+      <!-- Status card -->
+      <div class="tab-section-hdr">Status</div>
+      <div class="ab-status-card">
+        <div class="ab-status-row">
+          <span class="ab-status-label">Current Key</span>
+          <span class="ab-status-val" id="abKeyDisplay">—</span>
+        </div>
+        <div class="ab-status-row">
+          <span class="ab-status-label">Chord</span>
+          <span class="ab-status-val" id="abChordDisplay">—</span>
+        </div>
+        <div class="ab-status-row">
+          <span class="ab-status-label">Reverb</span>
+          <span class="ab-status-val" id="abReverbDisplay">Hall</span>
+        </div>
+      </div>
+
+      <!-- VAD toggle -->
+      <div class="ab-vad-row">
+        <div>
+          <div class="ab-vad-label">VAD — Auto Listen</div>
+          <div class="ab-vad-sub">Organ responds to voice automatically</div>
+        </div>
+        <label class="toggle-wrap">
+          <input type="checkbox" id="abVadToggle" onchange="send('abVadToggle')">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+
+      <!-- Performance level -->
+      <div class="tab-section-hdr">Performance Level</div>
+      <div class="ab-level-grid">
+        <div class="ab-level-btn" id="abLv1" onclick="send('abSetLevel', {level:1});abHighlightLevel(1)">
+          <span class="lv-num">1</span>
+          <span class="lv-name">Runs</span>
+        </div>
+        <div class="ab-level-btn" id="abLv2" onclick="send('abSetLevel', {level:2});abHighlightLevel(2)">
+          <span class="lv-num">2</span>
+          <span class="lv-name">Chord Hits</span>
+        </div>
+        <div class="ab-level-btn" id="abLv3" onclick="send('abSetLevel', {level:3});abHighlightLevel(3)">
+          <span class="lv-num">3</span>
+          <span class="lv-name">The Drive</span>
+        </div>
+      </div>
+
+      <!-- Key select -->
+      <div class="tab-section-hdr">Key Override</div>
+      <div class="ab-key-grid" id="abKeyGrid">
+        <!-- Populated by renderArmorBearer() -->
+      </div>
+
+      <!-- Reverb select -->
+      <div class="tab-section-hdr">Reverb</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+        <button class="transport-btn" id="abRevHall"
+          style="border-color:rgba(153,102,255,0.4);color:var(--purple);font-size:14px;"
+          onclick="send('abSetReverb', {reverbType:'hall'})">
+          🏛 Hall<span class="tlabel">Hall Reverb</span>
+        </button>
+        <button class="transport-btn" id="abRevPlate"
+          style="border-color:rgba(153,102,255,0.25);color:var(--dim);font-size:14px;"
+          onclick="send('abSetReverb', {reverbType:'plate'})">
+          🎛 Plate<span class="tlabel">Plate Reverb</span>
+        </button>
+      </div>
+
+      <!-- All notes off -->
+      <button class="ab-big-btn ab-alloff-btn" onclick="send('abAllNotesOff')">
+        ⏹ ALL NOTES OFF
+        <span class="ab-sub">Emergency organ silence</span>
+      </button>
+
+    </div><!-- /panel-preacher -->
+
+    <!-- BAND MIXER TAB -->
+    <div class="tab-panel" id="panel-band">
+
+      <!-- Rubato Mode section -->
+      <div class="tab-section-hdr">Rubato Mode</div>
+      <div class="rubato-section">
+        <div class="rubato-hdr">
+          <span class="rubato-title">🎵 Voice Chunks</span>
+          <span class="rubato-playing-badge" id="rubatoBadge">● PLAYING</span>
+        </div>
+        <div id="rubatoChunkList">
+          <div class="empty-state" style="padding:20px 0;">
+            <div class="empty-icon" style="font-size:28px;">🎵</div>
+            <p>No Rubato chunks loaded.<br>Load a .vwb song pack on the laptop.</p>
+          </div>
+        </div>
+        <button class="rubato-stop-btn" onclick="send('rubatoStop')">⏹ STOP RUBATO</button>
+      </div>
+
+      <!-- Band mixer header buttons -->
+      <div class="tab-section-hdr">House Band Mixer</div>
+      <div class="band-unsolo-row">
+        <button class="band-unsolo-btn" onclick="send('bandMemberSolo', {slot:null})">Clear Solo</button>
+        <button class="band-unmute-btn" onclick="unmuteAllMembers()">Unmute All</button>
+      </div>
+
+      <!-- 7-member mixer — populated by renderBandMixer() -->
+      <div id="bandMixerList">
+        <div class="empty-state">
+          <div class="empty-icon">🎛</div>
+          <p>House Band mixer loads when a song is active on the laptop.</p>
+        </div>
+      </div>
+
+    </div><!-- /panel-band -->
+
+    <!-- ── Flex Engine / Chart Player Panel ── -->
+    <div class="tab-panel" id="panel-flex">
+      <div class="tab-section-hdr">Chart Player</div>
+
+      <!-- Song info -->
+      <div id="rc-chart-info" style="background:rgba(255,255,255,.06);border-radius:12px;
+           padding:14px 16px;margin-bottom:14px;display:none;">
+        <div id="rc-chart-title" style="font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:4px;"></div>
+        <div style="display:flex;gap:16px;font-size:.8rem;color:rgba(255,255,255,.6);">
+          <span>Key: <strong id="rc-chart-key" style="color:#4ecdc4;"></strong></span>
+          <span>BPM: <strong id="rc-chart-bpm" style="color:#4ecdc4;"></strong></span>
+        </div>
+      </div>
+
+      <!-- No chart loaded -->
+      <div id="rc-no-chart" style="text-align:center;padding:30px;color:rgba(255,255,255,.4);font-size:.85rem;">
+        No chart loaded. Load a .vwbs file in VWB first.
+      </div>
+
+      <!-- Transport -->
+      <div style="display:flex;gap:10px;margin-bottom:14px;">
+        <button onclick="sendAction('cpPlay')" style="flex:1;padding:14px;border-radius:12px;
+          border:none;background:#4ecdc4;color:#000;font-weight:700;font-size:1rem;cursor:pointer;">
+          ▶ Play
+        </button>
+        <button onclick="sendAction('cpStop')" style="flex:1;padding:14px;border-radius:12px;
+          border:none;background:rgba(255,255,255,.1);color:#fff;font-weight:700;font-size:1rem;cursor:pointer;">
+          ⏹ Stop
+        </button>
+        <button onclick="sendAction('cpLoopToggle')" id="rc-cp-loop"
+          style="padding:14px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.2);
+          background:none;color:rgba(255,255,255,.5);font-size:.85rem;cursor:pointer;">
+          🔁 Loop
+        </button>
+      </div>
+
+      <!-- Section jump buttons -->
+      <div class="tab-section-hdr" style="margin-top:4px;">Sections — Tap to Jump</div>
+      <div id="rc-chart-sections" style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px;">
+        <div style="color:rgba(255,255,255,.3);font-size:.8rem;padding:10px;">Load a chart to see sections</div>
+      </div>
+
+      <!-- Key control -->
+      <div class="tab-section-hdr">Key</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+        <button onclick="sendAction('cpSetKey',{offset:Math.max(-11,(rcChartKeyOffset||0)-1)})"
+          style="padding:12px 20px;border-radius:10px;border:none;background:rgba(255,255,255,.1);
+          color:#fff;font-size:1.2rem;cursor:pointer;">−</button>
+        <div id="rc-chart-key-display" style="flex:1;text-align:center;font-size:1.3rem;
+          font-weight:700;color:#4ecdc4;">C</div>
+        <button onclick="sendAction('cpSetKey',{offset:Math.min(11,(rcChartKeyOffset||0)+1)})"
+          style="padding:12px 20px;border-radius:10px;border:none;background:rgba(255,255,255,.1);
+          color:#fff;font-size:1.2rem;cursor:pointer;">+</button>
+      </div>
+    </div><!-- /panel-flex -->
+
+    <!-- ── Piano Talk Music Panel ── -->
+    <div class="tab-panel" id="panel-pianotalk">
+      <div class="tab-section-hdr">Piano Talk Music</div>
+      <div style="color:rgba(255,255,255,.5);font-size:.8rem;margin-bottom:14px;">
+        Pianist · Kenneth Hollins
+      </div>
+
+      <!-- Transport -->
+      <div style="display:flex;gap:10px;margin-bottom:18px;">
+        <button onclick="sendAction('ptPlay')" style="flex:1;padding:14px;border-radius:12px;
+          border:none;background:#4ecdc4;color:#000;font-weight:700;font-size:1rem;cursor:pointer;">
+          ▶ Play
+        </button>
+        <button onclick="sendAction('ptStop')" style="flex:1;padding:14px;border-radius:12px;
+          border:none;background:rgba(255,255,255,.1);color:#fff;font-weight:700;font-size:1rem;cursor:pointer;">
+          ⏹ Stop
+        </button>
+        <button onclick="sendAction('ptFade')" style="padding:14px 16px;border-radius:12px;
+          border:1px solid rgba(255,255,255,.2);background:none;color:rgba(255,255,255,.5);
+          font-size:.85rem;cursor:pointer;">
+          ↓ Fade
+        </button>
+      </div>
+
+      <!-- Key selection -->
+      <div class="tab-section-hdr">Select Key</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+        <button onclick="sendAction('ptSetKey',{key:'C'});ptHighlightKey('C')"   id="rc-pt-key-C"  style="padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:none;color:rgba(255,255,255,.7);font-weight:700;font-size:.95rem;cursor:pointer;">C</button>
+        <button onclick="sendAction('ptSetKey',{key:'Db'});ptHighlightKey('Db')"  id="rc-pt-key-Db" style="padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:none;color:rgba(255,255,255,.7);font-weight:700;font-size:.95rem;cursor:pointer;">Db</button>
+        <button onclick="sendAction('ptSetKey',{key:'D'});ptHighlightKey('D')"   id="rc-pt-key-D"  style="padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:none;color:rgba(255,255,255,.7);font-weight:700;font-size:.95rem;cursor:pointer;">D</button>
+        <button onclick="sendAction('ptSetKey',{key:'Eb'});ptHighlightKey('Eb')"  id="rc-pt-key-Eb" style="padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:none;color:rgba(255,255,255,.7);font-weight:700;font-size:.95rem;cursor:pointer;">Eb</button>
+        <button onclick="sendAction('ptSetKey',{key:'E'});ptHighlightKey('E')"   id="rc-pt-key-E"  style="padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:none;color:rgba(255,255,255,.7);font-weight:700;font-size:.95rem;cursor:pointer;">E</button>
+        <button onclick="sendAction('ptSetKey',{key:'F'});ptHighlightKey('F')"   id="rc-pt-key-F"  style="padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:none;color:rgba(255,255,255,.7);font-weight:700;font-size:.95rem;cursor:pointer;">F</button>
+        <button onclick="sendAction('ptSetKey',{key:'Gb'});ptHighlightKey('Gb')"  id="rc-pt-key-Gb" style="padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:none;color:rgba(255,255,255,.7);font-weight:700;font-size:.95rem;cursor:pointer;">Gb</button>
+        <button onclick="sendAction('ptSetKey',{key:'G'});ptHighlightKey('G')"   id="rc-pt-key-G"  style="padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:none;color:rgba(255,255,255,.7);font-weight:700;font-size:.95rem;cursor:pointer;">G</button>
+        <button onclick="sendAction('ptSetKey',{key:'Ab'});ptHighlightKey('Ab')"  id="rc-pt-key-Ab" style="padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:none;color:rgba(255,255,255,.7);font-weight:700;font-size:.95rem;cursor:pointer;">Ab</button>
+        <button onclick="sendAction('ptSetKey',{key:'A'});ptHighlightKey('A')"   id="rc-pt-key-A"  style="padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:none;color:rgba(255,255,255,.7);font-weight:700;font-size:.95rem;cursor:pointer;">A</button>
+        <button onclick="sendAction('ptSetKey',{key:'Bb'});ptHighlightKey('Bb')"  id="rc-pt-key-Bb" style="padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:none;color:rgba(255,255,255,.7);font-weight:700;font-size:.95rem;cursor:pointer;">Bb</button>
+        <button onclick="sendAction('ptSetKey',{key:'B'});ptHighlightKey('B')"   id="rc-pt-key-B"  style="padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:none;color:rgba(255,255,255,.7);font-weight:700;font-size:.95rem;cursor:pointer;">B</button>
+      </div>
+    </div><!-- /panel-pianotalk -->
+
+  </div><!-- /tab-panels -->
+</div><!-- /app -->
+
+<!-- Confirm sheet -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-sheet">
+    <div class="confirm-title" id="confirmTitle">Switch Song?</div>
+    <div class="confirm-sub" id="confirmSub">Are you sure?</div>
+    <div class="confirm-btns">
+      <button class="confirm-no" onclick="closeConfirm()">Cancel</button>
+      <button class="confirm-yes" id="confirmYesBtn" onclick="confirmAction()">Yes, Switch</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+
+// ── SCRUB BAR ──────────────────────────────────────────────────
+
+function fmtTime(s) {
+  s = Math.max(0, Math.floor(s));
+  return Math.floor(s / 60) + ':' + (s % 60 < 10 ? '0' : '') + (s % 60);
+}
+
+function initScrubBar() {
+  const wrap = document.getElementById('scrubWrap');
+  if (!wrap) return;
+
+  let scrubbing = false;
+
+  function getScrubPct(e) {
+    const rect = wrap.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    return Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+  }
+
+  function doSeek(pct) {
+    // Update bar immediately for responsive feel
+    document.getElementById('progressBar').style.width = (pct * 100) + '%';
+    // Send seek action to laptop
+    send('seekTo', { pct: Math.round(pct * 1000) / 1000 });
+  }
+
+  // Touch events
+  wrap.addEventListener('touchstart', e => {
+    e.preventDefault();
+    scrubbing = true;
+    const lbl = document.getElementById('scrubLabel');
+    if (lbl) lbl.textContent = '◀▶ seeking...';
+  }, { passive: false });
+
+  wrap.addEventListener('touchmove', e => {
+    e.preventDefault();
+    if (!scrubbing) return;
+    const pct = getScrubPct(e);
+    document.getElementById('progressBar').style.width = (pct * 100) + '%';
+  }, { passive: false });
+
+  wrap.addEventListener('touchend', e => {
+    e.preventDefault();
+    if (!scrubbing) return;
+    scrubbing = false;
+    const pct = getScrubPct(e.changedTouches ? { clientX: e.changedTouches[0].clientX } : e);
+    doSeek(pct);
+    const lbl = document.getElementById('scrubLabel');
+    if (lbl) setTimeout(() => { lbl.textContent = '⟵ tap or drag to seek ⟶'; }, 1000);
+  }, { passive: false });
+
+  // Mouse events (for desktop testing)
+  wrap.addEventListener('mousedown', e => { scrubbing = true; });
+  wrap.addEventListener('mousemove', e => {
+    if (!scrubbing) return;
+    document.getElementById('progressBar').style.width = (getScrubPct(e) * 100) + '%';
+  });
+  wrap.addEventListener('mouseup', e => {
+    if (!scrubbing) return;
+    scrubbing = false;
+    doSeek(getScrubPct(e));
+  });
+  wrap.addEventListener('mouseleave', e => {
+    if (scrubbing) { scrubbing = false; doSeek(getScrubPct(e)); }
+  });
+
+  // Simple tap
+  wrap.addEventListener('click', e => {
+    if (!scrubbing) doSeek(getScrubPct(e));
+  });
+}
+
+// ── STATE ──
+let ws = null;
+let reconnectTimer = null;
+let state = {
+  playing: false,
+  panicActive: false,
+  songTitle: '',
+  nextSong: '',
+  currentSection: '',
+  currentSectionIdx: -1,
+  sections: [],
+  progress: 0,
+  masterVol: 80,
+  secLoop: false,
+  loopOn: false,
+  loops: [],
+  activeLoopIdx: -1,
+  midiFiles: [],
+  midiActiveIdx: -1,
+  midiPlaying: false,
+  setlist: [],
+  activeSongTitle: '',
+  stemMutes: { piano: false, bass: false, guitar: false, rhythm: false },
+  // Armor Bearer
+  armorBearer: { active: false, vadOn: false, currentKey: '', currentChord: '', level: 1, reverbType: 'hall' },
+  // Rubato Mode
+  rubato: { chunks: [], activeIdx: -1, playing: false, vadEnabled: false, songKey: '' },
+  // House Band 7-member mixer
+  bandMixer: [],
+  // Flex Engine chart player
+  chart: null,
+  // Piano Talk Music
+  pianoTalk: null
+};
+
+let pendingAction = null;
+
+// ── WEBSOCKET ──
+function connect() {
+  const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+  ws = new WebSocket(`${proto}//${location.host}/ws`);
+
+  ws.onopen = () => {
+    clearTimeout(reconnectTimer);
+    document.getElementById('connDot').classList.add('connected');
+    document.getElementById('connectStatus').textContent = 'Connected';
+    setTimeout(() => {
+      document.getElementById('connectScreen').style.display = 'none';
+      document.getElementById('app').classList.add('visible');
+    }, 600);
+    ws.send(JSON.stringify({ type: 'getState' }));
+  };
+
+  ws.onmessage = (evt) => {
+    try {
+      const msg = JSON.parse(evt.data);
+      if (msg.type === 'state') updateState(msg.data);
+      if (msg.type === 'toast') showToast(msg.text);
+    } catch(e) {}
+  };
+
+  ws.onclose = () => {
+    document.getElementById('appConnDot').style.background = 'var(--red)';
+    document.getElementById('appConnDot').style.boxShadow = '0 0 8px var(--red)';
+    reconnectTimer = setTimeout(connect, 2000);
+  };
+
+  ws.onerror = () => { ws.close(); };
+}
+
+function send(action, payload = {}) {
+  if (ws && ws.readyState === 1) {
+    ws.send(JSON.stringify({ type: 'action', action, ...payload }));
+  }
+}
+
+// sendAction is used by Flex and Piano Talk panels — same as send
+function sendAction(action, payload) {
+  send(action, payload || {});
+}
+
+function sendVol(type, val) {
+  document.getElementById('masterVolVal').textContent = val + '%';
+  send('setVol', { volType: type, value: parseInt(val) });
+}
+
+// ── STATE UPDATE ──
+function updateState(d) {
+  state = { ...state, ...d };
+
+  // Header
+  document.getElementById('hSongTitle').textContent = state.songTitle || 'No Song Loaded';
+  document.getElementById('hNextSong').textContent = state.nextSong ? '→ ' + state.nextSong : '—';
+
+  // Progress
+  // Update scrub bar
+  const pct = state.progress || 0;
+  document.getElementById('progressBar').style.width = pct + '%';
+  // Update time displays if duration is available
+  if (state.duration > 0) {
+    const curSecs = Math.floor((pct / 100) * state.duration);
+    document.getElementById('scrubCurTime').textContent = fmtTime(curSecs);
+    document.getElementById('scrubTotalTime').textContent = fmtTime(Math.floor(state.duration));
+  } else {
+    document.getElementById('scrubCurTime').textContent = fmtTime(state.elapsed || 0);
+    document.getElementById('scrubTotalTime').textContent = '';
+  }
+
+  // Current section
+  const secName = state.currentSection || '—';
+  document.getElementById('curSecName').textContent = secName;
+  document.getElementById('secTabCurName').textContent = secName;
+  const secProg = state.currentSectionIdx >= 0 && state.sections.length > 0
+    ? `Section ${state.currentSectionIdx + 1} of ${state.sections.length}`
+    : '';
+  document.getElementById('curSecProgress').textContent = secProg;
+  document.getElementById('secTabProgress').textContent = secProg;
+
+  // Play button
+  const playBtn = document.getElementById('playPauseBtn');
+  if (state.playing) {
+    playBtn.innerHTML = '⏸<span class="tlabel">Pause</span>';
+    playBtn.classList.add('playing');
+    playBtn.classList.remove('play-btn');
+  } else {
+    playBtn.innerHTML = '▶<span class="tlabel">Play</span>';
+    playBtn.classList.remove('playing');
+    playBtn.classList.add('play-btn');
+  }
+
+  // Panic
+  const panicBtn = document.getElementById('panicBtn');
+  if (state.panicActive) {
+    panicBtn.textContent = '✓ RECOVER';
+    panicBtn.classList.add('panic-active');
+  } else {
+    panicBtn.innerHTML = '⚡ PANIC';
+    panicBtn.classList.remove('panic-active');
+  }
+
+  // Master vol
+  document.getElementById('masterVolSlider').value = state.masterVol;
+  document.getElementById('masterVolVal').textContent = state.masterVol + '%';
+
+  // Sec loop
+  document.getElementById('secLoopToggle').checked = state.secLoop;
+
+  // Stem mutes
+  ['piano','bass','guitar','rhythm'].forEach(k => {
+    const btn = document.getElementById('mute-' + k);
+    if (btn) {
+      if (state.stemMutes && state.stemMutes[k]) btn.classList.add('muted');
+      else btn.classList.remove('muted');
+    }
+  });
+  // Aux mute
+  const auxBtn = document.getElementById('mute-aux');
+  if (auxBtn) {
+    if (state.auxMuted) auxBtn.classList.add('muted');
+    else auxBtn.classList.remove('muted');
+  }
+  // Fade button state
+  const fadeBtn = document.getElementById('fadeBtn');
+  if (fadeBtn) {
+    if (state.fading) fadeBtn.classList.add('fading');
+    else fadeBtn.classList.remove('fading');
+  }
+  const fadingLabel = document.getElementById('fadingLabel');
+  if (fadingLabel) fadingLabel.textContent = state.fading ? '(fading...)' : '';
+  // Sections tab play button
+  const secPlayBtn = document.getElementById('secTabPlayBtn');
+  if (secPlayBtn) {
+    if (state.playing) {
+      secPlayBtn.innerHTML = '⏸<span class="tlabel">Pause</span>';
+      secPlayBtn.classList.add('playing'); secPlayBtn.classList.remove('play-btn');
+    } else {
+      secPlayBtn.innerHTML = '▶<span class="tlabel">Play / Stop</span>';
+      secPlayBtn.classList.remove('playing'); secPlayBtn.classList.add('play-btn');
+    }
+  }
+
+  // Armor Bearer
+  renderArmorBearer();
+
+  // Rubato + Band Mixer
+  renderRubato();
+  renderBandMixer();
+
+  // Update Flex Engine chart player panel
+  updateChartState();
+
+  // Update Piano Talk Music panel
+  updatePianoTalkState();
+
+  // Sections grid — only rebuild if sections list changed, otherwise just update highlights
+  const newSecKey = JSON.stringify((state.sections||[]).map(s => s.type + s.label));
+  if (newSecKey !== lastSectionsKey) {
+    lastSectionsKey = newSecKey;
+    renderSections();
+  } else {
+    updateSectionHighlights();
+  }
+
+  // Loops
+  document.getElementById('loopMasterToggle').checked = state.loopOn;
+  const loopStatusEl = document.getElementById('loopMasterStatus');
+  if (loopStatusEl) {
+    if (state.loopOn && state.activeLoopIdx >= 0 && state.loops[state.activeLoopIdx]) {
+      const ln = state.loops[state.activeLoopIdx].fn || 'Loop';
+      const shortName = ln.length > 20 ? ln.substring(0,20)+'...' : ln;
+      loopStatusEl.textContent = '▶ Playing: ' + shortName;
+      loopStatusEl.style.color = 'var(--green)';
+    } else {
+      loopStatusEl.textContent = 'Loop: Off';
+      loopStatusEl.style.color = 'var(--green)';
+    }
+  }
+  renderLoops();
+
+  // MIDI
+  renderMidi();
+
+  // Setlist
+  renderSetlist();
+}
+
+// ── RENDER ARMOR BEARER ──
+const AB_KEYS = ['C','Db','D','Eb','E','F','F#','G','Ab','A','Bb','B'];
+
+function renderArmorBearer() {
+  const ab = state.armorBearer || {};
+
+  // Main toggle button
+  const toggleBtn = document.getElementById('abToggleBtn');
+  const toggleLabel = document.getElementById('abToggleLabel');
+  const toggleSub = document.getElementById('abToggleSub');
+  if (toggleBtn) {
+    if (ab.active) {
+      toggleBtn.classList.add('active');
+      if (toggleLabel) toggleLabel.textContent = 'ORGAN ACTIVE';
+      if (toggleSub)   toggleSub.textContent   = 'Tap to deactivate';
+    } else {
+      toggleBtn.classList.remove('active');
+      if (toggleLabel) toggleLabel.textContent = 'START ORGAN';
+      if (toggleSub)   toggleSub.textContent   = 'Tap to activate the Armor Bearer';
+    }
+  }
+
+  // Status
+  const keyEl = document.getElementById('abKeyDisplay');
+  if (keyEl) keyEl.textContent = ab.currentKey || '—';
+  const chordEl = document.getElementById('abChordDisplay');
+  if (chordEl) chordEl.textContent = ab.currentChord || '—';
+  const revEl = document.getElementById('abReverbDisplay');
+  if (revEl) revEl.textContent = ab.reverbType === 'plate' ? 'Plate' : 'Hall';
+
+  // VAD toggle
+  const vadChk = document.getElementById('abVadToggle');
+  if (vadChk) vadChk.checked = !!ab.vadOn;
+
+  // Level buttons
+  [1,2,3].forEach(lv => {
+    const btn = document.getElementById('abLv' + lv);
+    if (btn) {
+      if ((ab.level || 1) === lv) btn.classList.add('active-lv');
+      else                         btn.classList.remove('active-lv');
+    }
+  });
+
+  // Reverb buttons
+  const hallBtn  = document.getElementById('abRevHall');
+  const plateBtn = document.getElementById('abRevPlate');
+  if (hallBtn && plateBtn) {
+    if (ab.reverbType === 'plate') {
+      hallBtn.style.color  = 'var(--dim)'; hallBtn.style.borderColor  = 'rgba(153,102,255,0.2)';
+      plateBtn.style.color = 'var(--purple)'; plateBtn.style.borderColor = 'rgba(153,102,255,0.4)';
+    } else {
+      hallBtn.style.color  = 'var(--purple)'; hallBtn.style.borderColor  = 'rgba(153,102,255,0.4)';
+      plateBtn.style.color = 'var(--dim)'; plateBtn.style.borderColor = 'rgba(153,102,255,0.2)';
+    }
+  }
+
+  // Key grid — build once, update active state on every render
+  const keyGrid = document.getElementById('abKeyGrid');
+  if (keyGrid) {
+    if (!keyGrid.dataset.built) {
+      keyGrid.dataset.built = '1';
+      keyGrid.innerHTML = AB_KEYS.map(k =>
+        `<div class="ab-key-btn" id="abKey_${k.replace('#','sharp')}" onclick="send('abSetKey',{key:'${k}'});abHighlightKey('${k}')">${k}</div>`
+      ).join('');
+    }
+    AB_KEYS.forEach(k => {
+      const el = document.getElementById('abKey_' + k.replace('#','sharp'));
+      if (el) {
+        if (ab.currentKey === k) el.classList.add('active-key');
+        else                      el.classList.remove('active-key');
+      }
+    });
+  }
+}
+
+// ── RENDER RUBATO ──
+function renderRubato() {
+  const rub = state.rubato || {};
+  const chunks = rub.chunks || [];
+
+  // Playing badge
+  const badge = document.getElementById('rubatoBadge');
+  if (badge) badge.classList.toggle('active', !!rub.playing);
+
+  // Chunk list
+  const el = document.getElementById('rubatoChunkList');
+  if (!el) return;
+  if (chunks.length === 0) {
+    el.innerHTML = `<div class="empty-state" style="padding:20px 0;">
+      <div class="empty-icon" style="font-size:28px;">🎵</div>
+      <p>No Rubato chunks loaded.<br>Load a .vwb song pack on the laptop.</p>
+    </div>`;
+    return;
+  }
+  el.innerHTML = '';
+  chunks.forEach((chunk, i) => {
+    const isActive = i === rub.activeIdx;
+    const isPlaying = isActive && rub.playing;
+    const btn = document.createElement('div');
+    btn.className = 'rubato-chunk-btn' + (isActive ? ' active-chunk' : '');
+    btn.innerHTML = `<span class="rc-play-icon">${isPlaying ? '▶' : '○'}</span>
+      <span class="rc-label">${chunk.label || ('Chunk ' + (i+1))}</span>`;
+    btn.onclick = () => send('rubatoTrigger', { idx: i });
+    el.appendChild(btn);
+  });
+}
+
+// ── RENDER BAND MIXER ──
+let soloedSlot = null; // tracked locally for visual feedback
+
+function renderBandMixer() {
+  const members = state.bandMixer || [];
+  const el = document.getElementById('bandMixerList');
+  if (!el) return;
+
+  if (members.length === 0) {
+    el.innerHTML = `<div class="empty-state">
+      <div class="empty-icon">🎛</div>
+      <p>House Band mixer loads when a song is active on the laptop.</p>
+    </div>`;
+    return;
+  }
+
+  // Only rebuild DOM if member count changed, otherwise just update values
+  if (el.children.length !== members.length) {
+    el.innerHTML = '';
+    members.forEach((m, i) => {
+      const card = document.createElement('div');
+      card.id = 'bm-card-' + m.slot;
+      card.className = 'band-member-card';
+      card.innerHTML = `
+        <div class="bm-top">
+          <span class="bm-icon">${m.icon}</span>
+          <div class="bm-info">
+            <div class="bm-name" id="bm-name-${m.slot}">${m.name}</div>
+            <div class="bm-slot">${m.slot}</div>
+          </div>
+          <div class="bm-buttons">
+            <button class="bm-mute-btn" id="bm-mute-${m.slot}"
+              onclick="send('bandMemberMute',{slot:'${m.slot}'})">M</button>
+            <button class="bm-solo-btn" id="bm-solo-${m.slot}"
+              onclick="handleBandSolo('${m.slot}')">S</button>
+          </div>
+        </div>
+        <div class="bm-vol-row">
+          <span style="font-size:12px;color:var(--dim);">🔉</span>
+          <input type="range" class="bm-vol-slider" id="bm-vol-${m.slot}"
+            min="0" max="100" value="${m.vol || 80}"
+            oninput="sendBandVol('${m.slot}', this.value)">
+          <span class="bm-vol-pct" id="bm-vpct-${m.slot}">${m.vol || 80}%</span>
+        </div>`;
+      el.appendChild(card);
+    });
+  }
+
+  // Update values without rebuilding
+  members.forEach(m => {
+    const card  = document.getElementById('bm-card-' + m.slot);
+    const muteBtn = document.getElementById('bm-mute-' + m.slot);
+    const slider  = document.getElementById('bm-vol-'  + m.slot);
+    const vpct    = document.getElementById('bm-vpct-' + m.slot);
+    const nameEl  = document.getElementById('bm-name-' + m.slot);
+    if (!card) return;
+
+    // Name (may change if Artist Series musician swaps in)
+    if (nameEl) nameEl.textContent = m.name;
+
+    // Mute state
+    if (muteBtn) {
+      if (m.muted) muteBtn.classList.add('muted'); else muteBtn.classList.remove('muted');
+    }
+    card.classList.toggle('member-muted', !!m.muted);
+
+    // Volume
+    if (slider && !slider.matches(':active')) slider.value = m.vol || 80;
+    if (vpct) vpct.textContent = (m.vol || 80) + '%';
+    if (slider) slider.classList.toggle('muted-slider', !!m.muted);
+  });
+}
+
+function sendBandVol(slot, val) {
+  const vpct = document.getElementById('bm-vpct-' + slot);
+  if (vpct) vpct.textContent = val + '%';
+  send('bandMemberVol', { slot, value: parseInt(val) });
+}
+
+function handleBandSolo(slot) {
+  // Toggle solo: if already soloed, clear it; otherwise solo this member
+  if (soloedSlot === slot) {
+    soloedSlot = null;
+    send('bandMemberSolo', { slot: null });
+  } else {
+    soloedSlot = slot;
+    send('bandMemberSolo', { slot });
+  }
+  // Update solo button visuals immediately
+  document.querySelectorAll('.bm-solo-btn').forEach(b => b.classList.remove('soloed'));
+  if (soloedSlot) {
+    const btn = document.getElementById('bm-solo-' + soloedSlot);
+    if (btn) btn.classList.add('soloed');
+  }
+}
+
+function unmuteAllMembers() {
+  // Send mute=false for every member that is currently muted
+  (state.bandMixer || []).forEach(m => {
+    if (m.muted) send('bandMemberMute', { slot: m.slot });
+  });
+}
+
+// ── CHART PLAYER STATE UPDATE ──
+var rcChartKeyOffset = 0;
+
+function updateChartState() {
+  const chart = state.chart;
+  const infoEl    = document.getElementById('rc-chart-info');
+  const noChartEl = document.getElementById('rc-no-chart');
+  const secsEl    = document.getElementById('rc-chart-sections');
+  const keyDisp   = document.getElementById('rc-chart-key-display');
+
+  if (!chart) {
+    if (infoEl)    infoEl.style.display    = 'none';
+    if (noChartEl) noChartEl.style.display = 'block';
+    if (secsEl)    secsEl.innerHTML = '<div style="color:rgba(255,255,255,.3);font-size:.8rem;padding:10px;">Load a chart to see sections</div>';
+    return;
+  }
+
+  if (infoEl)    infoEl.style.display    = 'block';
+  if (noChartEl) noChartEl.style.display = 'none';
+
+  document.getElementById('rc-chart-title').textContent = chart.title || '';
+  document.getElementById('rc-chart-key').textContent   = chart.key   || 'C';
+  document.getElementById('rc-chart-bpm').textContent   = chart.bpm   || '';
+  if (keyDisp) keyDisp.textContent = chart.key || 'C';
+  rcChartKeyOffset = chart.keyOffset || 0;
+
+  // Loop button highlight
+  var loopBtn = document.getElementById('rc-cp-loop');
+  if (loopBtn) {
+    loopBtn.style.color  = chart.looping ? '#4ecdc4' : 'rgba(255,255,255,.5)';
+    loopBtn.style.borderColor = chart.looping ? '#4ecdc4' : 'rgba(255,255,255,.2)';
+  }
+
+  // Section buttons
+  if (secsEl && chart.sections) {
+    secsEl.innerHTML = chart.sections.map(function(sec, i) {
+      var isActive = i === chart.activeSectionIdx;
+      return '<button onclick="sendAction(\'cpJumpSection\',{idx:' + i + '})" style="' +
+        'padding:12px;border-radius:10px;cursor:pointer;font-weight:700;font-size:.9rem;' +
+        'border:1px solid ' + (isActive ? '#4ecdc4' : 'rgba(255,255,255,.2)') + ';' +
+        'background:' + (isActive ? 'rgba(78,205,196,.15)' : 'none') + ';' +
+        'color:' + (isActive ? '#4ecdc4' : 'rgba(255,255,255,.7)') + ';">' +
+        (sec.label || ('Section ' + (i + 1))) + '</button>';
+    }).join('');
+  }
+}
+
+// ── PIANO TALK STATE UPDATE ──
+function updatePianoTalkState() {
+  var pt = state.pianoTalk;
+  if (!pt) return;
+  // Highlight active key button
+  ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'].forEach(function(k) {
+    var btn = document.getElementById('rc-pt-key-' + k);
+    if (!btn) return;
+    var isActive = k === pt.key;
+    btn.style.background   = isActive ? 'rgba(78,205,196,.2)'    : 'none';
+    btn.style.borderColor  = isActive ? '#4ecdc4'                 : 'rgba(255,255,255,.15)';
+    btn.style.color        = isActive ? '#4ecdc4'                 : 'rgba(255,255,255,.7)';
+  });
+}
+
+// Immediately highlight selected piano talk key without waiting for state update
+function ptHighlightKey(selectedKey) {
+  var keys = ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
+  keys.forEach(function(k) {
+    var btn = document.getElementById('rc-pt-key-' + k);
+    if (!btn) return;
+    var isActive = k === selectedKey;
+    btn.style.background  = isActive ? 'rgba(78,205,196,.2)'    : 'none';
+    btn.style.borderColor = isActive ? '#4ecdc4'                 : 'rgba(255,255,255,.15)';
+    btn.style.color       = isActive ? '#4ecdc4'                 : 'rgba(255,255,255,.7)';
+  });
+}
+
+// ── RENDER SECTIONS ──
+let lastSectionsKey = "";
+
+function updateSectionHighlights() {
+  const btns = document.querySelectorAll("#sectionsGrid .sec-btn");
+  btns.forEach((btn, i) => {
+    btn.classList.toggle("active-sec", i === state.currentSectionIdx);
+  });
+}
+function renderSections() {
+  const grid = document.getElementById('sectionsGrid');
+  if (!state.sections || state.sections.length === 0) {
+    grid.innerHTML = '<div class="empty-state" style="grid-column:span 3"><div class="empty-icon">⊞</div><p>No sections loaded.<br>Set up your song on the laptop.</p></div>';
+    return;
+  }
+  grid.innerHTML = '';
+  state.sections.forEach((sec, i) => {
+    const isActive = i === state.currentSectionIdx;
+    const div = document.createElement('div');
+    div.className = 'sec-btn' + (isActive ? ' active-sec' : '');
+    div.innerHTML = `<span class="sec-type">${sec.type || ''}</span>${sec.label || sec.type || 'Section ' + (i+1)}`;
+    div.onclick = () => send('jumpToSection', { idx: i });
+    grid.appendChild(div);
+  });
+}
+
+// ── RENDER LOOPS ──
+function renderLoops() {
+  const el = document.getElementById('loopsList');
+  if (!state.loops || state.loops.length === 0) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">↺</div><p>No loops loaded yet.<br>Add loops in Song Setup on the laptop.</p></div>';
+    return;
+  }
+  el.innerHTML = '';
+  state.loops.forEach((lp, i) => {
+    const isActive = i === state.activeLoopIdx;
+    const isPlaying = isActive && state.loopOn;
+    const card = document.createElement('div');
+    card.className = 'loop-card' + (isActive ? ' loop-active' : '');
+    card.innerHTML = `
+      <div class="loop-row">
+        <div class="loop-info" style="cursor:pointer;" onclick="send('setActiveLoop', {idx:${i}})">
+          <div class="loop-name" style="color:${isActive ? 'var(--green)' : 'var(--text)'}">${lp.fn || 'Loop ' + (i+1)}</div>
+          <div class="loop-dur">${lp.duration ? fmt(lp.duration) : ''} ${isActive ? '<span style="color:var(--green);font-size:9px;margin-left:4px;">● SELECTED</span>' : ''}</div>
+        </div>
+        <button class="loop-play-btn ${isPlaying ? 'active' : ''}" 
+          onclick="handleLoopPlayStop(${i})"
+          style="width:44px;height:44px;font-size:18px;">
+          ${isPlaying ? '⏹' : '▶'}
+        </button>
+      </div>
+      <div class="loop-vol-row">
+        <span class="loop-vol-icon">🔉</span>
+        <input type="range" class="loop-vol-slider" min="0" max="100"
+          value="${lp.vol || 80}"
+          oninput="send('setLoopVol', {idx:${i}, value:parseInt(this.value)})">
+        <span style="font-size:10px;color:var(--dim);font-family:'Space Mono',monospace;min-width:32px;text-align:right;">${lp.vol || 80}%</span>
+      </div>`;
+    el.appendChild(card);
+  });
+}
+
+// ── RENDER MIDI ──
+function renderMidi() {
+  const el = document.getElementById('midiPlaylist');
+  const nowEl = document.getElementById('midiNowPlaying');
+  if (!state.midiFiles || state.midiFiles.length === 0) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">🎹</div><p>No MIDI files loaded yet.</p></div>';
+    nowEl.textContent = 'No file selected';
+    return;
+  }
+  const active = state.midiFiles[state.midiActiveIdx];
+  nowEl.textContent = active ? (state.midiPlaying ? '▶ ' : '') + active.fn : 'No file selected';
+  el.innerHTML = '';
+  state.midiFiles.forEach((m, i) => {
+    const isActive = i === state.midiActiveIdx;
+    const card = document.createElement('div');
+    card.className = 'midi-file-card' + (isActive ? ' active-midi' : '');
+    card.innerHTML = `
+      <span class="midi-num">${i+1}</span>
+      <div class="midi-info">
+        <div class="midi-filename ${isActive ? 'active-midi-text' : ''}">${m.fn}</div>
+        <div class="midi-dur">${m.duration ? fmt(m.duration) : ''}</div>
+      </div>
+      <div class="midi-play-dot"></div>`;
+    card.onclick = () => send('midiSelect', { idx: i });
+    el.appendChild(card);
+  });
+}
+
+// ── RENDER SETLIST ──
+function renderSetlist() {
+  const el = document.getElementById('setlistItems');
+  if (!state.setlist || state.setlist.length === 0) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">♪</div><p>No songs in setlist yet.</p></div>';
+    return;
+  }
+  el.innerHTML = '';
+  state.setlist.forEach((song, i) => {
+    const isActive = song.title === state.activeSongTitle;
+    const item = document.createElement('div');
+    item.className = 'setlist-item' + (isActive ? ' active-song' : '');
+    item.innerHTML = `
+      <span class="setlist-num">${i+1}</span>
+      <div class="setlist-info">
+        <div class="setlist-title ${isActive ? 'active-song-text' : ''}">${song.title || 'Untitled'}</div>
+        <div class="setlist-meta">${song.tempo || '—'} BPM · ${song.ts || '4/4'}</div>
+      </div>
+      <span class="setlist-arrow">${isActive ? '♪' : '›'}</span>`;
+    item.onclick = () => {
+      if (!isActive) showSongConfirm(song.title, i);
+    };
+    el.appendChild(item);
+  });
+}
+
+// ── TAB SWITCHING ──
+// Immediately highlight selected organ level button
+function abHighlightLevel(selectedLv) {
+  [1, 2, 3].forEach(function(lv) {
+    var btn = document.getElementById('abLv' + lv);
+    if (!btn) return;
+    if (lv === selectedLv) btn.classList.add('active-lv');
+    else btn.classList.remove('active-lv');
+  });
+}
+
+// Immediately highlight selected organ key
+function abHighlightKey(selectedKey) {
+  var AB_KEYS = ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
+  AB_KEYS.forEach(function(k) {
+    var el = document.getElementById('abKey_' + k.replace('#','sharp'));
+    if (!el) return;
+    if (k === selectedKey) el.classList.add('active-key');
+    else el.classList.remove('active-key');
+  });
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  document.getElementById('panel-' + name).classList.add('active');
+  // When returning to organ tab, request a fresh state broadcast
+  // so key highlights and level buttons re-sync correctly
+  if (name === 'preacher' && ws && ws.readyState === 1) {
+    ws.send(JSON.stringify({ type: 'getState' }));
+  }
+}
+
+// ── STEM MUTES ──
+function toggleStemMute(stem) {
+  send('stemMute', { stem });
+}
+
+function toggleAuxMute() {
+  send('auxMute');
+}
+
+function handleLoopPlayStop(idx) {
+  // If this loop is already active and playing, stop it
+  // If this loop is active but stopped, start it
+  // If this loop is not active, select it and start it
+  if (state.activeLoopIdx === idx && state.loopOn) {
+    // Already playing — stop it
+    send('loopToggle');
+  } else if (state.activeLoopIdx === idx && !state.loopOn) {
+    // Selected but stopped — start it
+    send('loopToggle');
+  } else {
+    // Different loop — select it then start
+    send('setActiveLoop', { idx });
+    setTimeout(() => {
+      if (!state.loopOn) send('loopToggle');
+    }, 150);
+  }
+}
+
+function triggerFadeOut() {
+  send('fadeOut');
+}
+
+// ── CONFIRM SHEET ──
+function showSongConfirm(title, idx) {
+  pendingAction = () => send('loadSong', { idx });
+  document.getElementById('confirmTitle').textContent = 'Switch Song?';
+  document.getElementById('confirmSub').textContent = `Load "${title}" now?\nThe current song will be replaced.`;
+  document.getElementById('confirmOverlay').classList.add('show');
+}
+
+function nextSongConfirm() {
+  if (!state.nextSong) { send('nextSong'); return; }
+  pendingAction = () => send('nextSong');
+  document.getElementById('confirmTitle').textContent = 'Next Song?';
+  document.getElementById('confirmSub').textContent = `Move to "${state.nextSong}"?`;
+  document.getElementById('confirmOverlay').classList.add('show');
+}
+
+function closeConfirm() {
+  document.getElementById('confirmOverlay').classList.remove('show');
+  pendingAction = null;
+}
+
+function confirmAction() {
+  closeConfirm();
+  if (pendingAction) { pendingAction(); pendingAction = null; }
+}
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── HELPERS ──
+function fmt(s) {
+  const m = Math.floor(s / 60), sec = Math.floor(s % 60);
+  return m + ':' + String(sec).padStart(2,'0');
+}
+
+// ── KEEP ALIVE ──
+setInterval(() => {
+  if (ws && ws.readyState === 1) ws.send(JSON.stringify({ type: 'ping' }));
+}, 5000);
+
+// ── INIT ──
+connect();
+initScrubBar();
+</script>
+</body>
+</html>

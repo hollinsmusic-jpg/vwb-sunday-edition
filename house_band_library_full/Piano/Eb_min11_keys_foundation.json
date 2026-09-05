@@ -1,0 +1,57 @@
+{
+  "id": "Eb_min11_keys",
+  "key": "Eb",
+  "quality": "min11",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 68,
+      "vel": 90,
+      "time": -0.0042,
+      "duration": 30.125
+    },
+    {
+      "note": 73,
+      "vel": 90,
+      "time": -0.0042,
+      "duration": 35.9875
+    },
+    {
+      "note": 77,
+      "vel": 79,
+      "time": -0.0021,
+      "duration": 2.9125
+    },
+    {
+      "note": 54,
+      "vel": 76,
+      "time": 0.0,
+      "duration": 22.2542
+    },
+    {
+      "note": 65,
+      "vel": 90,
+      "time": 0.0,
+      "duration": 30.0938
+    },
+    {
+      "note": 61,
+      "vel": 76,
+      "time": 0.0021,
+      "duration": 35.9625
+    },
+    {
+      "note": 56,
+      "vel": 74,
+      "time": 0.0021,
+      "duration": 30.1854
+    },
+    {
+      "note": 58,
+      "vel": 58,
+      "time": 0.0021,
+      "duration": 22.2458
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "id": "Gb_min9_keys",
+  "key": "Gb",
+  "quality": "min9",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 61,
+      "vel": 79,
+      "time": 0.0146,
+      "duration": 18.4479
+    },
+    {
+      "note": 64,
+      "vel": 75,
+      "time": 0.0167,
+      "duration": 14.5083
+    },
+    {
+      "note": 80,
+      "vel": 90,
+      "time": 0.0167,
+      "duration": 1.6062
+    },
+    {
+      "note": 54,
+      "vel": 71,
+      "time": 0.0167,
+      "duration": 23.9104
+    },
+    {
+      "note": 73,
+      "vel": 93,
+      "time": 0.0167,
+      "duration": 23.9229
+    },
+    {
+      "note": 69,
+      "vel": 84,
+      "time": 0.0208,
+      "duration": 1.5167
+    },
+    {
+      "note": 76,
+      "vel": 84,
+      "time": 2.0042,
+      "duration": 0.3312
+    }
+  ]
+}

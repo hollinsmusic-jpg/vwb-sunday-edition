@@ -1,0 +1,113 @@
+{
+  "id": "jc-keys-251-c",
+  "slot": "keys",
+  "musician": "julian-cross",
+  "type": "progression",
+  "progression": "2-5-1",
+  "key": "C",
+  "two": "Dmin7",
+  "five": "G7",
+  "one": "Cmaj7",
+  "beats": 8,
+  "timeSig": "4/4",
+  "feel": "straight",
+  "events": [
+    {
+      "note": 50,
+      "vel": 42,
+      "time": 0.0,
+      "duration": 1.2625
+    },
+    {
+      "note": 57,
+      "vel": 59,
+      "time": 0.0,
+      "duration": 1.2937
+    },
+    {
+      "note": 53,
+      "vel": 57,
+      "time": 0.0,
+      "duration": 1.2979
+    },
+    {
+      "note": 72,
+      "vel": 105,
+      "time": 0.0,
+      "duration": 1.3729
+    },
+    {
+      "note": 67,
+      "vel": 81,
+      "time": 0.0,
+      "duration": 1.425
+    },
+    {
+      "note": 60,
+      "vel": 62,
+      "time": 0.0,
+      "duration": 1.4375
+    },
+    {
+      "note": 64,
+      "vel": 70,
+      "time": 0.0,
+      "duration": 1.4667
+    },
+    {
+      "note": 59,
+      "vel": 79,
+      "time": 1.9937,
+      "duration": 1.3438
+    },
+    {
+      "note": 64,
+      "vel": 100,
+      "time": 2.0021,
+      "duration": 0.7562
+    },
+    {
+      "note": 69,
+      "vel": 90,
+      "time": 2.0021,
+      "duration": 0.9062
+    },
+    {
+      "note": 53,
+      "vel": 66,
+      "time": 2.0083,
+      "duration": 1.2917
+    },
+    {
+      "note": 52,
+      "vel": 62,
+      "time": 3.9812,
+      "duration": 2.8667
+    },
+    {
+      "note": 55,
+      "vel": 66,
+      "time": 3.9812,
+      "duration": 2.9
+    },
+    {
+      "note": 67,
+      "vel": 97,
+      "time": 3.9896,
+      "duration": 0.8979
+    },
+    {
+      "note": 59,
+      "vel": 100,
+      "time": 3.9958,
+      "duration": 0.7458
+    }
+  ],
+  "energy": "medium-low",
+  "tempoRange": "slow-medium",
+  "styles": [
+    "slow-hymn",
+    "worship-ballad",
+    "medium-groove-gospel"
+  ]
+}

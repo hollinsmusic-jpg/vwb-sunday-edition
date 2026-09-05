@@ -1,0 +1,51 @@
+{
+  "id": "Eb_maj7_keys",
+  "key": "Eb",
+  "quality": "maj7",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 67,
+      "vel": 75,
+      "time": 0.0063,
+      "duration": 23.0521
+    },
+    {
+      "note": 65,
+      "vel": 77,
+      "time": 0.0063,
+      "duration": 31.1896
+    },
+    {
+      "note": 58,
+      "vel": 63,
+      "time": 0.0083,
+      "duration": 23.1125
+    },
+    {
+      "note": 62,
+      "vel": 88,
+      "time": 0.0083,
+      "duration": 18.3354
+    },
+    {
+      "note": 51,
+      "vel": 34,
+      "time": 0.0083,
+      "duration": 35.9688
+    },
+    {
+      "note": 55,
+      "vel": 70,
+      "time": 0.0083,
+      "duration": 2.9979
+    },
+    {
+      "note": 70,
+      "vel": 75,
+      "time": 2.0063,
+      "duration": 33.9667
+    }
+  ]
+}

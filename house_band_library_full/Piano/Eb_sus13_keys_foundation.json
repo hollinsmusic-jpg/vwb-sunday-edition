@@ -1,0 +1,33 @@
+{
+  "id": "Eb_sus13_keys",
+  "key": "Eb",
+  "quality": "sus13",
+  "slot": "keys",
+  "style": "foundation",
+  "events": [
+    {
+      "note": 68,
+      "vel": 88,
+      "time": -0.0146,
+      "duration": 36.0187
+    },
+    {
+      "note": 61,
+      "vel": 98,
+      "time": -0.0125,
+      "duration": 36.0042
+    },
+    {
+      "note": 72,
+      "vel": 90,
+      "time": -0.0125,
+      "duration": 30.9458
+    },
+    {
+      "note": 65,
+      "vel": 90,
+      "time": -0.0083,
+      "duration": 19.2104
+    }
+  ]
+}
